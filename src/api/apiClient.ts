@@ -10,7 +10,8 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
         ...options,
     });
 
-    const result = await response.json() as DataResponse<T>;
+    const responseJson = await response.json();
+    const result = responseJson as DataResponse<T>;
 
     if (!response.ok) {
         return DataResponse.createErrorMessage("Error", result.message, 5);
