@@ -14,7 +14,7 @@ export default function MonitorNavbar({navLinks}: {navLinks: NavigationLink[]}){
                 <header id="title" className="flex justify-start items-center">
                     <span className="text-3xl text-[#0D2B45] font-bold font-stretch-semi-condensed">
                         <Link to="/">
-                            MarketStack.Dashboard
+                            MarketStack
                         </Link>
                     </span>
                 </header> 

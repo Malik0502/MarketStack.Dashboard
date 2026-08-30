@@ -15,7 +15,7 @@ export default function DisplayNavbar({navLinks}: {navLinks: NavigationLink[]}){
 
                     <span className="text-3xl text-[#0D2B45] font-bold font-stretch-semi-condensed">
                         <Link to="/">
-                            MarketStack.Dashboard
+                            MarketStack
                         </Link>
                     </span>
                 </header>
