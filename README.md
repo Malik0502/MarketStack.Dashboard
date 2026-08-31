@@ -1,75 +1,56 @@
-# React + TypeScript + Vite
+# MarketStack UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MarketStack UI is the web dashboard for **MarketStack**, a self-hostable platform for collecting and analyzing grocery purchase data from multiple supermarket chains.
 
-Currently, two official plugins are available:
+The UI focuses on presenting purchase data through statistics, visualizations, and an easy-to-use dashboard.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Key Features
 
-## React Compiler
+- **Purchase Statistics** – Overview of total expenses, taxes, and purchase activity
+- **Spending Insights** – Explore spending patterns and historical purchase data
+- **Price Information** – View product prices and pricing data
+- **Receipt Overview** – Browse collected receipts and purchased items
+- **Data Visualization** – Visualize purchase, spending, and pricing data
+- **Multi-Supermarket Data** – Display data collected from integrated supermarket chains
+- **Self-Hosted** – Designed to work with a self-hosted MarketStack instance
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Current Status
 
-## Expanding the ESLint configuration
+**Active Development**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The MarketStack UI is currently under development. The dashboard and its statistics are being expanded as the MarketStack platform evolves.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Current UI
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+<!-- Add screenshot here -->
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+![MarketStack UI](docs/assets/currentDevStatus.png)
 
-```
+## Planned Features
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+- Advanced analytics and visualizations
+- Budget tracking
+- Price trend analysis and comparison
+- Personal spending insights
+- Historical data exploration
+- Additional supermarket integrations
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Technology
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **React**
+- **Vite**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **TanStack Charts**
 
-```
+## MarketStack
+
+MarketStack consists of a REST API and a web dashboard. The API handles receipt collection, processing, persistence, and data access, while this project provides the user interface for exploring the collected data.
+
+The project is designed with **data ownership and self-hosting** in mind.
+
+---
+
+**Status:** Active Development
+
+*MarketStack – Take control of your grocery spending data.*
