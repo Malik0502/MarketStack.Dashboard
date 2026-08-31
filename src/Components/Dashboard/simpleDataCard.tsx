@@ -7,30 +7,30 @@ import {
   CardFooter,
 } from "../ui/card";
 
-type TotalExpenseCardProps<T> = {
+type SimpleDataCard<T> = {
   title: string;
   value: T;
-  change: number | null;
+  change?: number;
   icon?: ReactNode;
   valueIcon?: ReactNode;
-  footerText?: string;
+  hasFooter: boolean;
+  footerText?: string | null;
 
   formatValue?: (value: T) => ReactNode;
-  formatChange?: (change: number | null) => ReactNode;
 };
 
-export function TotalExpenseCard<T>({
+export function SimpleDataCard<T>({
   title,
   value,
   change,
   icon,
   valueIcon,
-  footerText = "since Last Week",
+  hasFooter,
+  footerText,
   formatValue = (value) => value as ReactNode,
-  formatChange = (change) => `${change}%`,
-}: TotalExpenseCardProps<T>) {
+}: SimpleDataCard<T>) {
   return (
-    <Card className="w-full h-3/4">
+    <Card className="w-full h-3/4 flex flex-col">
       <CardHeader className="flex items-center justify-between">
         <CardTitle className="text-xl">
           {title}
@@ -39,7 +39,7 @@ export function TotalExpenseCard<T>({
         {icon}
       </CardHeader>
 
-      <CardContent className="flex align-center items-center gap-2 w-full h-full">
+      <CardContent className="flex flex-1 items-center gap-2 w-full">
         {valueIcon}
 
         <span className="text-5xl">
@@ -47,9 +47,9 @@ export function TotalExpenseCard<T>({
         </span>
       </CardContent>
 
-      <CardFooter className="gap-2">
+      <CardFooter className={`gap-2 ${!hasFooter ? "invisible" : ""}`}>
         <span className="text-red-600">
-          +{formatChange(change)}
+          +{change}%
         </span>
 
         <span>

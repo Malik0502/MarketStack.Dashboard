@@ -2,7 +2,7 @@ import { apiFetch } from "../apiClient";
 import { DataResponse } from "../objects/base/dataResponse";
 
 export async function getTotalExpenses(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/total-expenses");
+    const result: DataResponse<number> = await apiFetch<number>("/expense/total");
 
     if(!result.success && result.data == null){
         return 0;
@@ -12,7 +12,7 @@ export async function getTotalExpenses(): Promise<number>{
 }
 
 export async function getTotalTaxExpenses(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/total-tax-expenses");
+    const result: DataResponse<number> = await apiFetch<number>("/expense/total-tax");
 
     if(!result.success && result.data == null){
         return 0;
@@ -22,7 +22,7 @@ export async function getTotalTaxExpenses(): Promise<number>{
 }
 
 export async function getPercentageChangeLastWeek(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/percentage-change");
+    const result: DataResponse<number> = await apiFetch<number>("/expense/percentage-change");
 
     if(!result.success && result.data == null){
         return 0;
@@ -32,7 +32,7 @@ export async function getPercentageChangeLastWeek(): Promise<number>{
 }
 
 export async function getTaxPercentageChangeLastWeek(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/tax-percentage-change");
+    const result: DataResponse<number> = await apiFetch<number>("/expense/tax-percentage-change");
 
     if(!result.success && result.data == null){
         return 0;
