@@ -1,23 +1,6 @@
 import type { ReactNode } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "../ui/card";
-
-type SimpleDataCard<T> = {
-  title: string;
-  value: T;
-  change?: number;
-  icon?: ReactNode;
-  valueIcon?: ReactNode;
-  hasFooter: boolean;
-  footerText?: string | null;
-
-  formatValue?: (value: T) => ReactNode;
-};
+import type { SimpleCardModel } from "@/models/simpleCardModel";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/Components/ui/card";
 
 export function SimpleDataCard<T>({
   title,
@@ -28,7 +11,7 @@ export function SimpleDataCard<T>({
   hasFooter,
   footerText,
   formatValue = (value) => value as ReactNode,
-}: SimpleDataCard<T>) {
+}: SimpleCardModel<T>) {
   return (
     <Card className="w-full h-3/4 flex flex-col">
       <CardHeader className="flex items-center justify-between">
