@@ -1,0 +1,18 @@
+{
+  "main": "Hauptnavigation",
+  "overview": "Übersicht",
+  "user": "Benutzer",
+  "brandHome": "MarketStack – Übersicht",
+  "analytics": "Einkaufsanalysen",
+  "privacyTitle": "Deine Daten. Dein Überblick.",
+  "privacyDescription": "Persönliche Einkaufsanalysen, zentral an einem Ort.",
+  "selfHosted": "Selbst gehostete Analysen",
+  "preferences": "Darstellung und Sprache",
+  "language": "Sprache auswählen",
+  "german": "Deutsch",
+  "english": "English",
+  "switchLight": "Zum hellen Design wechseln",
+  "switchDark": "Zum dunklen Design wechseln",
+  "light": "Hell",
+  "dark": "Dunkel"
+}

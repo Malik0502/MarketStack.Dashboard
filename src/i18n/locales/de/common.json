@@ -1,0 +1,18 @@
+{
+  "appTitle": "MarketStack · Einkaufsanalysen",
+  "description": "MarketStack – persönliche Einkaufsanalysen, Ausgaben und Einkaufsgewohnheiten im Überblick.",
+  "skipContent": "Zum Inhalt springen",
+  "loading": "Daten werden geladen …",
+  "empty": "Noch keine Daten vorhanden.",
+  "missing": "Keine Daten",
+  "unavailableValue": "—",
+  "close": "Schließen",
+  "refresh": "Aktualisieren",
+  "export": "Exportieren",
+  "expenses": "Ausgaben",
+  "taxes": "Steuern",
+  "month": "Monat",
+  "notFoundTitle": "Seite nicht gefunden",
+  "notFoundDescription": "Diese Adresse führt zu keiner verfügbaren Seite.",
+  "backHome": "Zur Übersicht"
+}

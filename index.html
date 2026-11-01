@@ -1,9 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (() => {
+        let saved = null;
+        try { saved = localStorage.getItem('marketstack.theme'); } catch {}
+        const dark = saved === 'dark' || (saved !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>marketstack-dashboard</title>
+    <meta name="theme-color" content="#101722" />
+    <meta name="description" content="MarketStack – persönliche Einkaufsanalysen, Ausgaben und Einkaufsgewohnheiten im Überblick." />
+    <title>MarketStack · Einkaufsanalysen</title>
   </head>
   <body>
     <div id="root"></div>

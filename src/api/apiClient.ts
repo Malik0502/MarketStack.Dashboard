@@ -10,12 +10,12 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
         ...options,
     });
 
-    const responseJson = await response.json();
-    const result = responseJson as DataResponse<T>;
+    // Some server errors return HTML or an empty body, not a response envelope.
+    const result = await response.json().catch(() => null) as DataResponse<T> | null;
 
     if (!response.ok) {
-        return DataResponse.createErrorMessage("Error", result.message, 5);
+        return DataResponse.createErrorResponse("Error", result?.message || `HTTP ${response.status}`, 5);
     }
 
-    return result;
+    return result ?? DataResponse.createErrorResponse("Error", "Ungültige API-Antwort", 5);
 }

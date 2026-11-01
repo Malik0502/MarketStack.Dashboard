@@ -1,0 +1,18 @@
+{
+  "main": "Main navigation",
+  "overview": "Overview",
+  "user": "User account",
+  "brandHome": "MarketStack – overview",
+  "analytics": "Purchase analytics",
+  "privacyTitle": "Your data. Your overview.",
+  "privacyDescription": "Personal purchase analytics, all in one place.",
+  "selfHosted": "Self-hosted analytics",
+  "preferences": "Appearance and language",
+  "language": "Select language",
+  "german": "German",
+  "english": "English",
+  "switchLight": "Switch to light theme",
+  "switchDark": "Switch to dark theme",
+  "light": "Light",
+  "dark": "Dark"
+}

@@ -1,0 +1,352 @@
+# MarketStack Dashboard Architecture
+
+## Purpose and scope
+
+MarketStack.Dashboard is a client-side application for analyzing imported
+shopping receipts. It displays purchase metrics, monthly spending and tax
+histories, shopping insights, and downloadable monthly reports.
+
+The frontend consumes the MarketStack REST API. Receipt imports, persistence,
+and metric calculations belong to the backend. The dashboard is responsible
+for request handling, calendar-based projections, localization, and presentation.
+
+## Technology stack
+
+| Area | Technology |
+| --- | --- |
+| Application | React and TypeScript |
+| Development and bundling | Vite |
+| Routing | TanStack Router with file-based routes |
+| Styling | Tailwind CSS and CSS custom properties |
+| UI primitives | shadcn/ui components built on Base UI |
+| Icons | Lucide React |
+| Translations | i18next and react-i18next |
+| Locale formatting | Native `Intl` APIs |
+| Dashboard charts | Responsive SVG renderer |
+| Automated tests | Node.js test runner with Vite module loading |
+
+Dependency versions are defined in `package.json` and pinned by `package-lock.json`.
+
+## Project structure
+
+```text
+src/
+  main.tsx                        Application bootstrap and providers
+  App.tsx                         Router provider
+  index.css                       Theme tokens, layout, and shared styling
+  routeTree.gen.ts                Generated route definitions
+  routes/
+    __root.tsx                    Root layout and not-found registration
+    index.tsx                     Dashboard route
+    user.tsx                      User-area route
+  api/
+    apiClient.ts                  Shared HTTP client and response handling
+    objects/                      API response and DTO types
+    services/                     Additional endpoint adapters
+  common/config/constants.ts      API base URL
+  Components/
+    ui/                           Shared shadcn UI primitives
+    Navigation/
+      app-layout.tsx              Application shell and route outlet
+      app-header.tsx              Sticky header, preferences, and user link
+      navbar.tsx                  Responsive sidebar navigation
+      preference-controls.tsx     Theme switch and language selector
+      not-found.tsx               Unknown-route view
+  features/
+    dashboard/
+      dashboard.tsx               Card composition, filters, and export actions
+      types.ts                    Dashboard and chart data contracts
+      data.ts                     API loading, validation, and demo fixture
+      use-dashboard.ts            Request lifecycle and dashboard data state
+      selectors.ts                Calendar windows and monthly comparisons
+      csv.ts                      Monthly CSV serialization
+      format.ts                   Re-export of shared locale formatters
+      components/
+        dashboard-card.tsx        Card wrapper and empty state
+        dashboard-header.tsx      Status, toolbar, notices, and data help
+        kpi-card.tsx              Metric and optional change indicator
+        expense-chart.tsx         Interactive monthly chart
+        insight-cards.tsx         Shopping profile and monthly comparison
+        history-table.tsx         Monthly data table
+    user/
+      user-page.tsx               User-feature availability notice
+  theme/                          Theme provider and context
+  i18n/
+    index.ts                      Translation resources and initialization
+    format.ts                     Shared Intl formatters and formatting hook
+    locales/{de,en}/              Translation JSON files
+  lib/
+    preferences.ts                Storage access and preference resolution
+    utils.ts                      Shared utilities
+tests/                            Automated regression and palette tests
+```
+
+Route files register pages; feature components own page behavior. Shared
+navigation and UI primitives do not fetch dashboard data. Data loading,
+transformations, formatting, and rendering have separate modules.
+
+## Routing and navigation
+
+| Route | Component | Purpose |
+| --- | --- | --- |
+| `/` | `Dashboard` | Purchase analytics and reporting |
+| `/user` | `UserPage` | Availability notice for future user features |
+| Unmatched paths | `NotFound` | Localized message and return link |
+
+`AppLayout` renders the sidebar, skip link, and route outlet. `AppHeader`
+provides the page label, theme and language controls, and user icon. The
+dashboard supplies its API status and help action to this shared header.
+
+Navigation uses TanStack Router links for client-side transitions and active
+states. Production hosting must serve `index.html` for application routes so
+direct visits and reloads work. There are no workspace controls or sidebar
+links that only scroll to dashboard sections.
+
+`routeTree.gen.ts` is maintained by the TanStack Router Vite plugin. Add route
+files under `src/routes/` rather than editing the generated route tree manually.
+
+## API integration
+
+The backend uses .NET, EF Core, and PostgreSQL. Its receipt-import pipeline
+provides the data used by the analytics endpoints. Database entities are not
+frontend contracts unless an API explicitly exposes them.
+
+The API base URL is configured in `src/common/config/constants.ts`. Endpoint
+paths below are relative to that URL. Requests use the shared `apiFetch` helper.
+
+### Response envelope
+
+Responses use `DataResponse<T>` with `success`, `data`, `message`, `title`,
+and `errorCode` fields. The loader accepts a result only when the response
+indicates success and contains valid data. HTTP errors, malformed response
+bodies, failed envelopes, and invalid values become endpoint-level failures.
+
+### Dashboard endpoints
+
+| GET endpoint | Data type | Meaning |
+| --- | --- | --- |
+| `/expense/total` | `number` | Sum of `TaxBaseAmount` |
+| `/expense/total-tax` | `number` | Sum of `TaxAmount` |
+| `/expense/percentage-change` | `number` | Growth in cumulative expenses contributed by recent receipts |
+| `/expense/tax-percentage-change` | `number` | Growth in cumulative taxes contributed by recent receipts |
+| `/expense/history` | `Record<string, MonthlyExpense>` | Monthly expenses |
+| `/expense/tax-history` | `Record<string, MonthlyExpense>` | Monthly taxes |
+| `/receipt/total` | `number` | Imported receipt count |
+| `/receipt/average-purchase-value` | `number` | Average purchase value |
+| `/receipt/average-items` | `number` | Average items per purchase |
+| `/receipt/discount-share` | `number` | Promotional item share, expressed as a percentage |
+
+```ts
+interface MonthlyExpense {
+  purchasedAt: string // YYYY-MM-01
+  expense: number
+}
+```
+
+History records are validated and sorted by their ISO purchase dates, not
+dictionary keys. Formatting never replaces the stored ISO dates.
+
+The dashboard calls only these read endpoints. Product lists, store lists,
+individual receipt lists, market prices, and budgets are not available through
+its current API integration.
+
+## Data lifecycle and state
+
+```text
+API responses
+  -> data.ts: validate and normalize
+  -> use-dashboard.ts: retain data and loading state
+  -> selectors.ts: derive the selected calendar window
+  -> components / CSV: format and present values
+```
+
+`loadDashboard` loads the ten endpoints in parallel. Failures are recorded
+individually so successful responses remain usable. `useDashboard` owns loading,
+refresh, live data, and demo selection. Requests are aborted after twelve seconds
+or when the component unmounts. Theme and language changes do not reload data.
+
+| Value | Meaning |
+| --- | --- |
+| Metric `null` | Value is unavailable |
+| Metric or expense `0` | A genuine recorded zero |
+| Raw history `[]` | A successfully loaded history with no records |
+| History series `null` | The series is unavailable |
+| `HistoryPoint.expense === null` | No recorded value for that calendar month |
+
+Missing or failed values must not be converted to zero. Cards display an
+unavailable marker; charts and tables distinguish gaps from recorded values.
+
+Demo data is an explicit opt-in fixture in `data.ts`. It is displayed with a
+visible mock-data notice and is never merged with live API results. Returning
+to API mode restores the live data state.
+
+## Metric semantics
+
+- Summary metrics cover all recorded purchases, independently of the chart filter.
+- Expenses use the backend's `TaxBaseAmount`; taxes use `TaxAmount`. The frontend
+  does not infer additional net/gross amounts or tax ratios from these names.
+- The weekly indicators represent growth in a cumulative total, not a comparison
+  between two weeks. Their percentage is `(total - priorTotal) / priorTotal * 100`,
+  where `priorTotal` excludes receipts in the backend's recent seven-day window.
+- Promotional share is already a percentage; it must not be multiplied by 100
+  again before display.
+- Weighed items count as one item per receipt line, following backend rules.
+- Monthly change requires consecutive recorded months and a nonzero reference
+  month: `(latest - previous) / previous * 100`.
+- Ongoing months may be incomplete. Empty datasets can cause backend averages or
+  percentage calculations to fail; those responses remain unavailable in the UI.
+
+## Calendar windows and charts
+
+`selectHistoryWindow` derives a shared monthly axis for expenses and taxes.
+
+| Filter | Interval |
+| --- | --- |
+| Last 6 months | Six calendar months including the current local month |
+| Last 12 months | Twelve calendar months including the current local month |
+| All time | Earliest through latest recorded month across both series |
+
+Month arithmetic uses integer month indices, avoiding rollover errors caused
+by day-based calculations around month ends or leap years. Fixed windows
+contain exactly six or twelve positions, even when records are missing.
+The API returns full histories without date parameters; filtering is client-side.
+
+The selector returns a new projection without modifying source data. An
+available series is aligned to each monthly position with `null` for missing
+records. An unavailable series stays `null`. An all-time window without any
+records has no positions.
+
+`ExpenseChart` uses a container-responsive SVG viewBox. Desktop layouts show
+all labels for six- and twelve-month windows. Narrow layouts reduce label
+density while retaining every monthly position for keyboard, pointer, and
+touch interaction. Lines and filled areas stop at missing values rather than
+connecting across gaps. Displayed totals sum available values only; the
+calendar-month count and recorded-month count are shown separately.
+
+The monthly table exposes the same window as readable values. The monthly
+focus card uses the latest recorded month from the full expense history,
+independently of the selected chart period.
+
+## CSV export
+
+`buildHistoryCsv` serializes the shared selected window using:
+
+- UTF-8 with a byte order mark;
+- semicolon-separated, escaped fields;
+- localized headers and decimal values;
+- unchanged ISO month dates;
+- empty fields for missing values and numeric values for genuine zeros.
+
+Export is available when the selected window contains at least one expense or
+tax value. Demo filenames include `MOCK` to distinguish them from live reports.
+
+## Layout, themes, and accessibility
+
+The desktop dashboard uses a twelve-column CSS grid. Cards declare their own
+column spans and stack at narrower widths. The sidebar becomes an icon rail
+on tablets and a top navigation row on mobile.
+
+The shared header uses `position: sticky`, `top: 0`, an opaque themed background,
+and an elevated stacking order. Its responsive height accommodates controls
+while keeping them visible during scrolling on dashboard and user pages.
+
+Theme tokens in `src/index.css` define surfaces, borders, text, actions, and
+semantic colors. Light mode uses cool neutral surfaces; dark mode uses slate
+surfaces with light text. Expenses use cyan accents, taxes use violet, and
+red/green indicate increasing/decreasing expenses. Components should consume
+these tokens instead of introducing theme-specific hardcoded colors.
+
+`ThemeProvider` supplies the active theme through context. The
+`marketstack.theme` localStorage key stores `light` or `dark`. Without a valid
+saved preference, the system color scheme applies and follows system changes.
+A synchronous script in `index.html` applies the initial class and color scheme
+before paint. Storage failures do not prevent in-memory theme selection.
+
+Accessibility includes a skip link, named navigation, visible focus indicators,
+`aria-pressed` filter controls, keyboard-accessible chart positions, and reduced
+motion support. `tests/palette.test.mjs` checks minimum contrast ratios of 7:1
+for main text, 4.5:1 for secondary text, and 3:1 for chart accents.
+
+## Internationalization
+
+Translation resources live in `src/i18n/locales/{de,en}/`:
+
+| Namespace | Content |
+| --- | --- |
+| `common` | Shared actions, loading, missing values, and not-found text |
+| `navigation` | Navigation, preferences, and language names |
+| `dashboard` | Metrics, charts, filters, notices, insights, and exports |
+| `user` | User-page availability notice |
+
+Components use typed translation keys through react-i18next. The
+`marketstack.language` localStorage key stores `de` or `en`. The initial language
+comes from the saved preference or browser language; unsupported languages fall
+back to German. Theme and language preferences are independent.
+
+The language selector uses fixed English navigation resources: "Select language",
+"German", and "English", regardless of the active UI language. Other controls
+follow the selected language.
+
+`src/i18n/format.ts` centralizes native `Intl` formatting for de-DE and en-GB,
+including numbers, decimal values, EUR amounts, percentages, months, and times.
+Language changes update the document language, title, and meta description
+without resetting data, filters, or demo state. Brand names, API identifiers,
+and ISO dates are not translated.
+
+## User area
+
+The user icon opens `/user`, which displays a localized availability notice:
+"In Arbeit" in German and "Coming soon" in English. The page shares the sticky
+header and preference controls. Authentication, account settings, and user
+management are not implemented.
+
+## Development and configuration
+
+```sh
+npm ci             # Install dependencies from the lockfile
+npm run dev        # Start the development server
+npm test           # Run automated tests
+npm run lint       # Run ESLint
+npm run build      # Type-check and create the production bundle
+npm run preview    # Serve the production bundle locally
+```
+
+Configure API access in `src/common/config/constants.ts`. For local development,
+the backend CORS policy allows `http://localhost:5173`. Other origins require
+corresponding backend configuration. Local backend HTTPS certificates must be
+trusted by the browser. Starting the backend can trigger database migrations
+and scheduled import jobs.
+
+Client-side code and bundled configuration are public. Do not place passwords,
+private API keys, access tokens, or other secrets in frontend source or `VITE_*`
+environment variables. Use mock data for publicly shared screenshots and avoid
+including personal receipt data in documentation or fixtures.
+
+## Testing and extension guidelines
+
+Tests use Node's native runner and Vite module loading for TypeScript and alias
+resolution. Their cache is isolated in `node_modules/.vite-tests`. Regression
+coverage includes API failures, date validation, null versus zero, calendar
+boundaries, missing months, preference resolution, translation parity,
+localized formatting, CSV serialization, and palette contrast.
+
+When extending the application:
+
+1. **Add a card:** compose a component under `features/dashboard/components/`,
+   reuse `DashboardCard` or an existing card type, and choose responsive grid spans.
+2. **Add data:** use an actual API contract, validate it in the data layer, and
+   keep derived calculations separate from rendering. Preserve partial failures
+   and the distinction between missing and zero values.
+3. **Add a page:** implement the feature component, register a file-based route,
+   and use router links for navigation. Include the shared header where applicable.
+4. **Add a language:** create matching namespace JSON files, register resources
+   and supported language resolution, add a selector option, and define locale
+   formatting. Extend translation-parity tests.
+5. **Add a chart:** use the shared history contracts and theme tokens, preserve
+   missing-value semantics, and provide keyboard-accessible values. TanStack
+   Charts is also available as an installed dependency.
+
+Run tests, linting, and the production build before publishing changes. Check
+both themes and languages, small and large viewports, direct route access,
+browser history, and sticky-header behavior. Card drag-and-drop and persisted
+user-defined layouts are outside the current feature scope.

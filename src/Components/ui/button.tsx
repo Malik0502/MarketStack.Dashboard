@@ -53,4 +53,6 @@ function Button({
   )
 }
 
+// shadcn exposes the shared variant factory alongside its component.
+// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants }

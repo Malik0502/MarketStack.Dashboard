@@ -1,20 +1,28 @@
-import type { NavigationLink } from './Navigation';
-import MonitorNavbar from './monitorNavbar';
-import DisplayNavbar from './displayNavbar';
-import { useMediaQuery } from './hooks/useMediaQuery';
-
-const items: NavigationLink[] = [
-    {name: 'Home', link: '/'},
-    {name: 'Expenses', link: '/expenses'},
-    {name: 'Prices', link: '/prices'},
-    {name: 'Products', link: '/products'},
-    {name: 'Stores', link: '/stores'},
-] as const
+import { Link } from '@tanstack/react-router'
+import { Layers2, LayoutDashboard, ShieldCheck } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function NavBar() {
-    
-    const isDesktop: boolean = useMediaQuery("(min-width: 1024px)");
-
-    return isDesktop ? <MonitorNavbar navLinks={items} /> : <DisplayNavbar navLinks={items} />;
+  const { t } = useTranslation('navigation')
+  return <aside className="app-sidebar">
+    <Link to="/" className="brand" aria-label={t('brandHome')}>
+      <span className="brand-mark"><Layers2 className="size-5" strokeWidth={2} /></span>
+      <span className="brand-name">MarketStack<span className="text-primary">.</span></span>
+    </Link>
+    <p className="sidebar-label">{t('analytics')}</p>
+    <nav aria-label={t('main')} className="sidebar-nav">
+      <Link to="/" activeOptions={{ exact: true }} className="sidebar-link" title={t('overview')}>
+        <LayoutDashboard className="size-[18px]" strokeWidth={1.7} />
+        <span>{t('overview')}</span><span className="nav-active-dot" />
+      </Link>
+    </nav>
+    <div className="sidebar-bottom">
+      <div className="sidebar-info rounded-xl border p-4">
+        <ShieldCheck className="mb-3 size-5 text-primary" strokeWidth={1.5} />
+        <p className="text-xs font-medium">{t('privacyTitle')}</p>
+        <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">{t('privacyDescription')}</p>
+      </div>
+      <p className="mt-5 border-t pt-4 text-[10px] text-muted-foreground">MarketStack · {t('selfHosted')}</p>
+    </div>
+  </aside>
 }
-

@@ -1,0 +1,18 @@
+{
+  "appTitle": "MarketStack · Purchase analytics",
+  "description": "MarketStack – personal purchase analytics, spending and shopping habits at a glance.",
+  "skipContent": "Skip to content",
+  "loading": "Loading data …",
+  "empty": "No data available yet.",
+  "missing": "No data",
+  "unavailableValue": "—",
+  "close": "Close",
+  "refresh": "Refresh",
+  "export": "Export",
+  "expenses": "Expenses",
+  "taxes": "Taxes",
+  "month": "Month",
+  "notFoundTitle": "Page not found",
+  "notFoundDescription": "This address does not point to an available page.",
+  "backHome": "Back to overview"
+}

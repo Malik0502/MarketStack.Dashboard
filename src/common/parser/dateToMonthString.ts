@@ -1,24 +1,7 @@
-export function ParseDateToMonthString(date: string): string 
-{
-    const monthNames = [
-        "January", "February", "March",
-        "April", "May", "June", "July",
-        "August", "September", "October",
-        "November", "December"
-    ];
+import i18n from '@/i18n'
+import { createFormat } from '@/i18n/format'
 
-    // 0 is year && 1 is month
-    const dateParts = date.split("-");
-
-    if (dateParts.length != 3) {
-        return "";
-    }
-
-    const month: string = monthNames[parseInt(dateParts[1])-1]
-    const monthAbbr: string = month.substring(0, 3)
-
-    const year: string = dateParts[0]
-    const yearAbbr: string = year.substring(2, 4)
-
-    return `${monthAbbr}/${yearAbbr}`
+// Legacy service adapter. The dashboard itself keeps ISO dates until rendering.
+export function ParseDateToMonthString(date: string, language = i18n.resolvedLanguage ?? 'de'): string {
+  try { return createFormat(language).month(date) } catch { return '' }
 }
