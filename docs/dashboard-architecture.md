@@ -90,6 +90,10 @@ transformations, formatting, and rendering have separate modules.
 | Route | Component | Purpose |
 | --- | --- | --- |
 | `/` | `Dashboard` | Purchase analytics and reporting |
+| `/spending` | `SpendingPage` | Tag/store distribution, frequency, weekdays and notable purchases |
+| `/prices` | `PricesPage` | Comparable observed prices, changes and stability |
+| `/products` | `ProductsPage` | Product rankings, quantities, tags, Pareto and detail drawer |
+| `/stores` | `StoresPage` | Branch/chain analytics and historical product comparisons |
 | `/user` | `UserPage` | Availability notice for future user features |
 | Unmatched paths | `NotFound` | Localized message and return link |
 
@@ -299,6 +303,54 @@ The user icon opens `/user`, which displays a localized availability notice:
 "In Arbeit" in German and "Coming soon" in English. The page shares the sticky
 header and preference controls. Authentication, account settings, and user
 management are not implemented.
+
+## Thematic analytics pages
+
+`src/features/analytics/` extends the existing shell, sticky header, theme tokens,
+translation resources, `DashboardCard`, `KpiCard`, and empty-state patterns.
+Home's components, data services, metrics and filters remain independent.
+
+```text
+features/analytics/
+  types.ts                 DTOs and interchangeable data-source interface
+  data-source.ts           API adapter, source selection, query validation
+  use-analytics.ts         Abortable keyed requests, retry, and UI states
+  use-filters.ts           Shared filter state and catalog loading
+  mock/fixtures.ts         Deterministic synthetic receipts and metadata
+  mock/analytics.ts        Mock projections matching proposed API contracts
+  components/              Filters, product picker, charts, tables, detail drawer
+  *-page.tsx               The four page compositions
+```
+
+The new pages default to a clearly labeled mock source. No mock data replaces
+Home's existing API responses. Setting `VITE_ANALYTICS_SOURCE=api` selects the
+proposed analytics endpoints through the shared HTTP client, with no automatic
+fallback. Source selection does not require changes to page components.
+
+The complete backend specification is
+[analytics-api-requirements.md](analytics-api-requirements.md), with exhaustive
+JSON DTO definitions in [analytics-api.schema.json](analytics-api.schema.json).
+Those proposed endpoints are not existing backend features. The contract
+documents price/unit limitations, allocation rules, filters, examples, edge
+cases and aggregate calculations needed for a server implementation.
+
+Analytics date filters use inclusive UTC day boundaries. The mock default range
+ends at the fixed fixture coverage date; API mode defaults to the current UTC
+date. These filters do not alter Home's current-local-month semantics.
+The product price page retains its selection in the validated `productId` URL
+parameter. Product details use a modal Base UI dialog with focus management.
+
+Counts distinguish receipts, lines, products, quantities and promotional lines.
+Multi-tag spending is allocated rather than duplicated. Quantities require
+comparable units; price comparisons require verified product/pack identity.
+Historical price gaps are not current offers or promotional savings. No
+promotion-conditioned average price is part of the contracts or UI.
+
+Mock-mode preview controls expose loading, empty, error and no-results states.
+Request keys and cancellation prevent stale data after filter changes. Tables
+sort bounded ranking rows locally; the product list requests complete-population
+sorting and pagination from its source. Chart, aggregate and DTO/schema consistency
+tests use the same deterministic fixtures and require no new test dependency.
 
 ## Development and configuration
 

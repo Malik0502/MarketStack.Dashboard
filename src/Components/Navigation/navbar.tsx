@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Layers2, LayoutDashboard, ShieldCheck } from 'lucide-react'
+import { Layers2, LayoutDashboard, ShieldCheck, Wallet, ChartNoAxesCombined, Package, Store } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 export default function NavBar() {
@@ -11,10 +11,16 @@ export default function NavBar() {
     </Link>
     <p className="sidebar-label">{t('analytics')}</p>
     <nav aria-label={t('main')} className="sidebar-nav">
-      <Link to="/" activeOptions={{ exact: true }} className="sidebar-link" title={t('overview')}>
+      <Link to="/" activeOptions={{ exact: true }} className="sidebar-link" title={t('home')}>
         <LayoutDashboard className="size-[18px]" strokeWidth={1.7} />
-        <span>{t('overview')}</span><span className="nav-active-dot" />
+        <span>{t('home')}</span><span className="nav-active-dot" />
       </Link>
+      {([
+        ['/spending', 'spending', Wallet], ['/prices', 'prices', ChartNoAxesCombined],
+        ['/products', 'products', Package], ['/stores', 'stores', Store],
+      ] as const).map(([to, key, Icon]) => <Link key={to} to={to} className="sidebar-link" title={t(key)}>
+        <Icon className="size-[18px]" strokeWidth={1.7} /><span>{t(key)}</span><span className="nav-active-dot" />
+      </Link>)}
     </nav>
     <div className="sidebar-bottom">
       <div className="sidebar-info rounded-xl border p-4">

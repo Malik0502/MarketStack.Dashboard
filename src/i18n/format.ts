@@ -20,6 +20,10 @@ export function createFormat(language: string) {
     month: (value: string, full = false) => (full ? long : short).format(date(value)),
     monthLabel: (value: string) => label.format(date(value)),
     time: (value: Date) => clock.format(value),
+    date: (value: string) => new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' })
+      .format(new Date(value.length === 10 ? `${value}T00:00:00Z` : value)),
+    weekday: (value: number) => new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: 'UTC' })
+      .format(new Date(Date.UTC(2024, 0, value))),
   }
 }
 

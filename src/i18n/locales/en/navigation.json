@@ -1,6 +1,11 @@
 {
   "main": "Main navigation",
   "overview": "Overview",
+  "home": "Home",
+  "spending": "Spending",
+  "prices": "Prices",
+  "products": "Products",
+  "stores": "Stores",
   "user": "User account",
   "brandHome": "MarketStack – overview",
   "analytics": "Purchase analytics",

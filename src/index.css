@@ -151,6 +151,9 @@
   .preference-controls { display: flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 1px solid var(--border); color: var(--foreground); }
   .language-control { display: flex; min-height: 38px; align-items: center; gap: 6px; }
   .language-control select { min-height: 36px; max-width: 108px; border: 1px solid var(--border); border-radius: 7px; padding: 4px; font-size: 12px; background: var(--card); color: var(--foreground); cursor: pointer; }
+  .analytics-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; color: var(--muted-foreground); font-size: 11px; }
+  .analytics-field input, .analytics-field select { min-width: 0; min-height: 36px; max-width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; color: var(--foreground); background: var(--card); font: inherit; font-size: 12px; }
+  .analytics-field input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 }
 
 /* Intentional theme skin over shadcn Card defaults. */
@@ -185,7 +188,7 @@
   .brand-name { font-size: 17px; }
   .brand-mark { width: 28px; height: 30px; }
   .sidebar-label, .sidebar-bottom, .sidebar-link > span { display: none; }
-  .sidebar-nav { flex-direction: row; }
+  .sidebar-nav { width: 100%; flex-direction: row; justify-content: space-between; }
   .sidebar-link { padding: 10px; }
   .app-main { margin-left: 0; }
   .app-header { min-height: 48px; padding-inline: 18px; }

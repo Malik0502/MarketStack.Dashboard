@@ -16,7 +16,7 @@ const originalFetch = globalThis.fetch
 before(async () => {
   server = await createServer({
     cacheDir: 'node_modules/.vite-tests',
-    server: { middlewareMode: true, watch: null },
+    server: { middlewareMode: true, watch: null, ws: false },
     appType: 'custom',
     // Tests only use SSR modules; do not touch the running app's dependency cache.
     optimizeDeps: { noDiscovery: true, include: [] },

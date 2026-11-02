@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MarketStack analytics API contracts",
+  "description": "Proposed analytics contracts. These endpoints are not implemented by the frontend project.",
+  "anyOf": [{ "$ref": "#/$defs/SuccessEnvelope" }, { "$ref": "#/$defs/FailureEnvelope" }],
+  "$defs": {
+    "Date": { "type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "Timestamp": { "type": "string", "format": "date-time" },
+    "Unit": { "type": "string", "enum": ["piece", "kg"] },
+    "NullableNumber": { "type": ["number", "null"] },
+    "NullableString": { "type": ["string", "null"] },
+    "DateRange": {
+      "type": "object", "additionalProperties": false, "required": ["from", "to"],
+      "properties": { "from": { "$ref": "#/$defs/Date" }, "to": { "$ref": "#/$defs/Date" } }
+    },
+    "Tag": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name"],
+      "properties": { "id": { "type": "integer", "minimum": 1 }, "name": { "type": "string" } }
+    },
+    "Merchant": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "chain"],
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "chain": { "type": "string" } }
+    },
+    "Product": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "tags", "unit", "packSize", "comparisonKey"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 }, "name": { "type": "string" },
+        "tags": { "type": "array", "items": { "$ref": "#/$defs/Tag" } },
+        "unit": { "anyOf": [{ "$ref": "#/$defs/Unit" }, { "type": "null" }] },
+        "packSize": { "$ref": "#/$defs/NullableString" }, "comparisonKey": { "$ref": "#/$defs/NullableString" }
+      }
+    },
+    "Catalog": {
+      "type": "object", "additionalProperties": false, "required": ["products", "stores", "tags", "units", "coverage", "hasMore", "nextCursor"],
+      "properties": {
+        "products": { "type": "array", "items": { "$ref": "#/$defs/Product" } },
+        "stores": { "type": "array", "items": { "$ref": "#/$defs/Merchant" } },
+        "tags": { "type": "array", "items": { "$ref": "#/$defs/Tag" } },
+        "units": { "type": "array", "items": { "$ref": "#/$defs/Unit" } },
+        "coverage": { "anyOf": [{ "$ref": "#/$defs/DateRange" }, { "type": "null" }] },
+        "hasMore": { "type": "boolean" }, "nextCursor": { "$ref": "#/$defs/NullableString" }
+      }
+    },
+    "Distribution": {
+      "type": "object", "additionalProperties": false, "required": ["key", "label", "expenses", "share"],
+      "properties": { "key": { "type": "string" }, "label": { "type": "string" }, "expenses": { "type": "number" }, "share": { "type": "number" } }
+    },
+    "MerchantSummary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "chain", "purchases", "expenses", "averagePurchase", "positions", "distinctProducts", "promotionPurchases", "promotionShare"],
+      "properties": {
+        "id": { "type": "string" }, "name": { "type": "string" }, "chain": { "type": "string" },
+        "purchases": { "type": "integer", "minimum": 0 }, "expenses": { "type": "number" },
+        "averagePurchase": { "$ref": "#/$defs/NullableNumber" }, "positions": { "type": "integer", "minimum": 0 },
+        "distinctProducts": { "type": "integer", "minimum": 0 }, "promotionPurchases": { "type": "integer", "minimum": 0 }, "promotionShare": { "type": "number" }
+      }
+    },
+    "ReceiptHighlight": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "purchasedAt", "merchant", "expenses", "positions", "distinctProducts", "quantity", "unit"],
+      "properties": {
+        "id": { "type": "integer" }, "purchasedAt": { "$ref": "#/$defs/Timestamp" }, "merchant": { "$ref": "#/$defs/Merchant" },
+        "expenses": { "type": "number" }, "positions": { "type": "integer" }, "distinctProducts": { "type": "integer" },
+        "quantity": { "$ref": "#/$defs/NullableNumber" }, "unit": { "anyOf": [{ "$ref": "#/$defs/Unit" }, { "type": "null" }] }
+      }
+    },
+    "Weekday": {
+      "type": "object", "additionalProperties": false, "required": ["weekday", "purchases", "averageExpense"],
+      "properties": { "weekday": { "type": "integer", "minimum": 1, "maximum": 7 }, "purchases": { "type": "integer", "minimum": 0 }, "averageExpense": { "$ref": "#/$defs/NullableNumber" } }
+    },
+    "Frequency": {
+      "type": "object", "additionalProperties": false, "required": ["month", "purchases", "promotionPurchases"],
+      "properties": { "month": { "$ref": "#/$defs/Date" }, "purchases": { "type": "integer", "minimum": 0 }, "promotionPurchases": { "type": "integer", "minimum": 0 } }
+    },
+    "SpendingData": {
+      "type": "object", "additionalProperties": false, "required": ["range", "categories", "merchants", "weekdays", "frequency", "comparison", "promotions", "highlights"],
+      "properties": {
+        "range": { "$ref": "#/$defs/DateRange" },
+        "categories": { "type": "array", "items": { "$ref": "#/$defs/Distribution" } },
+        "merchants": { "type": "array", "items": { "$ref": "#/$defs/MerchantSummary" } },
+        "weekdays": { "type": "array", "items": { "$ref": "#/$defs/Weekday" } },
+        "frequency": { "type": "array", "items": { "$ref": "#/$defs/Frequency" } },
+        "comparison": {
+          "type": "object", "additionalProperties": false, "required": ["current", "previous", "change"],
+          "properties": { "current": { "type": "integer", "minimum": 0 }, "previous": { "type": ["integer", "null"] }, "change": { "$ref": "#/$defs/NullableNumber" } }
+        },
+        "promotions": {
+          "type": "object", "additionalProperties": false, "required": ["positions", "purchases", "share"],
+          "properties": { "positions": { "type": "integer", "minimum": 0 }, "purchases": { "type": "integer", "minimum": 0 }, "share": { "type": "number" } }
+        },
+        "highlights": {
+          "type": "object", "additionalProperties": false, "required": ["expensive", "cheapest", "positions", "units"],
+          "properties": {
+            "expensive": { "anyOf": [{ "$ref": "#/$defs/ReceiptHighlight" }, { "type": "null" }] },
+            "cheapest": { "anyOf": [{ "$ref": "#/$defs/ReceiptHighlight" }, { "type": "null" }] },
+            "positions": { "anyOf": [{ "$ref": "#/$defs/ReceiptHighlight" }, { "type": "null" }] },
+            "units": { "anyOf": [{ "$ref": "#/$defs/ReceiptHighlight" }, { "type": "null" }] }
+          }
+        }
+      }
+    },
+    "PriceStats": {
+      "type": "object", "additionalProperties": false,
+      "required": ["min", "max", "average", "median", "last", "lastAt", "count", "standardDeviation", "coefficientOfVariation"],
+      "properties": {
+        "min": { "type": "number" }, "max": { "type": "number" }, "average": { "type": "number" }, "median": { "type": "number" },
+        "last": { "type": "number" }, "lastAt": { "$ref": "#/$defs/Timestamp" }, "count": { "type": "integer", "minimum": 1 },
+        "standardDeviation": { "type": "number", "minimum": 0 }, "coefficientOfVariation": { "$ref": "#/$defs/NullableNumber" }
+      }
+    },
+    "PricePoint": {
+      "type": "object", "additionalProperties": false, "required": ["date", "price", "count"],
+      "properties": { "date": { "$ref": "#/$defs/Timestamp" }, "price": { "type": "number" }, "count": { "type": "integer", "minimum": 1 } }
+    },
+    "PriceSeries": {
+      "type": "object", "additionalProperties": false, "required": ["storeId", "label", "points"],
+      "properties": { "storeId": { "type": "string" }, "label": { "type": "string" }, "points": { "type": "array", "items": { "$ref": "#/$defs/PricePoint" } } }
+    },
+    "PriceRanking": {
+      "type": "object", "additionalProperties": false,
+      "required": ["productId", "productName", "comparisonKey", "storeId", "storeName", "previous", "last", "previousAt", "lastAt", "difference", "percentage", "stats"],
+      "properties": {
+        "productId": { "type": "integer" }, "productName": { "type": "string" }, "comparisonKey": { "type": "string" }, "storeId": { "type": "string" }, "storeName": { "type": "string" },
+        "previous": { "type": "number" }, "last": { "type": "number" }, "previousAt": { "$ref": "#/$defs/Timestamp" }, "lastAt": { "$ref": "#/$defs/Timestamp" },
+        "difference": { "type": "number" }, "percentage": { "$ref": "#/$defs/NullableNumber" }, "stats": { "$ref": "#/$defs/PriceStats" }
+      }
+    },
+    "PricesData": {
+      "type": "object", "additionalProperties": false, "required": ["range", "product", "stats", "series", "increases", "decreases", "stability", "historyTruncated"],
+      "properties": {
+        "range": { "$ref": "#/$defs/DateRange" }, "product": { "anyOf": [{ "$ref": "#/$defs/Product" }, { "type": "null" }] },
+        "stats": { "anyOf": [{ "$ref": "#/$defs/PriceStats" }, { "type": "null" }] },
+        "series": { "type": "array", "items": { "$ref": "#/$defs/PriceSeries" } },
+        "increases": { "type": "array", "items": { "$ref": "#/$defs/PriceRanking" } },
+        "decreases": { "type": "array", "items": { "$ref": "#/$defs/PriceRanking" } },
+        "stability": { "type": "array", "items": { "$ref": "#/$defs/PriceRanking" } }, "historyTruncated": { "type": "boolean" }
+      }
+    },
+    "ProductStats": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "tags", "unit", "packSize", "comparisonKey", "purchases", "quantity", "expenses", "share", "promotionPositions", "abc"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 }, "name": { "type": "string" }, "tags": { "type": "array", "items": { "$ref": "#/$defs/Tag" } },
+        "unit": { "anyOf": [{ "$ref": "#/$defs/Unit" }, { "type": "null" }] }, "packSize": { "$ref": "#/$defs/NullableString" }, "comparisonKey": { "$ref": "#/$defs/NullableString" },
+        "purchases": { "type": "integer", "minimum": 0 }, "quantity": { "type": "number" }, "expenses": { "type": "number" }, "share": { "type": "number" },
+        "promotionPositions": { "type": "integer", "minimum": 0 }, "abc": { "type": "string", "enum": ["A", "B", "C"] }
+      }
+    },
+    "TagStats": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "products", "purchases", "expenses", "share"],
+      "properties": {
+        "id": { "type": "integer" }, "name": { "type": "string" }, "products": { "type": "integer", "minimum": 0 }, "purchases": { "type": "integer", "minimum": 0 },
+        "expenses": { "type": "number" }, "share": { "type": "number" }
+      }
+    },
+    "ParetoPoint": {
+      "type": "object", "additionalProperties": false, "required": ["productId", "name", "expenses", "cumulativeShare", "abc"],
+      "properties": {
+        "productId": { "type": ["integer", "null"] }, "name": { "type": "string" }, "expenses": { "type": "number" }, "cumulativeShare": { "type": "number" },
+        "abc": { "type": ["string", "null"], "enum": ["A", "B", "C", null] }
+      }
+    },
+    "AbcClass": {
+      "type": "object", "additionalProperties": false, "required": ["abc", "products", "expenses", "share"],
+      "properties": { "abc": { "type": "string", "enum": ["A", "B", "C"] }, "products": { "type": "integer", "minimum": 0 }, "expenses": { "type": "number" }, "share": { "type": "number" } }
+    },
+    "ProductsData": {
+      "type": "object", "additionalProperties": false,
+      "required": ["range", "totalProducts", "totalExpenses", "rows", "page", "pageSize", "totalPages", "topExpenses", "topFrequency", "topPromotions", "quantities", "tags", "pareto", "classes"],
+      "properties": {
+        "range": { "$ref": "#/$defs/DateRange" }, "totalProducts": { "type": "integer", "minimum": 0 }, "totalExpenses": { "type": "number" },
+        "rows": { "type": "array", "items": { "$ref": "#/$defs/ProductStats" } }, "page": { "type": "integer", "minimum": 1 }, "pageSize": { "type": "integer", "minimum": 1, "maximum": 50 }, "totalPages": { "type": "integer", "minimum": 0 },
+        "topExpenses": { "type": "array", "items": { "$ref": "#/$defs/ProductStats" } }, "topFrequency": { "type": "array", "items": { "$ref": "#/$defs/ProductStats" } },
+        "topPromotions": { "type": "array", "items": { "$ref": "#/$defs/ProductStats" } }, "quantities": { "type": "array", "items": { "$ref": "#/$defs/ProductStats" } },
+        "tags": { "type": "array", "items": { "$ref": "#/$defs/TagStats" } }, "pareto": { "type": "array", "items": { "$ref": "#/$defs/ParetoPoint" } }, "classes": { "type": "array", "items": { "$ref": "#/$defs/AbcClass" } }
+      }
+    },
+    "ProductPurchase": {
+      "type": "object", "additionalProperties": false, "required": ["lineId", "receiptId", "purchasedAt", "merchant", "quantity", "unit", "unitPrice", "expenses", "promotion"],
+      "properties": {
+        "lineId": { "type": "integer" }, "receiptId": { "type": "integer" }, "purchasedAt": { "$ref": "#/$defs/Timestamp" }, "merchant": { "$ref": "#/$defs/Merchant" },
+        "quantity": { "type": "number" }, "unit": { "anyOf": [{ "$ref": "#/$defs/Unit" }, { "type": "null" }] }, "unitPrice": { "type": "number" }, "expenses": { "type": "number" }, "promotion": { "type": "boolean" }
+      }
+    },
+    "ProductDetail": {
+      "type": "object", "additionalProperties": false, "required": ["product", "priceStats", "recentPurchases", "recentLimit"],
+      "properties": {
+        "product": { "anyOf": [{ "$ref": "#/$defs/ProductStats" }, { "type": "null" }] }, "priceStats": { "anyOf": [{ "$ref": "#/$defs/PriceStats" }, { "type": "null" }] },
+        "recentPurchases": { "type": "array", "items": { "$ref": "#/$defs/ProductPurchase" } }, "recentLimit": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "MerchantPrice": {
+      "type": "object", "additionalProperties": false, "required": ["merchant", "last", "lastAt", "average", "min", "minAt", "count"],
+      "properties": {
+        "merchant": { "$ref": "#/$defs/Merchant" }, "last": { "type": "number" }, "lastAt": { "$ref": "#/$defs/Timestamp" }, "average": { "type": "number" },
+        "min": { "type": "number" }, "minAt": { "$ref": "#/$defs/Timestamp" }, "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "HistoricalDifference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["productId", "productName", "comparisonKey", "baseline", "alternative", "baselinePrice", "alternativePrice", "baselineAt", "alternativeAt", "difference", "percentage"],
+      "properties": {
+        "productId": { "type": "integer" }, "productName": { "type": "string" }, "comparisonKey": { "type": "string" }, "baseline": { "$ref": "#/$defs/Merchant" }, "alternative": { "$ref": "#/$defs/Merchant" },
+        "baselinePrice": { "type": "number" }, "alternativePrice": { "type": "number" }, "baselineAt": { "$ref": "#/$defs/Timestamp" }, "alternativeAt": { "$ref": "#/$defs/Timestamp" },
+        "difference": { "type": "number" }, "percentage": { "$ref": "#/$defs/NullableNumber" }
+      }
+    },
+    "StoresData": {
+      "type": "object", "additionalProperties": false, "required": ["range", "merchants", "product", "prices", "differences"],
+      "properties": {
+        "range": { "$ref": "#/$defs/DateRange" }, "merchants": { "type": "array", "items": { "$ref": "#/$defs/MerchantSummary" } },
+        "product": { "anyOf": [{ "$ref": "#/$defs/Product" }, { "type": "null" }] }, "prices": { "type": "array", "items": { "$ref": "#/$defs/MerchantPrice" } },
+        "differences": { "type": "array", "items": { "$ref": "#/$defs/HistoricalDifference" } }
+      }
+    },
+    "SuccessEnvelope": {
+      "type": "object", "additionalProperties": false, "required": ["success", "title", "message", "errorCode", "data"],
+      "properties": {
+        "success": { "const": true }, "title": { "$ref": "#/$defs/NullableString" }, "message": { "type": "string" }, "errorCode": { "type": "integer" },
+        "data": { "anyOf": [{ "$ref": "#/$defs/Catalog" }, { "$ref": "#/$defs/SpendingData" }, { "$ref": "#/$defs/PricesData" }, { "$ref": "#/$defs/ProductsData" }, { "$ref": "#/$defs/ProductDetail" }, { "$ref": "#/$defs/StoresData" }] }
+      }
+    },
+    "FailureEnvelope": {
+      "type": "object", "required": ["success", "message", "errorCode"],
+      "properties": { "success": { "const": false }, "title": { "$ref": "#/$defs/NullableString" }, "message": { "type": "string" }, "errorCode": { "type": "integer" }, "data": { "type": "null" } }
+    }
+  }
+}
