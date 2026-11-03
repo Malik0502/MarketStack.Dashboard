@@ -1,5 +1,14 @@
 {
   "analytics": {
+    "period": {
+      "label": "Zeitraum",
+      "week": { "short": "1W", "label": "1 Woche" },
+      "month": { "short": "1M", "label": "1 Monat" },
+      "ytd": { "short": "YTD", "label": "Jahresanfang bis heute" },
+      "year": { "short": "1J", "label": "1 Jahr" },
+      "max": { "short": "Max", "label": "Maximaler Zeitraum" },
+      "unavailable": "Kein erfasster Datenzeitraum verfügbar"
+    },
     "priceProduct": {
       "title": "Preisanalyse: {{product}}",
       "description": "Diese Seite zeigt ausschließlich die beobachteten Preise dieses Produkts. Zeitraum und Händler filtern nur dessen Kennzahlen und Preisverlauf.",
@@ -7,8 +16,6 @@
       "back": "Zurück zur Preisübersicht"
     },
     "priceSections": {
-      "filtersTitle": "Filter für die gesamte Seite",
-      "filtersDescription": "Zeitraum und Händler gelten sowohl für die Einzelproduktanalyse als auch für die produktübergreifenden Rankings.",
       "productTitle": "Einzelprodukt: Preiskennzahlen & Verlauf",
       "productDescription": "Wähle hier ein Produkt für die sechs Preiskennzahlen und den Preisverlauf innerhalb dieses Bereichs. Die Suche grenzt nur die Produktauswahl ein. Die Rankings unterhalb dieses Bereichs bleiben von der Produktauswahl unabhängig.",
       "rankingsTitle": "Produktübergreifende Preisrankings",
@@ -105,7 +112,7 @@
     "apiLabel": "API-Daten", "coverage": "Datenabdeckung: {{from}} – {{to}} · Tagesgrenzen in UTC",
     "preview": "Vorschauzustand", "state_ready": "Normal", "state_loading": "Laden", "state_empty": "Leer", "state_error": "Fehler", "state_noResults": "Keine Treffer",
     "loading": "Analysen werden geladen …", "empty": "Noch keine Daten vorhanden.", "error": "Die Analysedaten konnten nicht geladen werden.", "noResults": "Keine passenden Daten für diese Auswahl.", "retry": "Erneut versuchen", "insufficient": "Nicht genügend vergleichbare Beobachtungen vorhanden.",
-    "from": "Von", "to": "Bis", "invalidRange": "Bitte gültige Datumsgrenzen wählen (Von ≤ Bis, maximal zehn Jahre).", "reset": "Filter zurücksetzen",
+    "from": "Von", "to": "Bis", "invalidRange": "Der Zeitraum ist ungültig. Bitte wähle einen der verfügbaren Zeiträume.", "reset": "Filter zurücksetzen",
     "groupBy": "Gruppierung", "groupStore": "Filiale", "groupChain": "Handelskette", "store": "Händler", "allStores": "Alle Händler", "product": "Produkt", "searchProduct": "Produkt suchen", "selectProduct": "Produkt auswählen", "refineSearch": "Weitere Produkte vorhanden. Suche bitte eingrenzen.", "tag": "Tag", "allTags": "Alle Tags", "unit": "Mengeneinheit", "piece": "Stück / Packungen", "kg": "kg", "unknownUnit": "Einheit unbekannt", "allUnits": "Alle Einheiten", "search": "Produkte filtern", "sortBy": "Sortieren nach", "sortDirection": "Reihenfolge", "ascending": "Aufsteigend", "descending": "Absteigend",
     "expenses": "Ausgaben", "itemExpenses": "Positionswerte", "share": "Anteil", "purchases": "Einkäufe", "quantity": "Menge", "positions": "Positionen", "distinctProducts": "Unterschiedliche Produkte", "merchant": "Händler", "chain": "Kette", "date": "Datum", "averagePurchase": "Ø Einkaufswert", "name": "Name",
     "categories": "Ausgaben nach Tags", "merchants": "Ausgaben nach Händlern", "allocationNote": "Positionswerte = beobachteter Einzelpreis × Menge. Bei mehreren Tags wird der Wert gleichmäßig aufgeteilt. Belegweite Abweichungen werden nicht verteilt.", "untagged": "Ohne Tag", "weekdays": "Einkäufe nach Wochentag", "weekdayAverage": "Ø Ausgaben nach Wochentag", "frequency": "Einkaufsfrequenz", "frequencyComparison": "Vergleich gleich langer, direkt aufeinanderfolgender Zeiträume", "currentPeriod": "Gewählter Zeitraum", "previousPeriod": "Vorheriger Zeitraum", "noComparison": "Keine vollständige Abdeckung für den Vergleichszeitraum.", "specials": "Besondere Einkäufe", "expensive": "Teuerster Einkauf", "cheapest": "Günstigster Einkauf", "mostPositions": "Meiste Positionen", "mostUnits": "Meiste Stück / Packungen", "unitsScope": "Nur Belege mit ausschließlich bekannten Stück-/Packungseinheiten. Gemischte Mengen sind nicht vergleichbar.",

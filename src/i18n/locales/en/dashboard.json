@@ -1,5 +1,14 @@
 {
   "analytics": {
+    "period": {
+      "label": "Period",
+      "week": { "short": "1W", "label": "1 week" },
+      "month": { "short": "1M", "label": "1 month" },
+      "ytd": { "short": "YTD", "label": "Year to date" },
+      "year": { "short": "1Y", "label": "1 year" },
+      "max": { "short": "Max", "label": "Maximum period" },
+      "unavailable": "No recorded date coverage available"
+    },
     "priceProduct": {
       "title": "Price analysis: {{product}}",
       "description": "This page shows only the observed prices of this product. Period and store filters affect only its statistics and price history.",
@@ -7,8 +16,6 @@
       "back": "Back to price overview"
     },
     "priceSections": {
-      "filtersTitle": "Page-wide filters",
-      "filtersDescription": "The period and store apply to both the individual product analysis and the cross-product rankings.",
       "productTitle": "Individual product: price statistics & history",
       "productDescription": "Choose a product for the six price statistics and the price history within this section. Search only narrows the product choices. The rankings below this section are independent of the product selection.",
       "rankingsTitle": "Cross-product price rankings",
@@ -105,7 +112,7 @@
     "apiLabel": "API data", "coverage": "Data coverage: {{from}} – {{to}} · UTC date boundaries",
     "preview": "Preview state", "state_ready": "Normal", "state_loading": "Loading", "state_empty": "Empty", "state_error": "Error", "state_noResults": "No results",
     "loading": "Loading analytics …", "empty": "No data available yet.", "error": "Analytics data could not be loaded.", "noResults": "No matching data for this selection.", "retry": "Try again", "insufficient": "Not enough comparable observations.",
-    "from": "From", "to": "To", "invalidRange": "Choose valid dates (From ≤ To, maximum ten years).", "reset": "Reset filters",
+    "from": "From", "to": "To", "invalidRange": "The period is invalid. Please select one of the available periods.", "reset": "Reset filters",
     "groupBy": "Grouping", "groupStore": "Branch", "groupChain": "Chain", "store": "Store", "allStores": "All stores", "product": "Product", "searchProduct": "Search products", "selectProduct": "Select product", "refineSearch": "More products available. Please refine your search.", "tag": "Tag", "allTags": "All tags", "unit": "Quantity unit", "piece": "Pieces / packs", "kg": "kg", "unknownUnit": "Unknown unit", "allUnits": "All units", "search": "Filter products", "sortBy": "Sort by", "sortDirection": "Direction", "ascending": "Ascending", "descending": "Descending",
     "expenses": "Expenses", "itemExpenses": "Item values", "share": "Share", "purchases": "Purchases", "quantity": "Quantity", "positions": "Receipt lines", "distinctProducts": "Distinct products", "merchant": "Store", "chain": "Chain", "date": "Date", "averagePurchase": "Avg. purchase value", "name": "Name",
     "categories": "Spending by tag", "merchants": "Spending by store", "allocationNote": "Item values = observed unit price × quantity. Values with multiple tags are split equally. Receipt-level differences are not allocated.", "untagged": "Untagged", "weekdays": "Purchases by weekday", "weekdayAverage": "Average spending by weekday", "frequency": "Shopping frequency", "frequencyComparison": "Comparison of consecutive periods with equal duration", "currentPeriod": "Selected period", "previousPeriod": "Previous period", "noComparison": "No complete coverage for the comparison period.", "specials": "Notable purchases", "expensive": "Most expensive purchase", "cheapest": "Least expensive purchase", "mostPositions": "Most receipt lines", "mostUnits": "Most pieces / packs", "unitsScope": "Only receipts containing known piece/pack units exclusively. Mixed quantities are not comparable.",

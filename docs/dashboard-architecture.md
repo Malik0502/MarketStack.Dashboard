@@ -335,9 +335,22 @@ Those proposed endpoints are not existing backend features. The contract
 documents price/unit limitations, allocation rules, filters, examples, edge
 cases and aggregate calculations needed for a server implementation.
 
-Analytics date filters use inclusive UTC day boundaries. The mock default range
-ends at the fixed fixture coverage date; API mode defaults to the current UTC
-date. These filters do not alter Home's current-local-month semantics.
+Analytics period filters use inclusive UTC day boundaries and compact 1W, 1M,
+YTD, 1J/1Y and Max buttons, without editable date inputs or a reset button.
+The default is one rolling calendar year. Mock periods end at the fixed fixture
+coverage date; API periods end at the current UTC date. Month/year subtraction
+clamps invalid month-end days and adds one day for the inclusive start. Max
+begins at the catalog's earliest date without the previous ten-year limit.
+The API still receives `from`/`to`; existing date-bearing links remain supported.
+Changing the period keeps other filters and resets product pagination. These
+filters do not alter Home's current-local-month semantics.
+The global date/extra-filter bar remains sticky below the app header on every
+analytics page, including the dedicated product price page. A local ResizeObserver
+tracks the actual header height so wrapping, resizing and language changes do
+not cause overlap. The bar sits above table headers but below dialogs, and is
+height-limited with internal scrolling for short viewports. The last rendered
+content height is retained during reloads so editing a pinned filter does not
+collapse the page and jump the user back to the top. Home is unaffected.
 The price overview retains its picker selection in the validated `productId` URL
 search parameter. Clicking product links opens the dedicated `/prices/$productId`
 page instead of updating the overview in place. The path ID is validated, and

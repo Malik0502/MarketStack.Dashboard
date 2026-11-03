@@ -1,7 +1,7 @@
 import { useCallback, useDeferredValue, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/Components/ui/button'
-import { analytics, defaultAnalyticsQuery } from '../data-source'
+import { analytics, analyticsReferenceDate } from '../data-source'
+import { analyticsPeriods, analyticsPeriodRange, type AnalyticsPeriod } from '../date-periods'
 import { useAnalytics } from '../use-analytics'
 import type { AnalyticsQuery, Catalog, GroupBy, Unit } from '../types'
 
@@ -10,9 +10,24 @@ export function AnalyticsFilters({ query, update, catalog, group = false, store 
   group?: boolean; store?: boolean; tags?: boolean; quantities?: boolean
 }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
-  return <div className="flex flex-wrap items-end gap-3">
-    <label className="analytics-field">{t('from')}<input type="date" value={query.from} onChange={event => update({ from: event.target.value })} /></label>
-    <label className="analytics-field">{t('to')}<input type="date" value={query.to} onChange={event => update({ to: event.target.value })} /></label>
+  const [choice, setChoice] = useState<({ period: AnalyticsPeriod } & Pick<AnalyticsQuery, 'from' | 'to'>) | null>(null)
+  const to = analyticsReferenceDate()
+  const periods = analyticsPeriods.map(period => ({ period, range: analyticsPeriodRange(period, to, catalog?.coverage ?? null) }))
+  const selected = choice?.from === query.from && choice?.to === query.to ? choice.period
+    : periods.find(({ range }) => range?.from === query.from && range.to === query.to)?.period
+  return <div className="analytics-filters flex flex-wrap items-end gap-3">
+    <fieldset className="analytics-period min-w-0">
+      <legend className="mb-1.5 text-[11px] text-muted-foreground">{t('period.label')}</legend>
+      <div className="range-control">
+        {periods.map(({ period, range }) => <button key={period} type="button" aria-pressed={selected === period}
+          aria-label={t(`period.${period}.label`)} title={range ? t(`period.${period}.label`) : t('period.unavailable')}
+          disabled={!range} className="disabled:cursor-not-allowed disabled:opacity-50" onClick={() => {
+            if (!range) return
+            setChoice({ period, ...range })
+            if (range.from !== query.from || range.to !== query.to) update(range)
+          }}>{t(`period.${period}.short`)}</button>)}
+      </div>
+    </fieldset>
     {group && <label className="analytics-field">{t('groupBy')}<select value={query.groupBy} onChange={event => update({ groupBy: event.target.value as GroupBy })}>
       <option value="store">{t('groupStore')}</option><option value="chain">{t('groupChain')}</option>
     </select></label>}
@@ -25,7 +40,6 @@ export function AnalyticsFilters({ query, update, catalog, group = false, store 
     {quantities && <label className="analytics-field">{t('unit')}<select value={query.unit ?? ''} onChange={event => update({ unit: event.target.value as Unit || undefined })}>
       <option value="">{t('allUnits')}</option>{catalog?.units.map(unit => <option key={unit} value={unit}>{t(unit)}</option>)}
     </select></label>}
-    <Button variant="ghost" className="rounded-lg" onClick={() => update({ ...defaultAnalyticsQuery(), productId: query.productId, storeId: undefined, tagId: undefined, unit: undefined, search: undefined })}>{t('reset')}</Button>
   </div>
 }
 

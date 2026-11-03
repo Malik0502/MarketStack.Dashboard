@@ -32,12 +32,8 @@ export function PricesPage({ selectedProductId, onProductChange, initialFilters 
     { key: 'percentage', title: t('changePercent'), render: row => row.percentage === null ? t('missing') : format.percent(row.percentage), sortValue: row => row.percentage, numeric: true },
     { key: 'dates', title: t('lastDate'), render: row => <span title={format.date(row.previousAt)}>{format.date(row.lastAt)}</span>, sortValue: row => row.lastAt },
   ]
-  return <AnalyticsLayout page="prices" catalog={catalog.data} scenario={scenario} onScenario={setScenario}
-    filters={<div>
-      <h2 className="text-sm font-semibold">{t('priceSections.filtersTitle')}</h2>
-      <p className="mt-1 mb-4 text-xs leading-relaxed text-muted-foreground">{t('priceSections.filtersDescription')}</p>
-      <AnalyticsFilters query={query} update={update} catalog={catalog.data} store />
-    </div>}>
+  return <AnalyticsLayout page="prices" catalog={catalog.data} scenario={scenario} onScenario={setScenario} loading={status === 'loading'}
+    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} store />}>
     <div className="space-y-8">
       <section aria-labelledby="prices-product-heading" aria-describedby="prices-product-scope" className="rounded-xl border bg-muted/20 p-4 sm:p-6">
         <header className="mb-5">

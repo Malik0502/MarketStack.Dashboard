@@ -2,6 +2,7 @@ import { apiFetch } from '@/api/apiClient'
 import type { AnalyticsDataSource, AnalyticsQuery } from './types'
 import * as mock from './mock/analytics'
 import { coverage } from './mock/fixtures'
+import { analyticsPeriodRange } from './date-periods'
 
 // This flag affects only new analytics pages. Existing Home services are independent.
 export const analyticsSource = import.meta.env.VITE_ANALYTICS_SOURCE === 'api' ? 'api' : 'mock'
@@ -74,16 +75,17 @@ export const mockAnalytics: AnalyticsDataSource = {
 
 export const analytics: AnalyticsDataSource = analyticsSource === 'api' ? apiAnalytics : mockAnalytics
 
+export function analyticsReferenceDate(): string {
+  return analyticsSource === 'mock' ? coverage.to : new Date().toISOString().slice(0, 10)
+}
+
 export function defaultAnalyticsQuery(): AnalyticsQuery {
-  const to = analyticsSource === 'mock' ? coverage.to : new Date().toISOString().slice(0, 10)
-  const end = new Date(`${to}T00:00:00Z`)
-  const from = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() - 11, 1)).toISOString().slice(0, 10)
-  return { from, to, groupBy: 'store', page: 1, pageSize: 10, sortBy: 'expenses', sortDirection: 'desc' }
+  const range = analyticsPeriodRange('year', analyticsReferenceDate())!
+  return { ...range, groupBy: 'store', page: 1, pageSize: 10, sortBy: 'expenses', sortDirection: 'desc' }
 }
 
 export function validRange(query: AnalyticsQuery) {
   const validDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date)
     && Number.isFinite(Date.parse(`${date}T00:00:00Z`)) && new Date(`${date}T00:00:00Z`).toISOString().startsWith(date)
   return validDate(query.from) && validDate(query.to) && query.from <= query.to
-    && Date.parse(query.to) - Date.parse(query.from) <= 3660 * 86400000
 }

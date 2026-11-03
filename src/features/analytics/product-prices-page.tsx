@@ -18,6 +18,7 @@ export function ProductPricesPage({ productId, initialFilters }: { productId: nu
   const productName = result.data?.product?.name ?? catalog.data?.products.find(product => product.id === productId)?.name
     ?? t('priceProduct.fallbackName', { id: productId })
   return <AnalyticsLayout page="prices" title={t('priceProduct.title', { product: productName })}
+    loading={result.status === 'loading' || catalog.status === 'loading'}
     description={t('priceProduct.description')} catalog={catalog.data} scenario={scenario} onScenario={setScenario}
     filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} store />}>
     <Link to="/prices" search={{ productId, from: query.from, to: query.to, storeId: query.storeId }}

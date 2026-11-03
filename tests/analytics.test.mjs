@@ -93,8 +93,39 @@ test('date filters include the complete UTC end date and preserve real zero deno
   assert.equal(earliest.comparison.previous, null)
   for (const date of ['2026-02-30', 'invalid', '']) assert.equal(source.validRange({ ...query, from: date }), false)
   assert.equal(source.validRange({ ...query, from: '2026-11-01', to: '2026-10-01' }), false)
-  assert.equal(source.validRange({ ...query, from: '2000-01-01' }), false)
+  assert.equal(source.validRange({ ...query, from: '2000-01-01' }), true) // Max must include older imported data too.
   assert.equal(source.validRange({ ...query, from: '2024-02-29' }), true)
+})
+
+test('analytics period presets use inclusive UTC days, calendar boundaries and complete coverage', async () => {
+  const { analyticsPeriods, analyticsPeriodRange } = await server.ssrLoadModule('/src/features/analytics/date-periods.ts')
+  assert.deepEqual(analyticsPeriods, ['week', 'month', 'ytd', 'year', 'max'])
+  const end = '2026-11-03'
+  assert.deepEqual(analyticsPeriodRange('week', end), { from: '2026-10-28', to: end })
+  assert.deepEqual(analyticsPeriodRange('month', end), { from: '2026-10-04', to: end })
+  assert.deepEqual(analyticsPeriodRange('ytd', end), { from: '2026-01-01', to: end })
+  assert.deepEqual(analyticsPeriodRange('year', end), { from: '2025-11-04', to: end })
+  assert.deepEqual(analyticsPeriodRange('month', '2026-03-31'), { from: '2026-03-01', to: '2026-03-31' })
+  assert.deepEqual(analyticsPeriodRange('month', '2024-03-31'), { from: '2024-03-01', to: '2024-03-31' })
+  assert.deepEqual(analyticsPeriodRange('year', '2024-02-29'), { from: '2023-03-01', to: '2024-02-29' })
+  assert.deepEqual(analyticsPeriodRange('week', '2026-01-01'), { from: '2025-12-26', to: '2026-01-01' })
+  assert.deepEqual(analyticsPeriodRange('ytd', '2026-01-01'), { from: '2026-01-01', to: '2026-01-01' })
+  assert.equal(analyticsPeriodRange('max', end), null)
+  assert.equal(analyticsPeriodRange('max', end, { from: '2027-01-01', to: '2027-01-31' }), null)
+  const max = analyticsPeriodRange('max', end, { from: '2000-01-01', to: '2026-10-01' })
+  assert.deepEqual(max, { from: '2000-01-01', to: end })
+  assert.ok(source.validRange(max))
+  assert.deepEqual(analyticsPeriodRange('max', fixtures.coverage.to, fixtures.coverage), fixtures.coverage)
+  const defaults = source.defaultAnalyticsQuery()
+  assert.deepEqual({ from: defaults.from, to: defaults.to }, analyticsPeriodRange('year', source.analyticsReferenceDate()))
+  for (const language of ['de', 'en']) {
+    const resources = JSON.parse(await readFile(new URL(`../src/i18n/locales/${language}/dashboard.json`, import.meta.url), 'utf8')).analytics.period
+    assert.ok(resources.label.length)
+    for (const period of analyticsPeriods) {
+      assert.ok(resources[period].short.length)
+      assert.ok(resources[period].label.length)
+    }
+  }
 })
 
 test('product details, purchase counts and rankings describe the same complete data', () => {

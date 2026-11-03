@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useCallback, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlaskConical, RefreshCw } from 'lucide-react'
 import { AppHeader } from '@/Components/Navigation/app-header'
@@ -8,15 +8,35 @@ import { useFormat } from '@/i18n/format'
 import { analyticsSource } from '../data-source'
 import type { Catalog, Scenario } from '../types'
 
-export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, children, title, description }: {
+export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, children, title, description, loading = false }: {
   page: 'spending' | 'prices' | 'products' | 'stores'; catalog: Catalog | null
   scenario: Scenario; onScenario: (value: Scenario) => void; filters: ReactNode; children: ReactNode
   title?: string; description?: string
+  loading?: boolean
 }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
   const { t: nav } = useTranslation('navigation')
   const { date } = useFormat()
-  return <>
+  const layoutRef = useCallback((node: HTMLDivElement | null) => {
+    const header = node?.querySelector<HTMLElement>('.app-header')
+    const content = node?.querySelector<HTMLElement>('.analytics-content')
+    if (!node || !header) return
+    // The header wraps on narrow screens and can change height with language/zoom.
+    // Keep this measurement local to analytics so Home's layout is unaffected.
+    const updateOffset = () => node.style.setProperty('--analytics-header-height', `${header.getBoundingClientRect().height}px`)
+    updateOffset()
+    const updateContentHeight = () => {
+      if (content && node.dataset.loading !== 'true') {
+        node.style.setProperty('--analytics-content-height', `${content.getBoundingClientRect().height}px`)
+      }
+    }
+    updateContentHeight()
+    const observer = new ResizeObserver(() => { updateOffset(); updateContentHeight() })
+    observer.observe(header)
+    if (content) observer.observe(content)
+    return () => observer.disconnect()
+  }, [])
+  return <div ref={layoutRef} className="analytics-layout" data-loading={loading || undefined}>
     <AppHeader title={nav(page)} />
     <div className="dashboard-page">
       <div className="mb-7"><p className="eyebrow mb-2.5">{t('eyebrow')}</p>
@@ -32,12 +52,12 @@ export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, 
           </select>
         </label>
       </div>}
-      <section className="mb-5 rounded-xl border bg-card p-4">{filters}
+      <section className="analytics-sticky-filters mb-5 rounded-xl border bg-card p-4">{filters}
         {catalog?.coverage && <p className="mt-3 text-[10px] text-muted-foreground">{t('coverage', { from: date(catalog.coverage.from), to: date(catalog.coverage.to) })}</p>}
       </section>
-      {children}
+      <div className="analytics-content">{children}</div>
     </div>
-  </>
+  </div>
 }
 
 export function AnalyticsState({ status, retry, invalid = false, children }: {

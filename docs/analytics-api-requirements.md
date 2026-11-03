@@ -68,7 +68,7 @@ Complete these dependencies before considering this page ready:
 
 - [ ] **1.1** Implement the shared `GET /api/analytics/catalog` contract.
 - [ ] **1.2** Implement `GET /api/analytics/spending` and its aggregates.
-- [ ] Verify the date controls, store/chain grouping, all charts/highlights,
+- [ ] Verify the period presets, store/chain grouping, all charts/highlights,
   promotion counts, empty results and invalid date ranges.
 
 The page requests the catalog for global filter metadata and coverage. It has
@@ -685,10 +685,29 @@ statistical calculations should retain precision until presentation.
 
 [DateRange](analytics-api.schema.json#/$defs/DateRange) contains `from` and `to`.
 Both bounds are inclusive. Query timestamps with `PurchasedAt >= from at 00:00 UTC`
-and `PurchasedAt < day after to at 00:00 UTC`. The frontend validates real dates,
-`from <= to`, and a maximum duration of 3,660 days. Server validation must enforce
-the same boundaries. The new pages explicitly label UTC date boundaries; do not
-silently apply server-local or browser-local timezone conversion.
+and `PurchasedAt < day after to at 00:00 UTC`. The frontend validates real dates
+and `from <= to`. There is no fixed ten-year cap: the Max preset must be able to
+include the entire imported history. Server validation must allow this complete
+coverage too (replacing the earlier 3,660-day limit). The new pages explicitly
+label UTC date boundaries; do not silently apply server-local or browser-local
+timezone conversion.
+
+The global sticky filter bar uses compact presets instead of editable dates:
+
+| Preset | Inclusive UTC range |
+| --- | --- |
+| 1W | Today and the preceding six days |
+| 1M | One rolling calendar month through today; subtract one month, clamp the day to that month's end, then add one day for the inclusive start |
+| YTD | January 1 of the reference year through today |
+| 1J (English: 1Y) | One rolling calendar year through today; subtract twelve months with the same clamping/inclusive-start rule |
+| Max | Earliest `Catalog.coverage.from` through today; unavailable if coverage is null |
+
+"Today" means the current UTC date in API mode, or the fixed fixture coverage
+end in mock mode. The initial preset is 1J/1Y. Selecting another preset preserves
+store/group/tag/unit selections and resets product-list pagination to page 1.
+There is no reset button, no custom-date input and no new API query parameter:
+the source still sends the resulting `from`/`to` strings. Existing date-bearing
+links remain supported, even if their range does not exactly match a preset.
 
 ### Source entities and business semantics
 

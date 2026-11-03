@@ -154,6 +154,12 @@
   .analytics-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; color: var(--muted-foreground); font-size: 11px; }
   .analytics-field input, .analytics-field select { min-width: 0; min-height: 36px; max-width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; color: var(--foreground); background: var(--card); font: inherit; font-size: 12px; }
   .analytics-field input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .analytics-sticky-filters {
+    position: sticky; top: calc(var(--analytics-header-height, 66px) + 8px); z-index: 15;
+    max-height: min(50dvh, calc(100dvh - var(--analytics-header-height, 66px) - 24px));
+    overflow: auto; box-shadow: var(--shadow);
+  }
+  .analytics-layout[data-loading="true"] .analytics-content { min-height: var(--analytics-content-height, 0px); }
 }
 
 /* Intentional theme skin over shadcn Card defaults. */
@@ -194,6 +200,12 @@
   .app-header { min-height: 48px; padding-inline: 18px; }
   .dashboard-page { padding: 24px 18px 18px; }
   .data-notice { flex-wrap: wrap; }
+  .analytics-filters { flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .analytics-filters::-webkit-scrollbar { display: none; }
+  .analytics-filters > fieldset, .analytics-filters > label { flex-shrink: 0; }
+  .analytics-filters > .analytics-field { max-width: 192px; white-space: nowrap; }
+  .analytics-period .range-control { flex-wrap: nowrap; }
+  .analytics-period .range-control button { min-width: 30px; min-height: 36px; padding-inline: 6px; white-space: nowrap; }
 }
 @media (max-width: 639px) {
   .app-header { flex-wrap: wrap; gap: 8px; }
