@@ -131,9 +131,9 @@
         "range": { "$ref": "#/$defs/DateRange" }, "product": { "anyOf": [{ "$ref": "#/$defs/Product" }, { "type": "null" }] },
         "stats": { "anyOf": [{ "$ref": "#/$defs/PriceStats" }, { "type": "null" }] },
         "series": { "type": "array", "items": { "$ref": "#/$defs/PriceSeries" } },
-        "increases": { "type": "array", "items": { "$ref": "#/$defs/PriceRanking" } },
-        "decreases": { "type": "array", "items": { "$ref": "#/$defs/PriceRanking" } },
-        "stability": { "type": "array", "items": { "$ref": "#/$defs/PriceRanking" } }, "historyTruncated": { "type": "boolean" }
+        "increases": { "type": "array", "description": "All eligible price increases; locally paginated, never top-N truncated.", "items": { "$ref": "#/$defs/PriceRanking" } },
+        "decreases": { "type": "array", "description": "All eligible price decreases; locally paginated, never top-N truncated.", "items": { "$ref": "#/$defs/PriceRanking" } },
+        "stability": { "type": "array", "description": "All eligible stability groups, not only extremes; locally paginated.", "items": { "$ref": "#/$defs/PriceRanking" } }, "historyTruncated": { "type": "boolean" }
       }
     },
     "ProductStats": {
@@ -186,7 +186,7 @@
       "type": "object", "additionalProperties": false, "required": ["product", "priceStats", "recentPurchases", "recentLimit"],
       "properties": {
         "product": { "anyOf": [{ "$ref": "#/$defs/ProductStats" }, { "type": "null" }] }, "priceStats": { "anyOf": [{ "$ref": "#/$defs/PriceStats" }, { "type": "null" }] },
-        "recentPurchases": { "type": "array", "items": { "$ref": "#/$defs/ProductPurchase" } }, "recentLimit": { "type": "integer", "minimum": 1 }
+        "recentPurchases": { "type": "array", "description": "Complete matching purchase history, newest first; locally paginated.", "items": { "$ref": "#/$defs/ProductPurchase" } }, "recentLimit": { "type": "integer", "minimum": 1, "description": "Legacy metadata retained for compatibility (10); no longer a response cap." }
       }
     },
     "MerchantPrice": {
@@ -210,7 +210,7 @@
       "properties": {
         "range": { "$ref": "#/$defs/DateRange" }, "merchants": { "type": "array", "items": { "$ref": "#/$defs/MerchantSummary" } },
         "product": { "anyOf": [{ "$ref": "#/$defs/Product" }, { "type": "null" }] }, "prices": { "type": "array", "items": { "$ref": "#/$defs/MerchantPrice" } },
-        "differences": { "type": "array", "items": { "$ref": "#/$defs/HistoricalDifference" } }
+        "differences": { "type": "array", "description": "All eligible product differences; locally paginated, never top-20 truncated.", "items": { "$ref": "#/$defs/HistoricalDifference" } }
       }
     },
     "SuccessEnvelope": {

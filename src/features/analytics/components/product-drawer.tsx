@@ -38,10 +38,10 @@ export function ProductDrawer({ productId, query, onClose }: { productId: number
             <h3 className="text-sm font-semibold">{t('priceStatistics')}</h3>
             <PriceStatistics stats={data.priceStats} compact />
             <p className="text-[11px] text-muted-foreground">{t('historicalNote')}</p>
-            <Link to="/prices" search={{ productId: item.id }} className="inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">{t('openPrices')}</Link>
-            <DashboardCard title={t('recentPurchases')}>
-              <p className="mb-3 text-[11px] text-muted-foreground">{t('recentLimit', { count: data.recentLimit })}</p>
-              <DataTable caption={t('recentPurchases')} rows={data.recentPurchases} rowKey={row => row.lineId} columns={[
+            <Link to="/prices/$productId" params={{ productId: String(item.id) }} search={{ from: query.from, to: query.to }} className="inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">{t('openPrices')}</Link>
+            <DashboardCard title={t('purchaseHistory')}>
+              <p className="mb-3 text-[11px] text-muted-foreground">{t('purchaseHistoryNote')}</p>
+              <DataTable resetKey={`${productId}:${JSON.stringify(query)}`} caption={t('purchaseHistory')} rows={data.recentPurchases} rowKey={row => row.lineId} columns={[
                 { key: 'date', title: t('date'), render: row => format.date(row.purchasedAt), sortValue: row => row.purchasedAt },
                 { key: 'store', title: t('merchant'), render: row => `${row.merchant.chain} · ${row.merchant.name}` },
                 { key: 'quantity', title: t('quantity'), render: row => `${format.number(row.quantity, 3)} ${row.unit ? t(row.unit) : t('unknownUnit')}`, numeric: true },

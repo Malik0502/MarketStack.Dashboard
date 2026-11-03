@@ -1,5 +1,102 @@
 {
   "analytics": {
+    "priceProduct": {
+      "title": "Preisanalyse: {{product}}",
+      "description": "Diese Seite zeigt ausschließlich die beobachteten Preise dieses Produkts. Zeitraum und Händler filtern nur dessen Kennzahlen und Preisverlauf.",
+      "fallbackName": "Produkt #{{id}}",
+      "back": "Zurück zur Preisübersicht"
+    },
+    "priceSections": {
+      "filtersTitle": "Filter für die gesamte Seite",
+      "filtersDescription": "Zeitraum und Händler gelten sowohl für die Einzelproduktanalyse als auch für die produktübergreifenden Rankings.",
+      "productTitle": "Einzelprodukt: Preiskennzahlen & Verlauf",
+      "productDescription": "Wähle hier ein Produkt für die sechs Preiskennzahlen und den Preisverlauf innerhalb dieses Bereichs. Die Suche grenzt nur die Produktauswahl ein. Die Rankings unterhalb dieses Bereichs bleiben von der Produktauswahl unabhängig.",
+      "rankingsTitle": "Produktübergreifende Preisrankings",
+      "rankingsDescription": "Diese Tabellen vergleichen alle geeigneten Produkte im gewählten Zeitraum und beim gewählten Händler – unabhängig vom oben ausgewählten Produkt. Ein Klick auf einen Produktnamen öffnet eine separate Preisanalyse-Seite für dieses Produkt."
+    },
+    "pagination": {
+      "navigation": "Seitennavigation: {{title}}",
+      "range": "{{from}}–{{to}} von {{total}} Einträgen",
+      "page": "Seite {{page}} von {{pages}}",
+      "pageSize": "Einträge pro Seite",
+      "all": "Alle",
+      "first": "Erste",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "last": "Letzte"
+    },
+    "purchaseHistory": "Kaufhistorie",
+    "purchaseHistoryNote": "Alle passenden Belegpositionen im gewählten Zeitraum, neueste zuerst. Über die Seitennavigation sind auch ältere Positionen erreichbar.",
+    "abcDisplay": {
+      "purpose": "Welche Produkte machen den größten Teil deiner Positionswerte aus? Die Klassen bündeln Produkte nach ihrem Beitrag zur Gesamtsumme – nicht nach Kaufhäufigkeit oder Wichtigkeit.",
+      "A": "Größte Ausgabentreiber",
+      "B": "Mittlerer Beitrag",
+      "C": "Kleiner Restbeitrag",
+      "products_one": "{{value}} unterschiedliches Produkt",
+      "products_other": "{{value}} unterschiedliche Produkte",
+      "share": "{{value}} der gesamten Positionswerte",
+      "chartHint": "Von links nach rechts: Produkte mit hohem bis niedrigem Positionswert. Balken = Wert je Produkt in Euro; Linie = gemeinsamer Anteil aller Produkte bis zu dieser Stelle. So erkennst du, wie viele Produkte den Großteil deiner Ausgaben ausmachen."
+    },
+    "cardInfo": {
+      "open": "Mehr Informationen: {{title}}",
+      "close": "Informationen schließen",
+      "calculation": "So werden die Werte berechnet",
+      "frequency": {
+        "description": "Der Verlauf zeigt, wie viele importierte Einkäufe je Kalendermonat im gewählten Zeitraum erfasst wurden. Die zweite Linie zeigt davon die Einkäufe mit mindestens einer Promotion-Position.",
+        "calculation": "Jeder unterschiedliche Beleg zählt als ein Einkauf – unabhängig von der Anzahl der Positionen oder gekauften Einheiten. Ein Beleg mit mehreren Promotion-Positionen zählt in der Promotion-Linie ebenfalls nur einmal. Die Zuordnung zum Monat erfolgt anhand des Kaufdatums in UTC.",
+        "note": "Randmonate enthalten nur die Tage innerhalb des gewählten Zeitraums. Null bedeutet keine importierten Belege, nicht zwingend keine tatsächlichen Einkäufe. Die Gruppierung nach Filiale oder Kette verändert diesen Verlauf nicht."
+      },
+      "topExpenses": {
+        "description": "Die zehn Produkte mit dem höchsten aufsummierten Positionswert innerhalb des gewählten Zeitraums und der aktiven Produktfilter.",
+        "calculation": "Pro Belegposition wird der beobachtete Einzelpreis mit der Menge multipliziert und auf Cent gerundet. Diese Werte werden je Produkt addiert und absteigend sortiert. Der Prozentwert ist der Anteil am Positionswert aller gefilterten Produkte, nicht nur der angezeigten Top 10.",
+        "note": "Das Ranking berücksichtigt alle gefilterten Produkte, unabhängig von der Tabellenseite. Belegweite Rabatte oder andere Abweichungen sind nicht verteilt. Ein Klick auf ein Produkt öffnet seine Details."
+      },
+      "topFrequency": {
+        "description": "Die zehn Produkte, die in den meisten unterschiedlichen Einkäufen vorkommen – nicht die Produkte mit den meisten gekauften Einheiten.",
+        "calculation": "Für jedes Produkt wird die Anzahl unterschiedlicher Belege im gewählten Zeitraum unter den aktiven Filtern gezählt. Mehrere Positionen desselben Produkts auf einem Beleg zählen zusammen als ein Einkauf. Danach wird absteigend nach dieser Anzahl sortiert.",
+        "note": "Drei Packungen auf einem Beleg zählen als ein Einkauf; dasselbe Produkt auf drei Belegen zählt als drei Einkäufe. Das Ranking ist unabhängig von der Tabellenseite."
+      },
+      "totalProducts": {
+        "description": "Die Anzahl unterschiedlicher Produkte mit mindestens einer passenden Kaufposition im gewählten Zeitraum.",
+        "calculation": "Nach Anwendung von Zeitraum, Tag und Mengeneinheit werden unterschiedliche Produkt-IDs gezählt. Mehrere Käufe oder Positionen desselben Produkts erhöhen die Anzahl nicht.",
+        "note": "Dies ist weder die Anzahl gekaufter Einheiten noch die Größe des gesamten Produktkatalogs. Der Wert umfasst alle Treffer, nicht nur die aktuelle Tabellenseite."
+      },
+      "itemExpenses": {
+        "description": "Die Summe der rekonstruierten Positionswerte aller Produkte, die zum gewählten Zeitraum und den aktiven Filtern passen.",
+        "calculation": "Positionswert = beobachteter Einzelpreis × Menge, pro Position auf Cent gerundet. Anschließend werden alle passenden Positionen addiert. Bei Produkten mit mehreren Tags wird die Position in dieser Gesamtsumme trotzdem nur einmal gezählt.",
+        "note": "Dies ist keine Summe der Beleg-Endbeträge. Belegweite Rabatte, Pfand oder unvollständige Imports können Unterschiede zu den Händler- und Belegausgaben verursachen. Die Tabellenseite beeinflusst die Summe nicht."
+      },
+      "abcOverview": {
+        "description": "Die Frage lautet: Welche Produkte verursachen zusammen den größten Teil deiner Ausgaben? A enthält die größten Ausgabentreiber, B die nächsten Produkte und C den kleinen verbleibenden Rest. Die Zahlen bei A, B und C sind Anzahlen unterschiedlicher Produkte. Steht dort 8, 3 und 1, sind acht Produkte in A, drei in B und eines in C. Der Prozentwert zeigt, welchen Teil der gesamten Positionswerte diese Produkte zusammen ausmachen.",
+        "calculation": "Zuerst werden die Produkte vom höchsten zum niedrigsten Positionswert sortiert. Dann werden sie nacheinander gesammelt: in A, bis zusammen mindestens 80 % des Gesamtwerts erreicht sind; danach in B, bis A und B zusammen mindestens 95 % erreichen; die übrigen Produkte kommen in C. Beispiel: Vier Produkte verursachen 50 €, 30 €, 15 € und 5 €, zusammen 100 €. A enthält die ersten zwei Produkte (80 € = 80 %), B das dritte (15 € = 15 %), C das vierte (5 € = 5 %). Das Produkt, das eine Grenze erreicht oder überschreitet, bleibt in der gerade gefüllten Klasse; die Anteile können deshalb von 80/15/5 abweichen. Eine Klasse kann auch leer bleiben.",
+        "note": "Praktischer Nutzen: Wenn du Preise vergleichen oder deine Ausgaben prüfen möchtest, lohnt sich der Blick auf A oft zuerst, weil diese Produkte den größten Gesamtbetrag verursachen. A bedeutet aber weder unnötig noch teuer pro Einheit: Auch häufig gekaufte günstige Produkte können dort landen. Die Analyse bewertet keine Kaufentscheidung und berechnet kein Sparpotenzial. Zeitraum und Produktfilter gelten für alle Klassen, die Tabellenseite nicht."
+      },
+      "pareto": {
+        "description": "Dieses Diagramm zeigt dieselben Ausgabentreiber wie die ABC-Verteilung, aber Produkt für Produkt. Links steht das Produkt mit dem höchsten gesamten Positionswert. Die Balkenhöhe zeigt seinen Wert in Euro. Die Linie beantwortet: Wie viel meiner Gesamtausgaben entfällt auf die Produkte vom linken Rand bis hierher?",
+        "calculation": "Beispiel: Vier Produkte haben Positionswerte von 50 €, 30 €, 15 € und 5 €, insgesamt 100 €. Die Balken zeigen diese vier Beträge. Die Linie steht beim ersten Produkt bei 50 %, beim zweiten bei 80 %, beim dritten bei 95 % und beim letzten bei 100 %. In diesem Beispiel gehören die ersten zwei Produkte zu A, das dritte zu B und das letzte zu C. Die Prozentwerte der Linie werden also aufaddiert; sie sind nicht der einzelne Anteil des jeweiligen Produkts.",
+        "note": "Der Nutzen ist die Konzentration zu erkennen: Erreicht die Linie schon nach wenigen Produkten 80 %, machen wenige Produkte den Großteil deiner Ausgaben aus. Steigt sie langsam, verteilen sich deine Ausgaben breiter. Eine 80/20-Verteilung wird nicht vorausgesetzt. Es gelten alle Produktfilter, unabhängig von der Tabellenseite. „Weitere Produkte“ kann einen zusammengefassten Rest ohne eigene ABC-Klasse zeigen."
+      },
+      "stability": {
+        "description": "Die Tabelle zeigt, wie stark die beobachteten Einzelpreise desselben Produkts innerhalb derselben Filiale im gewählten Zeitraum schwanken. Ein niedriger Variationskoeffizient bedeutet gleichmäßigere Preise, ein hoher stärkere Schwankungen. Es werden auch andere Produkte als das oben ausgewählte berücksichtigt; der Händlerfilter gilt weiterhin.",
+        "calculation": "Die Beobachtungen sind erfasste Preise aus Kaufpositionen, nicht gekaufte Stückzahlen. Der Durchschnitt ist der Mittelwert dieser Preise. Die Standardabweichung beschreibt ihre Streuung in Euro; der Variationskoeffizient teilt diese Streuung durch den Durchschnitt und multipliziert mit 100. Beispiel: Bei 2 € Durchschnitt und 0,20 € Standardabweichung beträgt er 10 %. Er ist keine Preissteigerung: Auch abwechselnd steigende und fallende Preise können einen hohen Wert ergeben.",
+        "note": "Berücksichtigt werden verifiziert vergleichbare Produkte mit mindestens drei Preisbeobachtungen und positivem Durchschnitt. Alle passenden Produkt-/Filialkombinationen sind über die Seitennavigation erreichbar. Ein Klick auf eine Spaltenüberschrift sortiert die gesamte Trefferliste, nicht nur die aktuelle Seite. Unterschiedliche Beobachtungszahlen und Zeitabstände können das Bild beeinflussen; historische Stabilität garantiert keine künftigen Preise."
+      },
+      "promotionProducts": {
+        "description": "Die zehn Produkte mit den meisten Belegpositionen, bei denen eine Promotion-ID hinterlegt ist.",
+        "calculation": "Jede passende Position mit Promotion-ID zählt einmal. Gekaufte Mengen werden dabei nicht als zusätzliche Positionen gezählt. Die Produkte werden nach der Anzahl dieser Positionen absteigend sortiert; Produkte ohne solche Positionen werden ausgelassen.",
+        "note": "Dies ist eine absolute Anzahl, keine Promotion-Quote und keine Aussage über die Ersparnis. Eine Promotion-ID belegt keinen regulären Referenzpreis. Alle aktiven Produktfilter gelten; die Tabellenseite spielt keine Rolle."
+      },
+      "tags": {
+        "description": "Die Tabelle zeigt je Tag unterschiedliche gekaufte Produkte, unterschiedliche Einkäufe, zugeordnete Positionswerte und deren Anteil.",
+        "calculation": "Produkt- und Beleg-IDs werden je Tag jeweils nur einmal gezählt. Bei mehreren Tags wird der Positionswert gleichmäßig auf alle Tags des Produkts aufgeteilt. Der Anteil bezieht sich auf den Gesamtwert aller gefilterten Produkte, einschließlich Produkten ohne Tag.",
+        "note": "Produkt- und Einkaufszahlen verschiedener Tags sind nicht addierbar: Ein Produkt oder Beleg kann mehreren Tags zugeordnet sein. Auch bei einem Tag-Filter behalten passende Produkte ihre vollständigen Tag-Zuordnungen."
+      },
+      "quantities": {
+        "description": "Die bis zu zwanzig Produkte mit der höchsten aufsummierten Kaufmenge innerhalb der ausgewählten, bekannten Mengeneinheit.",
+        "calculation": "Die Mengen aller passenden Kaufpositionen werden je Produkt addiert und absteigend sortiert. Zeitraum, Tag und Mengeneinheit werden vor der Berechnung angewendet. Ohne ausgewählte bekannte Einheit wird kein Mengenranking angezeigt.",
+        "note": "Kilogramm und Stück dürfen nicht gemeinsam verglichen werden. Stück beziehungsweise Packungen sind keine normierten Gewichte: Eine kleine und eine große Packung zählen jeweils als eine Packung."
+      }
+    },
     "eyebrow": "ANALYTICS", "spendingTitle": "Ausgaben & Einkaufsverhalten", "spendingDescription": "Verteilung, Einkaufsrhythmus und besondere Einkäufe verstehen.",
     "pricesTitle": "Preisentwicklung", "pricesDescription": "Beobachtete Produktpreise, Veränderungen und Stabilität analysieren.",
     "productsTitle": "Produktanalysen", "productsDescription": "Deine wichtigsten Produkte, Mengen und Ausgabentreiber entdecken.",

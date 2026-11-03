@@ -92,6 +92,7 @@ transformations, formatting, and rendering have separate modules.
 | `/` | `Dashboard` | Purchase analytics and reporting |
 | `/spending` | `SpendingPage` | Tag/store distribution, frequency, weekdays and notable purchases |
 | `/prices` | `PricesPage` | Comparable observed prices, changes and stability |
+| `/prices/$productId` | `ProductPricesPage` | Dedicated product price statistics/history with return navigation |
 | `/products` | `ProductsPage` | Product rankings, quantities, tags, Pareto and detail drawer |
 | `/stores` | `StoresPage` | Branch/chain analytics and historical product comparisons |
 | `/user` | `UserPage` | Availability notice for future user features |
@@ -337,8 +338,14 @@ cases and aggregate calculations needed for a server implementation.
 Analytics date filters use inclusive UTC day boundaries. The mock default range
 ends at the fixed fixture coverage date; API mode defaults to the current UTC
 date. These filters do not alter Home's current-local-month semantics.
-The product price page retains its selection in the validated `productId` URL
-parameter. Product details use a modal Base UI dialog with focus management.
+The price overview retains its picker selection in the validated `productId` URL
+search parameter. Clicking product links opens the dedicated `/prices/$productId`
+page instead of updating the overview in place. The path ID is validated, and
+date/store URL context is carried into the detail view and back to the overview.
+Both views share `ProductPriceAnalysis` and the existing prices API contract;
+the dedicated page does not display global rankings. The non-nested file route
+`prices_.$productId.tsx` keeps the product view separate from the overview layout.
+Product details on Products still use a modal Base UI dialog with focus management.
 
 Counts distinguish receipts, lines, products, quantities and promotional lines.
 Multi-tag spending is allocated rather than duplicated. Quantities require
@@ -348,7 +355,7 @@ promotion-conditioned average price is part of the contracts or UI.
 
 Mock-mode preview controls expose loading, empty, error and no-results states.
 Request keys and cancellation prevent stale data after filter changes. Tables
-sort bounded ranking rows locally; the product list requests complete-population
+sort complete table result sets locally before independent pagination; the product list requests complete-population
 sorting and pagination from its source. Chart, aggregate and DTO/schema consistency
 tests use the same deterministic fixtures and require no new test dependency.
 

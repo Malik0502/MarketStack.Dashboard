@@ -171,15 +171,12 @@ export function getPrices(query: AnalyticsQuery): PricesData {
     points: values.filter(entry => entry.merchant.id === store.id).sort((a, b) => a.date.localeCompare(b.date)).map(entry => ({ date: entry.date, price: entry.price, count: 1 })),
   })).filter(series => series.points.length)
   const ranks = rankings(query)
-  const orderedStability = ranks.filter(item => item.stats.count >= 3 && item.stats.coefficientOfVariation !== null)
-    .sort((a, b) => a.stats.coefficientOfVariation! - b.stats.coefficientOfVariation! || a.productId - b.productId || a.storeId.localeCompare(b.storeId))
-  const stability = [...new Map([...orderedStability.slice(0, 15), ...orderedStability.slice(-15)]
-    .map(item => [`${item.productId}:${item.storeId}`, item])).values()]
-    .sort((a, b) => b.stats.coefficientOfVariation! - a.stats.coefficientOfVariation!)
+  const stability = ranks.filter(item => item.stats.count >= 3 && item.stats.coefficientOfVariation !== null)
+    .sort((a, b) => b.stats.coefficientOfVariation! - a.stats.coefficientOfVariation! || a.productId - b.productId || a.storeId.localeCompare(b.storeId))
   return {
     range: range(query), product: selected, stats: priceStats(values), series: grouped,
-    increases: ranks.filter(item => item.difference > 0).sort((a, b) => (b.percentage ?? -Infinity) - (a.percentage ?? -Infinity)).slice(0, 20),
-    decreases: ranks.filter(item => item.difference < 0).sort((a, b) => (a.percentage ?? Infinity) - (b.percentage ?? Infinity)).slice(0, 20),
+    increases: ranks.filter(item => item.difference > 0).sort((a, b) => (b.percentage ?? -Infinity) - (a.percentage ?? -Infinity) || a.productId - b.productId || a.storeId.localeCompare(b.storeId)),
+    decreases: ranks.filter(item => item.difference < 0).sort((a, b) => (a.percentage ?? Infinity) - (b.percentage ?? Infinity) || a.productId - b.productId || a.storeId.localeCompare(b.storeId)),
     stability,
     historyTruncated: false,
   }
@@ -234,7 +231,7 @@ export function getProduct(id: number, query: AnalyticsQuery): ProductDetail {
   const priceObservations = observed(query).filter(entry => entry.productId === id)
   return {
     product: stats, priceStats: priceStats(priceObservations), recentLimit: 10,
-    recentPurchases: values.sort((a, b) => b.receipt.purchasedAt.localeCompare(a.receipt.purchasedAt) || b.id - a.id).slice(0, 10).map(entry => ({
+    recentPurchases: values.sort((a, b) => b.receipt.purchasedAt.localeCompare(a.receipt.purchasedAt) || b.id - a.id).map(entry => ({
       lineId: entry.id, receiptId: entry.receipt.id, purchasedAt: entry.receipt.purchasedAt, merchant: entry.merchant,
       quantity: entry.quantity, unit: entry.product.unit, unitPrice: entry.price, expenses: entry.expenses,
       promotion: entry.promotionId !== null,
@@ -266,7 +263,7 @@ export function getStores(query: AnalyticsQuery): StoresData {
       baselineAt: baseline.lastAt, alternativeAt: alternative.lastAt,
       difference: roundMoney(baseline.last - alternative.last), percentage: baseline.last > 0 ? (baseline.last - alternative.last) / baseline.last * 100 : null,
     }]
-  }).sort((a, b) => b.difference - a.difference).slice(0, 20)
+  }).sort((a, b) => b.difference - a.difference || a.productId - b.productId)
   return { range: range(query), merchants: summarizeMerchants(query),
     product: products.find(item => item.id === query.productId) ?? null,
     prices: query.productId ? merchantPrices(query, query.productId) : [], differences,

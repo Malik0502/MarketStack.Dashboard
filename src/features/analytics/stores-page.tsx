@@ -30,7 +30,7 @@ export function StoresPage() {
           <DashboardCard title={t('storeAverage')} className="lg:col-span-6"><BarList rows={data.merchants.filter(row => row.averagePurchase !== null).map(row => ({ id: row.id, label: merchantLabel(row), value: row.averagePurchase! }))} format={format.money} /></DashboardCard>
         </div>
         <DashboardCard title={t('storeOverview')}>
-          <DataTable caption={t('storeOverview')} rows={data.merchants} rowKey={row => row.id} columns={[
+          <DataTable resetKey={JSON.stringify(query)} caption={t('storeOverview')} rows={data.merchants} rowKey={row => row.id} columns={[
             { key: 'name', title: t('merchant'), render: row => row.name, sortValue: row => row.name },
             { key: 'chain', title: t('chain'), render: row => row.chain, sortValue: row => row.chain },
             { key: 'purchases', title: t('purchases'), render: row => format.number(row.purchases), sortValue: row => row.purchases, numeric: true },
@@ -44,7 +44,7 @@ export function StoresPage() {
         <ProductPicker value={productId} selectedName={data.product?.name ?? catalog.data?.products.find(item => item.id === productId)?.name} onChange={id => update({ productId: id })} />
         <AnalyticsNote>{t('historicalNote')}</AnalyticsNote>
         <DashboardCard title={`${t('productComparison')}${data.product ? ` · ${data.product.name}` : ''}`}>
-          <DataTable caption={t('productComparison')} rows={data.prices} emptyMessage={t('insufficient')} rowKey={row => row.merchant.id} columns={[
+          <DataTable resetKey={JSON.stringify(query)} caption={t('productComparison')} rows={data.prices} emptyMessage={t('insufficient')} rowKey={row => row.merchant.id} columns={[
             { key: 'store', title: t('merchant'), render: row => `${row.merchant.chain} · ${row.merchant.name}`, sortValue: row => row.merchant.name },
             { key: 'last', title: t('last'), render: row => format.money(row.last), sortValue: row => row.last, numeric: true },
             { key: 'date', title: t('lastDate'), render: row => format.date(row.lastAt), sortValue: row => row.lastAt },
@@ -56,8 +56,8 @@ export function StoresPage() {
         </DashboardCard>
         <DashboardCard title={t('differences')}>
           <p className="mb-4 text-[11px] leading-relaxed text-muted-foreground">{t('historicalDifferencesNote')}</p>
-          <DataTable caption={t('differences')} rows={data.differences} rowKey={row => row.productId} initialSort={{ key: 'difference', direction: 'desc' }} columns={[
-            { key: 'product', title: t('product'), render: row => <Link to="/prices" search={{ productId: row.productId }} className="font-medium text-primary hover:underline">{row.productName}</Link>, sortValue: row => row.productName },
+          <DataTable resetKey={JSON.stringify(query)} caption={t('differences')} rows={data.differences} rowKey={row => row.productId} initialSort={{ key: 'difference', direction: 'desc' }} columns={[
+            { key: 'product', title: t('product'), render: row => <Link to="/prices/$productId" params={{ productId: String(row.productId) }} search={{ from: query.from, to: query.to }} className="font-medium text-primary hover:underline">{row.productName}</Link>, sortValue: row => row.productName },
             { key: 'baseline', title: t('baseline'), render: row => <span>{row.baseline.chain} · {row.baseline.name}<span className="mt-1 block text-[10px] text-muted-foreground">{format.date(row.baselineAt)}</span></span> },
             { key: 'alternative', title: t('alternative'), render: row => <span>{row.alternative.chain} · {row.alternative.name}<span className="mt-1 block text-[10px] text-muted-foreground">{format.date(row.alternativeAt)}</span></span> },
             { key: 'price', title: t('baselinePrice'), render: row => format.money(row.baselinePrice), sortValue: row => row.baselinePrice, numeric: true },

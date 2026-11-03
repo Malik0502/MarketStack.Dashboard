@@ -1,5 +1,102 @@
 {
   "analytics": {
+    "priceProduct": {
+      "title": "Price analysis: {{product}}",
+      "description": "This page shows only the observed prices of this product. Period and store filters affect only its statistics and price history.",
+      "fallbackName": "Product #{{id}}",
+      "back": "Back to price overview"
+    },
+    "priceSections": {
+      "filtersTitle": "Page-wide filters",
+      "filtersDescription": "The period and store apply to both the individual product analysis and the cross-product rankings.",
+      "productTitle": "Individual product: price statistics & history",
+      "productDescription": "Choose a product for the six price statistics and the price history within this section. Search only narrows the product choices. The rankings below this section are independent of the product selection.",
+      "rankingsTitle": "Cross-product price rankings",
+      "rankingsDescription": "These tables compare all eligible products within the selected period and store, regardless of the product selected above. Select a product name to open a separate price analysis page for that product."
+    },
+    "pagination": {
+      "navigation": "Pagination: {{title}}",
+      "range": "{{from}}–{{to}} of {{total}} entries",
+      "page": "Page {{page}} of {{pages}}",
+      "pageSize": "Entries per page",
+      "all": "All",
+      "first": "First",
+      "previous": "Previous",
+      "next": "Next",
+      "last": "Last"
+    },
+    "purchaseHistory": "Purchase history",
+    "purchaseHistoryNote": "All matching receipt lines within the selected period, newest first. Older lines are also available through pagination.",
+    "abcDisplay": {
+      "purpose": "Which products account for most of your total item value? Classes group products by their contribution to the total, not by purchase frequency or importance.",
+      "A": "Largest spending drivers",
+      "B": "Medium contribution",
+      "C": "Small remaining contribution",
+      "products_one": "{{value}} distinct product",
+      "products_other": "{{value}} distinct products",
+      "share": "{{value}} of total item value",
+      "chartHint": "From left to right: products with high to low total item value. Bars = value per product in euros; line = combined share of all products up to this point. This shows how many products account for most of your spending."
+    },
+    "cardInfo": {
+      "open": "More information: {{title}}",
+      "close": "Close information",
+      "calculation": "How the values are calculated",
+      "frequency": {
+        "description": "The chart shows the number of imported purchases per calendar month within the selected period. The second line shows how many of those purchases contain at least one promotional line.",
+        "calculation": "Each distinct receipt counts as one purchase, regardless of the number of lines or units bought. A receipt with several promotional lines also counts only once in the promotion series. Months are assigned using the purchase date in UTC.",
+        "note": "Boundary months include only days within the selected period. Zero means no imported receipts, not necessarily no actual shopping. Branch or chain grouping does not change this chart."
+      },
+      "topExpenses": {
+        "description": "The ten products with the highest total item value within the selected period and active product filters.",
+        "calculation": "For each receipt line, the observed unit price is multiplied by the quantity and rounded to cents. These values are summed per product and sorted in descending order. The percentage is the share of the item value of all filtered products, not just the displayed top ten.",
+        "note": "The ranking covers all filtered products, regardless of the table page. Receipt-wide discounts or other differences are not allocated. Select a product to open its details."
+      },
+      "topFrequency": {
+        "description": "The ten products appearing in the most distinct purchases, not the products with the most units bought.",
+        "calculation": "For each product, distinct receipts within the selected period and active filters are counted. Multiple lines for the same product on one receipt count together as one purchase. Products are then sorted by this count in descending order.",
+        "note": "Three packs on one receipt count as one purchase; the same product on three receipts counts as three purchases. The ranking is independent of the table page."
+      },
+      "totalProducts": {
+        "description": "The number of distinct products with at least one matching purchase line in the selected period.",
+        "calculation": "After applying the period, tag and quantity unit filters, distinct product IDs are counted. Repeated purchases or lines for the same product do not increase this count.",
+        "note": "This is neither the number of units bought nor the size of the full product catalog. It covers all matches, not just the current table page."
+      },
+      "itemExpenses": {
+        "description": "The sum of reconstructed item values for all products matching the selected period and active filters.",
+        "calculation": "Item value = observed unit price × quantity, rounded to cents per line. All matching lines are then added together. A product with multiple tags still contributes its line value only once to this total.",
+        "note": "This is not a sum of receipt totals. Receipt-wide discounts, deposits or incomplete imports can cause differences from store and receipt spending. The table page does not affect the total."
+      },
+      "abcOverview": {
+        "description": "The question is: which products together account for most of your spending? A contains the largest spending drivers, B the next products and C the small remainder. The numbers under A, B and C count distinct products. If you see 8, 3 and 1, eight products belong to A, three to B and one to C. The percentage shows how much of the total item value those products account for together.",
+        "calculation": "First, products are sorted from highest to lowest total item value. They are then collected in order: into A until at least 80% of total value is reached; then into B until A and B together reach at least 95%; the remaining products go into C. Example: four products account for €50, €30, €15 and €5, totaling €100. A contains the first two products (€80 = 80%), B the third (€15 = 15%), C the fourth (€5 = 5%). A product that reaches or crosses a threshold stays in the class currently being filled, so shares may differ from 80/15/5. A class can also be empty.",
+        "note": "Practical use: when comparing prices or reviewing spending, A is often a useful starting point because these products account for the largest combined amount. A does not mean unnecessary or expensive per unit: frequently purchased low-price products can also belong here. This analysis does not judge purchases or calculate potential savings. Period and product filters apply to every class; table pagination has no effect."
+      },
+      "pareto": {
+        "description": "This chart shows the same spending drivers as the ABC distribution, but product by product. The product with the highest total item value is on the left. Bar height shows its value in euros. The line answers: how much of my total spending comes from the products from the left edge through this point?",
+        "calculation": "Example: four products have item values of €50, €30, €15 and €5, totaling €100. The bars show these four amounts. The line is at 50% for the first product, 80% for the second, 95% for the third and 100% for the last. In this example, the first two products belong to A, the third to B and the last to C. The line's percentages therefore accumulate; they are not each product's individual share.",
+        "note": "The purpose is to reveal concentration: if the line reaches 80% after only a few products, a few products account for most of your spending. If it rises slowly, spending is more widely spread. An 80/20 distribution is not assumed. All product filters apply, regardless of the table page. “Other products” may represent a combined remainder without its own ABC class."
+      },
+      "stability": {
+        "description": "The table shows how much observed unit prices for the same product at the same branch vary within the selected period. A low coefficient of variation means more consistent prices; a high value means greater fluctuations. Products other than the one selected above are included; the store filter still applies.",
+        "calculation": "Observations are recorded prices from receipt lines, not the number of units bought. The average is the mean of those prices. Standard deviation measures their spread in euros; the coefficient of variation divides that spread by the average and multiplies by 100. Example: an average of €2 and a standard deviation of €0.20 give 10%. This is not a price increase: prices alternating up and down can also produce a high value.",
+        "note": "Only verified comparable products with at least three price observations and a positive average are included. All matching product/branch combinations are available through pagination. Selecting a column heading sorts the entire result set, not just the current page. Different observation counts and time gaps can affect the picture; historical stability does not guarantee future prices."
+      },
+      "promotionProducts": {
+        "description": "The ten products with the most receipt lines carrying a promotion ID.",
+        "calculation": "Each matching line with a promotion ID counts once. Purchased quantities do not count as additional lines. Products are sorted by this line count in descending order; products without such lines are omitted.",
+        "note": "This is an absolute count, not a promotion rate or a measure of savings. A promotion ID does not establish a regular reference price. All active product filters apply; table pagination has no effect."
+      },
+      "tags": {
+        "description": "For each tag, the table shows distinct purchased products, distinct purchases, allocated item values and their share.",
+        "calculation": "Product and receipt IDs are each counted only once per tag. For products with multiple tags, item values are divided equally between all their tags. Shares use the total value of all filtered products, including untagged products.",
+        "note": "Product and purchase counts across tags cannot be added together: a product or receipt can belong to multiple tags. Even when filtering by a tag, matching products retain their complete tag assignments."
+      },
+      "quantities": {
+        "description": "Up to twenty products with the highest total quantity purchased within the selected, known quantity unit.",
+        "calculation": "Quantities from all matching purchase lines are added per product and sorted in descending order. Period, tag and unit filters apply before calculation. No quantity ranking is shown without a selected known unit.",
+        "note": "Kilograms and pieces must not be ranked together. Pieces or packs are not standardized weights: a small pack and a large pack each count as one pack."
+      }
+    },
     "eyebrow": "ANALYTICS", "spendingTitle": "Spending & shopping habits", "spendingDescription": "Understand spending distribution, shopping patterns and notable purchases.",
     "pricesTitle": "Price analytics", "pricesDescription": "Explore observed product prices, changes and stability.",
     "productsTitle": "Product analytics", "productsDescription": "Discover your key products, quantities and spending drivers.",

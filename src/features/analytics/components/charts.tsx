@@ -91,6 +91,6 @@ export function ParetoChart({ points }: { points: ParetoPoint[] }) {
       </g>)}
       <polyline points={points.map((point, index) => `${x(index)},${y(point.cumulativeShare)}`).join(' ')} fill="none" stroke="var(--chart-tax)" strokeWidth="2.5" />
     </svg>
-    <p className="mt-2 text-[11px] text-muted-foreground">{t('paretoNote')}</p>
+    <p className="mt-2 text-[11px] text-muted-foreground">{t('abcDisplay.chartHint')}</p>
   </div>
 }

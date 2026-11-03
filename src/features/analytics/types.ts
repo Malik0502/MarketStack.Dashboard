@@ -70,6 +70,7 @@ export interface ProductPurchase {
 }
 export interface ProductDetail {
   product: ProductStats | null; priceStats: PriceStats | null
+  // Full matching history; recentLimit is retained as legacy metadata, not a response cap.
   recentPurchases: ProductPurchase[]; recentLimit: number
 }
 export interface MerchantPrice {

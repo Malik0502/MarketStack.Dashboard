@@ -259,7 +259,16 @@ GET /api/analytics/prices?from=2025-11-01&to=2026-10-31&productId=1&storeId=nort
 **Endpoint:** `GET /api/analytics/prices`  
 **Response:** `DataResponse<PricesData>`  
 **Data schema:** [PricesData](analytics-api.schema.json#/$defs/PricesData), `#/$defs/PricesData`  
-**Page:** `/prices` (optional frontend URL search parameter `productId`).
+**Pages:** `/prices` (overview, optional frontend URL search parameter `productId`)
+and `/prices/{productId}` (dedicated product price page).
+
+Product-name links in the price rankings, store comparisons and product drawer
+open `/prices/{productId}`. That page shows only the selected product's statistics
+and history, with a product-specific heading and a link back to the price overview.
+Date/store context is carried in validated `from`, `to` and optional `storeId`
+URL search parameters. The overview's existing product picker remains available.
+Both views use the same `GET /api/analytics/prices` contract; there is no new
+backend endpoint. The detail view does not render the returned global rankings.
 
 | Response path | Schema name / JSON Pointer |
 | --- | --- |
@@ -287,9 +296,9 @@ summary while retaining the rankings as a discovery tool.
 | `product` | Selected Product metadata, or null if no representable selection |
 | `stats` | Statistics over comparable observed unit prices for the selected product; no quantity weighting and no promotion-based separation |
 | `series[]` | Separate chronological series per physical branch. Never connect observations from different branches as one line. Points contain the actual observation time and unit price. |
-| `increases[]` | At most 20 product/branch groups with positive first-to-last change, ordered by descending percentage |
-| `decreases[]` | At most 20 groups with negative first-to-last change, ordered by ascending percentage |
-| `stability[]` | Union of the 15 lowest-CV and 15 highest-CV product/branch groups, deduplicated, with at least three observations and a positive mean; ordered by descending CV, locally re-sortable to expose genuinely stable as well as volatile products |
+| `increases[]` | All eligible product/branch groups with positive first-to-last change, ordered by descending percentage; no top-20 cap |
+| `decreases[]` | All eligible groups with negative first-to-last change, ordered by ascending percentage; no top-20 cap |
+| `stability[]` | All eligible product/branch groups with at least three observations and a positive mean; ordered by descending CV, not limited to the stable/volatile extremes |
 
 `PriceRanking.previous` is the **first** price in the selected period, not the
 immediately preceding purchase or a regular reference price. `last` is the last
@@ -344,10 +353,10 @@ Example `PriceRanking` from a longer fixture period:
 **Frontend route:** `/products`.
 
 - [ ] **3.1** Reuse `GET /api/analytics/catalog` for tag/unit options and coverage.
-- [ ] **3.2** Implement `GET /api/analytics/products`, including aggregate search,
+- [ ] **3.2** Implement `GET /api/analytics/products`, including aggregates,
   filters, sorting, pagination and complete-population rankings.
 - [ ] **3.3** Implement `GET /api/analytics/products/{id}` for the detail drawer.
-- [ ] Verify tag/unit filtering, product-name search, stable ABC results across
+- [ ] Verify tag/unit filtering, stable ABC results across
   pages, detail totals/history and the link to the already implemented Prices page.
 
 ### 3.1 Tag and unit filter options
@@ -362,8 +371,8 @@ Request `search=&limit=50` on page initialization. The tag dropdown consumes
 complete Catalog object. See [step 1.1](#11-catalog-and-filter-options) for all
 query parameters, fields and the response example.
 
-**There is no product-picker lookup on this page.** Its search field filters
-`GET /api/analytics/products` using `search`, not the catalog endpoint. Clicking
+**There is no product picker or product-name search field on this page.**
+The page does not send a `search` filter to the aggregate/detail endpoints. Clicking
 a ranked/listed product requests the detail endpoint with that product's `id`.
 Tag/unit changes send `tagId`/`unit` to the aggregate and detail requests;
 the all-tags/all-units choices omit those parameters.
@@ -373,8 +382,8 @@ Typical request sequence:
 ```http
 GET /api/analytics/catalog?search=&limit=50
 GET /api/analytics/products?from=2025-11-01&to=2026-10-31&page=1&pageSize=10&sortBy=expenses&sortDirection=desc
-GET /api/analytics/products?from=2025-11-01&to=2026-10-31&search=Milk&tagId=1&unit=piece&page=1&pageSize=10&sortBy=expenses&sortDirection=desc
-GET /api/analytics/products/1?from=2025-11-01&to=2026-10-31&search=Milk&tagId=1&unit=piece
+GET /api/analytics/products?from=2025-11-01&to=2026-10-31&tagId=1&unit=piece&page=1&pageSize=10&sortBy=expenses&sortDirection=desc
+GET /api/analytics/products/1?from=2025-11-01&to=2026-10-31&tagId=1&unit=piece
 ```
 
 ### 3.2 Product rankings, tags, quantities and ABC
@@ -399,7 +408,7 @@ GET /api/analytics/products/1?from=2025-11-01&to=2026-10-31&search=Milk&tagId=1&
 | `from`, `to` | date | Yes | Inclusive UTC receipt bounds |
 | `tagId` | integer | No | Include products carrying the tag, using EXISTS rather than a duplicating join |
 | `unit` | `piece` or `kg` | No | Include only products with this verified unit; enables the quantity ranking |
-| `search` | string | No | Case-insensitive product-name filter |
+| `search` | string | No | Optional contract capability for case-insensitive product-name filtering; not used by the current Products UI |
 | `page` | integer | No | One-based, default 1 |
 | `pageSize` | integer | No | Default 10, range 1…50 |
 | `sortBy` | `expenses`, `purchases`, `name` | No | Default expenses; quantity ranking is a separate homogeneous-unit array |
@@ -468,7 +477,7 @@ Example for `?from=2026-10-02&to=2026-10-02&search=Dark&page=1&pageSize=10&sortB
 **Endpoint:** `GET /api/analytics/products/{id}`  
 **Response:** `DataResponse<ProductDetail>`  
 **Data schema:** [ProductDetail](analytics-api.schema.json#/$defs/ProductDetail), `#/$defs/ProductDetail`  
-**Page:** `/products`; link to `/prices?productId={id}`.
+**Page:** `/products`; link to `/prices/{id}` with the current date range.
 
 | Response path | Schema name / JSON Pointer |
 | --- | --- |
@@ -479,7 +488,8 @@ Example for `?from=2026-10-02&to=2026-10-02&search=Dark&page=1&pageSize=10&sortB
 | `data.recentLimit` | [ProductDetail.properties.recentLimit](analytics-api.schema.json#/$defs/ProductDetail/properties/recentLimit) |
 
 Path `id` is the stable Product.Id. Query parameters: required `from`, `to`;
-optional `tagId`, `unit`, `search` with the same meanings as the product page.
+optional `tagId`, `unit`, `search` with the same meanings as the aggregate contract.
+The current Products UI sends only tag/unit filters, not `search`.
 These retain the current ranking/filter context, including the share denominator.
 Pagination/sort parameters do not affect detail aggregates and are not sent.
 
@@ -488,14 +498,17 @@ Pagination/sort parameters do not affect detail aggregates and are not sent.
   quantity and spend sum all matching lines, not just the recent list.
 - `priceStats`: comparable unit-price statistics from matching receipts, following
   the price rules above. Null when identity/unit comparability cannot be established.
-- `recentPurchases`: latest ten matching receipt lines, ordered timestamp
+- `recentPurchases`: **all** matching receipt lines, ordered timestamp
   descending then line ID descending; each includes branch, actual quantity,
   observed unit price, reconstructed line value, and promotion presence.
   Raw purchase history remains available even when missing unit/identity
   metadata prevents comparative price statistics.
-- `recentLimit`: 10. A stable `lineId` is required because multiple lines of the
-  same product can occur on one receipt. Neither receipt count nor product totals
-  may be derived from this limited list.
+- `recentLimit`: 10, retained as legacy metadata for DTO compatibility; it no
+  longer caps `recentPurchases`. The UI pages the complete history locally and
+  no longer displays the old "latest ten" notice. A stable `lineId` is required
+  because multiple lines of the same product can occur on one receipt. Product
+  totals and distinct receipt counts still describe the complete filtered period,
+  never just the visible table page.
 
 Unknown product ID or an existing product without purchases under the current
 filters: success with `product=null`, `priceStats=null`, and `recentPurchases=[]`.
@@ -581,7 +594,7 @@ GET /api/analytics/stores?from=2025-11-01&to=2026-10-31&groupBy=chain&productId=
 | `merchants[]` | Same MerchantSummary semantics as Spending: receipt counts, receipt summary expenses, basket average, positions, distinct products and receipt promotion share. Recalculate distinct counts when grouping by chain. |
 | `product` | Selected Product metadata or null; does not restrict the merchant overview. |
 | `prices[]` | Per physical branch for the selected verified product: latest observed unit price/date, arithmetic mean, lowest observed price/date and count. This stays branch-specific even when overview groupBy=chain. |
-| `differences[]` | At most 20 products with verified comparable identity and observations at two or more branches. Select the highest and lowest **last observed** branch prices; output both prices, branches and observation timestamps. Sort by absolute positive price difference descending. |
+| `differences[]` | All products with verified comparable identity and observations at two or more branches, without a top-20 cap. Select the highest and lowest **last observed** branch prices; output both prices, branches and observation timestamps. Sort by absolute positive price difference descending. |
 
 For a difference, `baselinePrice` is the higher last-observed branch price,
 `alternativePrice` is the lower. `difference=baselinePrice-alternativePrice`;
@@ -772,6 +785,38 @@ No additional optional endpoint is required for the current UI. Canonical
 identity/unit enrichment, full catalog pagination, and receipt-detail navigation
 are possible future capabilities, not implemented API dependencies.
 
+## Table pagination and complete result sets
+
+All tables on Prices, Products and Stores, including the product-detail purchase
+history, allow access to every matching row. Empty tables retain their empty-state
+message. Each nonempty table has its own pagination; changing one does not change
+the page of a neighboring table.
+
+- **Product overview:** existing source-side pagination, ten rows per request,
+  using `page`, `pageSize` and `totalPages`. The current UI uses the fixed default
+  order (item value descending), without sort-order dropdowns.
+- **Other tables:** local pagination of complete response arrays, with ten rows
+  initially, selectable 10/25/50/all rows, first/previous/next/last controls and
+  visible row/total counts. Local column sorting applies to the full result set
+  **before** pagination and resets the active page. Filter/data changes reset
+  each affected table to its first page.
+- Do not truncate `PricesData.increases`, `decreases`, `stability`,
+  `StoresData.differences` or `ProductDetail.recentPurchases`. Otherwise local
+  pagination would only expose the old capped subset. No new query parameter or
+  route is used for local table pagination; response field names remain unchanged.
+- Merchant summaries, selected-product merchant prices and tag statistics also
+  return complete matching arrays. Chart-specific top-10/top-20 arrays and the
+  price-history point cap are unchanged; charts are not paginated tables.
+- **Backend integration note:** this revises the previous ranking/history limits.
+  Existing implementations that return only the first 20 rankings, 30 stability
+  extremes or ten purchase lines must return the complete eligible array. There
+  is no client-side way to discover omitted rows in those older responses.
+- For large production populations, explicit server-side per-table pagination
+  (including independent page/sort/total metadata) is a future contract extension.
+  Do not silently cap these arrays until such a contract is implemented in both
+  data source and UI. Only frontend/mock code and documentation are supplied here;
+  no backend implementation is included.
+
 ## Performance, consistency and acceptance requirements
 
 - Aggregate on the server and return DTOs, not every receipt/item/entity graph.
@@ -780,7 +825,7 @@ are possible future capabilities, not implemented API dependencies.
 - Keep receipt-summary and item/tag aggregations independent to prevent join
   multiplication. Use distinct ReceiptId/ProductId/ReceiptItem.Id as appropriate.
 - Stable sorting and page limits must be applied after totals and ABC calculations.
-  The UI sorts bounded returned price/store ranking rows locally; product-list
+  The UI sorts complete returned price/store table rows locally; product-list
   sorting and pagination are requested from the source.
 - Preserve all dates, counts, shares and units across endpoints for identical
   filter contexts. Product detail, price stats, recent purchases and rankings

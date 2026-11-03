@@ -11,6 +11,7 @@ import { AnalyticsLayout, AnalyticsNote, AnalyticsState } from './components/ana
 import { AnalyticsFilters } from './components/filters'
 import { BarList } from './components/bar-list'
 import { TimeSeriesChart } from './components/charts'
+import { CardInfo } from './components/card-info'
 import { merchantLabel } from './format'
 
 export function SpendingPage() {
@@ -43,7 +44,7 @@ export function SpendingPage() {
             <BarList rows={data.weekdays.map(row => ({ id: row.weekday, label: format.weekday(row.weekday), value: row.purchases,
               detail: `${t('averagePurchase')}: ${row.averageExpense === null ? t('missing') : format.money(row.averageExpense)}` }))} format={format.number} />
           </DashboardCard>
-          <DashboardCard title={t('frequency')} className="lg:col-span-6">
+          <DashboardCard title={t('frequency')} action={<CardInfo topic="frequency" />} className="lg:col-span-6">
             <TimeSeriesChart title={t('frequency')} format={format.number} series={[
               { id: 'purchases', label: t('purchases'), points: data.frequency.map(row => ({ date: row.month, value: row.purchases })) },
               { id: 'promotions', label: t('promotionPurchases'), points: data.frequency.map(row => ({ date: row.month, value: row.promotionPurchases })) },

@@ -8,9 +8,10 @@ import { useFormat } from '@/i18n/format'
 import { analyticsSource } from '../data-source'
 import type { Catalog, Scenario } from '../types'
 
-export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, children }: {
+export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, children, title, description }: {
   page: 'spending' | 'prices' | 'products' | 'stores'; catalog: Catalog | null
   scenario: Scenario; onScenario: (value: Scenario) => void; filters: ReactNode; children: ReactNode
+  title?: string; description?: string
 }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
   const { t: nav } = useTranslation('navigation')
@@ -19,8 +20,8 @@ export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, 
     <AppHeader title={nav(page)} />
     <div className="dashboard-page">
       <div className="mb-7"><p className="eyebrow mb-2.5">{t('eyebrow')}</p>
-        <h1 className="text-[28px] font-semibold tracking-[-0.045em] sm:text-[32px]">{t(`${page}Title`)}</h1>
-        <p className="mt-2 text-[13px] text-muted-foreground">{t(`${page}Description`)}</p>
+        <h1 className="text-[28px] font-semibold tracking-[-0.045em] sm:text-[32px]">{title ?? t(`${page}Title`)}</h1>
+        <p className="mt-2 text-[13px] text-muted-foreground">{description ?? t(`${page}Description`)}</p>
       </div>
       {analyticsSource === 'mock' && <div className="data-notice notice-demo mb-5">
         <FlaskConical className="size-4 shrink-0" />

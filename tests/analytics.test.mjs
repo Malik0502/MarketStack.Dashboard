@@ -105,12 +105,60 @@ test('product details, purchase counts and rankings describe the same complete d
     const raw = fixtures.receipts.filter(receipt => receipt.purchasedAt.slice(0, 10) >= query.from && receipt.purchasedAt.slice(0, 10) <= query.to)
       .filter(receipt => receipt.items.some(item => item.productId === row.id))
     assert.equal(row.purchases, new Set(raw.map(receipt => receipt.id)).size)
-    assert.ok(detail.recentPurchases.length <= 10)
+    assert.equal(detail.recentPurchases.length, raw.flatMap(receipt => receipt.items.filter(item => item.productId === row.id)).length)
     assert.equal(new Set(detail.recentPurchases.map(item => item.lineId)).size, detail.recentPurchases.length)
     close(detail.priceStats.count, model.getPrices({ ...query, productId: row.id }).stats.count)
     const observations = raw.flatMap(receipt => receipt.items.filter(item => item.productId === row.id))
     assert.equal(detail.priceStats.count, observations.length)
     close(detail.priceStats.average, sum(observations.map(item => item.price)) / observations.length)
+  }
+})
+
+test('local table pagination reaches every row, clamps pages and supports showing all', async () => {
+  const { paginateRows } = await server.ssrLoadModule('/src/features/analytics/table-pagination.ts')
+  const rows = Array.from({ length: 57 }, (_, index) => ({ id: index + 1 }))
+  const snapshot = structuredClone(rows)
+  const visited = Array.from({ length: 6 }, (_, index) => paginateRows(rows, index + 1, 10).rows).flat()
+  assert.deepEqual(visited, rows)
+  assert.deepEqual(rows, snapshot)
+  assert.equal(paginateRows(rows, 999, 10).page, 6)
+  assert.equal(paginateRows(rows, -1, 10).page, 1)
+  assert.deepEqual(paginateRows(rows, 1, 0).rows, rows)
+  assert.equal(paginateRows(rows, 1, 25).totalPages, 3)
+  assert.equal(paginateRows(rows, 6, 10).from, 51)
+  assert.equal(paginateRows(rows, 6, 10).to, 57)
+  assert.equal(paginateRows([], 10, 10).from, 0)
+  assert.equal(paginateRows([], 10, 10).to, 0)
+  // Sorting the full collection before pagination must expose its global extremes.
+  assert.equal(paginateRows([...rows].reverse(), 1, 10).rows[0].id, 57)
+})
+
+test('table sources no longer truncate price rankings, historical differences or purchase history', () => {
+  const productCount = fixtures.products.length, receiptCount = fixtures.receipts.length
+  try {
+    // Exceed all previous ranking limits, independently of the normal fixture size.
+    for (let index = 0; index < 30; index++) {
+      const id = 1000 + index
+      fixtures.products.push({ ...fixtures.products[0], id, name: `Pagination ${id}`, comparisonKey: `TEST-${id}` })
+      for (let storeIndex = 0; storeIndex < 2; storeIndex++) {
+        for (let observation = 0; observation < 3; observation++) {
+          const receiptId = 10000 + index * 10 + storeIndex * 3 + observation
+          const price = storeIndex === 0 ? 2 + observation : 5 - observation
+          fixtures.receipts.push({ id: receiptId, purchasedAt: `2026-01-0${observation + 1}T10:00:00.000Z`, storeId: fixtures.stores[storeIndex].id,
+            gross: price, items: [{ id: receiptId, productId: id, quantity: 1, price, promotionId: null }] })
+        }
+      }
+    }
+    const prices = model.getPrices(query), stores = model.getStores(query)
+    assert.equal(prices.increases.filter(row => row.productId >= 1000).length, 30)
+    assert.equal(prices.decreases.filter(row => row.productId >= 1000).length, 30)
+    assert.equal(prices.stability.filter(row => row.productId >= 1000).length, 60)
+    assert.equal(stores.differences.filter(row => row.productId >= 1000).length, 30)
+    const detail = model.getProduct(12, query)
+    assert.ok(detail.recentPurchases.length > 10)
+  } finally {
+    fixtures.products.splice(productCount)
+    fixtures.receipts.splice(receiptCount)
   }
 })
 
@@ -146,6 +194,30 @@ test('price statistics handle empty, single, even-count and zero-mean observatio
   close(result.standardDeviation, Math.sqrt(1.25))
   assert.equal(result.last, 4)
   assert.equal(model.priceStats(points([0, 0])).coefficientOfVariation, null)
+})
+
+test('product price navigation preserves valid date/store context and rejects malformed date ranges', async () => {
+  const { parsePriceFilterSearch } = await server.ssrLoadModule('/src/features/analytics/price-route-search.ts')
+  assert.deepEqual(parsePriceFilterSearch({ from: query.from, to: query.to, storeId: 'north-centre', unknown: 'ignored' }),
+    { from: query.from, to: query.to, storeId: 'north-centre' })
+  assert.deepEqual(parsePriceFilterSearch({ from: '2026-02-30', to: query.to }), {})
+  assert.deepEqual(parsePriceFilterSearch({ from: query.to, to: query.from }), {})
+  assert.deepEqual(parsePriceFilterSearch({ from: query.from, storeId: 12 }), {})
+  assert.deepEqual(parsePriceFilterSearch({ storeId: '' }), {})
+})
+
+test('price product selection affects only the individual analysis, while period/store filters remain global', () => {
+  const first = model.getPrices({ ...query, productId: 1 })
+  const second = model.getPrices({ ...query, productId: 2 })
+  assert.notDeepEqual(first.product, second.product)
+  assert.notDeepEqual(first.series, second.series)
+  for (const key of ['increases', 'decreases', 'stability']) assert.deepEqual(first[key], second[key])
+  const storeId = fixtures.stores[0].id
+  const filtered = model.getPrices({ ...query, productId: 1, storeId })
+  assert.ok(filtered.series.every(row => row.storeId === storeId))
+  for (const key of ['increases', 'decreases', 'stability']) {
+    assert.ok(filtered[key].every(row => row.storeId === storeId))
+  }
 })
 
 test('price changes remain within verified product/branch groups and stability has sufficient observations', () => {
@@ -291,6 +363,28 @@ test('documented schemas declare exactly the fields of each frontend DTO, includ
   }
   for (const name of ['DateRange', 'Tag', 'Merchant', 'Product', 'Catalog', 'Distribution', 'MerchantSummary', 'ReceiptHighlight', 'SpendingData', 'PriceStats', 'PricePoint', 'PriceSeries', 'PriceRanking', 'PricesData', 'ProductStats', 'TagStats', 'ParetoPoint', 'ProductsData', 'ProductPurchase', 'ProductDetail', 'MerchantPrice', 'HistoricalDifference', 'StoresData']) {
     assert.deepEqual(Object.keys(schema.$defs[name].properties).sort(), fields(name).sort(), name)
+  }
+})
+
+test('analytics card explanations cover every wired topic in German and English', async () => {
+  const pages = await Promise.all(['spending', 'products', 'prices'].map(page => readFile(new URL(`../src/features/analytics/${page}-page.tsx`, import.meta.url), 'utf8')))
+  const topics = pages.flatMap(page => [...page.matchAll(/<CardInfo topic="([^"]+)"/g)].map(match => match[1]))
+  assert.deepEqual([...topics].sort(), ['frequency', 'topExpenses', 'topFrequency', 'totalProducts', 'itemExpenses', 'abcOverview', 'pareto', 'promotionProducts', 'tags', 'quantities', 'stability'].sort())
+  for (const language of ['de', 'en']) {
+    const resources = JSON.parse(await readFile(new URL(`../src/i18n/locales/${language}/dashboard.json`, import.meta.url), 'utf8')).analytics
+    for (const key of ['open', 'close', 'calculation']) assert.ok(resources.cardInfo[key].length > 0)
+    assert.ok(resources.cardInfo.open.includes('{{title}}'))
+    for (const count of [1, 8]) {
+      const label = resources.abcDisplay[count === 1 ? 'products_one' : 'products_other']
+      assert.ok(label.includes('{{value}}'))
+    }
+    assert.ok(resources.abcDisplay.share.includes('{{value}}'))
+    for (const topic of topics) {
+      assert.equal(typeof resources[topic], 'string')
+      for (const field of ['description', 'calculation', 'note']) {
+        assert.ok(resources.cardInfo[topic][field].length > 40, `${language}: ${topic}.${field}`)
+      }
+    }
   }
 })
 
