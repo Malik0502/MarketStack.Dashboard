@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { createServer } from 'vite'
 import ts from 'typescript'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 let server, model, fixtures, source
 const originalFetch = globalThis.fetch
@@ -126,6 +128,31 @@ test('analytics period presets use inclusive UTC days, calendar boundaries and c
       assert.ok(resources[period].label.length)
     }
   }
+})
+
+test('compact filter bar starts collapsed with a localized summary and persistent controls', async () => {
+  const { default: i18n } = await server.ssrLoadModule('/src/i18n/index.ts')
+  const { AnalyticsFilters } = await server.ssrLoadModule('/src/features/analytics/components/filters.tsx')
+  const previousLanguage = i18n.language
+  try {
+    for (const language of ['de', 'en']) {
+      await i18n.changeLanguage(language)
+      const html = renderToStaticMarkup(createElement(AnalyticsFilters, {
+        query: { ...query, storeId: 'north-centre' }, update: () => {}, catalog: model.getCatalog(), store: true,
+      }))
+      assert.match(html, /<details[^>]*analytics-sticky-filters/)
+      assert.doesNotMatch(html, /<details[^>]*\sopen(?:[=>\s])/)
+      const summary = html.match(/<summary[^>]*>([\s\S]*?)<\/summary>/)[1]
+      assert.ok(summary.includes(language === 'de' ? 'Filter' : 'Filters'))
+      assert.ok(summary.includes(language === 'de' ? '1J' : '1Y'))
+      assert.ok(summary.includes(language === 'de' ? 'Ein zusätzlicher Filter aktiv' : 'One additional filter active'))
+      assert.ok(!summary.includes('<select'))
+      const panelId = html.match(/aria-controls="([^"]+)"/)[1]
+      assert.ok(html.includes(`id="${panelId}"`))
+      assert.equal([...html.matchAll(/aria-pressed=/g)].length, 5)
+      assert.ok(html.includes('<select'))
+    }
+  } finally { await i18n.changeLanguage(previousLanguage) }
 })
 
 test('product details, purchase counts and rankings describe the same complete data', () => {

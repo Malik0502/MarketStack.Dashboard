@@ -22,7 +22,7 @@ export function ProductsPage() {
   const load = useCallback((signal: AbortSignal) => analytics.products(query, signal), [query])
   const result = useAnalytics(load, `products:${JSON.stringify(query)}`, scenario, validRange(query))
   const data = result.data
-  return <AnalyticsLayout page="products" catalog={catalog.data} scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
+  return <AnalyticsLayout page="products" scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
     filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} tags quantities />}>
     <AnalyticsState status={catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>
       {data && (data.totalProducts === 0 ? <EmptyState message={t('noResults')} /> : <div className="space-y-4">

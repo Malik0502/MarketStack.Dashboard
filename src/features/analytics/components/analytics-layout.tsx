@@ -4,19 +4,17 @@ import { FlaskConical, RefreshCw } from 'lucide-react'
 import { AppHeader } from '@/Components/Navigation/app-header'
 import { Button } from '@/Components/ui/button'
 import { EmptyState } from '@/features/dashboard/components/dashboard-card'
-import { useFormat } from '@/i18n/format'
 import { analyticsSource } from '../data-source'
-import type { Catalog, Scenario } from '../types'
+import type { Scenario } from '../types'
 
-export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, children, title, description, loading = false }: {
-  page: 'spending' | 'prices' | 'products' | 'stores'; catalog: Catalog | null
+export function AnalyticsLayout({ page, scenario, onScenario, filters, children, title, description, loading = false }: {
+  page: 'spending' | 'prices' | 'products' | 'stores'
   scenario: Scenario; onScenario: (value: Scenario) => void; filters: ReactNode; children: ReactNode
   title?: string; description?: string
   loading?: boolean
 }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
   const { t: nav } = useTranslation('navigation')
-  const { date } = useFormat()
   const layoutRef = useCallback((node: HTMLDivElement | null) => {
     const header = node?.querySelector<HTMLElement>('.app-header')
     const content = node?.querySelector<HTMLElement>('.analytics-content')
@@ -52,9 +50,7 @@ export function AnalyticsLayout({ page, catalog, scenario, onScenario, filters, 
           </select>
         </label>
       </div>}
-      <section className="analytics-sticky-filters mb-5 rounded-xl border bg-card p-4">{filters}
-        {catalog?.coverage && <p className="mt-3 text-[10px] text-muted-foreground">{t('coverage', { from: date(catalog.coverage.from), to: date(catalog.coverage.to) })}</p>}
-      </section>
+      {filters}
       <div className="analytics-content">{children}</div>
     </div>
   </div>

@@ -21,7 +21,7 @@ export function SpendingPage() {
   const load = useCallback((signal: AbortSignal) => analytics.spending(query, signal), [query])
   const result = useAnalytics(load, `spending:${JSON.stringify(query)}`, scenario, validRange(query))
   const data = result.data
-  return <AnalyticsLayout page="spending" catalog={catalog.data} scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
+  return <AnalyticsLayout page="spending" scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
     filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} group />}>
     <AnalyticsState status={catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>
       {data && (data.comparison.current === 0 ? <EmptyState message={t('noResults')} /> : <div className="space-y-4">

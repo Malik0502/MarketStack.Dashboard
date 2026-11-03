@@ -1,5 +1,7 @@
 {
   "main": "Main navigation",
+  "expandNavigation": "Expand navigation",
+  "collapseNavigation": "Collapse navigation",
   "overview": "Overview",
   "home": "Home",
   "spending": "Spending",

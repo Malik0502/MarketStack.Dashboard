@@ -19,7 +19,7 @@ export function ProductPricesPage({ productId, initialFilters }: { productId: nu
     ?? t('priceProduct.fallbackName', { id: productId })
   return <AnalyticsLayout page="prices" title={t('priceProduct.title', { product: productName })}
     loading={result.status === 'loading' || catalog.status === 'loading'}
-    description={t('priceProduct.description')} catalog={catalog.data} scenario={scenario} onScenario={setScenario}
+    description={t('priceProduct.description')} scenario={scenario} onScenario={setScenario}
     filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} store />}>
     <Link to="/prices" search={{ productId, from: query.from, to: query.to, storeId: query.storeId }}
       className="mb-5 inline-flex min-h-9 items-center gap-2 rounded-lg px-2 text-sm font-medium text-primary hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">

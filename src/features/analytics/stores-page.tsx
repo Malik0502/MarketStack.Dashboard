@@ -20,7 +20,7 @@ export function StoresPage() {
   const load = useCallback((signal: AbortSignal) => analytics.stores({ ...query, productId }, signal), [query, productId])
   const result = useAnalytics(load, `stores:${JSON.stringify(query)}:${productId}`, scenario, validRange(query))
   const data = result.data
-  return <AnalyticsLayout page="stores" catalog={catalog.data} scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
+  return <AnalyticsLayout page="stores" scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
     filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} group />}>
     <AnalyticsState status={catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>
       {data && (data.merchants.length === 0 ? <EmptyState message={t('noResults')} /> : <div className="space-y-4">

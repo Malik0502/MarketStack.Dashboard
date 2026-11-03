@@ -1,5 +1,12 @@
 {
   "analytics": {
+    "filterBar": {
+      "label": "Filters",
+      "toggle": "Open or close filters",
+      "custom": "Custom",
+      "activeExtras_one": "One additional filter active",
+      "activeExtras_other": "{{count}} additional filters active"
+    },
     "period": {
       "label": "Period",
       "week": { "short": "1W", "label": "1 week" },

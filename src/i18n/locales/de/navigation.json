@@ -1,5 +1,7 @@
 {
   "main": "Hauptnavigation",
+  "expandNavigation": "Navigation aufklappen",
+  "collapseNavigation": "Navigation einklappen",
   "overview": "Übersicht",
   "home": "Home",
   "spending": "Ausgaben",

@@ -694,6 +694,11 @@ timezone conversion.
 
 The global sticky filter bar uses compact presets instead of editable dates:
 
+The bar starts collapsed. Its disclosure button shows the selected period and
+an active-extra-filter count; opening it reveals the presets and extra selectors.
+Closing it does not reset filters. This is presentation state only and is not
+sent to the backend.
+
 | Preset | Inclusive UTC range |
 | --- | --- |
 | 1W | Today and the preceding six days |

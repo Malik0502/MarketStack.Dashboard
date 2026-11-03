@@ -249,7 +249,19 @@ tax value. Demo filenames include `MOCK` to distinguish them from live reports.
 
 The desktop dashboard uses a twelve-column CSS grid. Cards declare their own
 column spans and stack at narrower widths. The sidebar becomes an icon rail
-on tablets and a top navigation row on mobile.
+on tablets (768–1199px), with a localized toggle to expand it to the full 228px
+navigation including labels and collapse it back to the 76px icon rail. The main
+content margin follows the width rather than being covered by an overlay. The
+toggle exposes `aria-expanded`/`aria-controls`; Escape collapses the expanded
+tablet navigation and returns focus to the toggle. Expansion is retained while
+navigating between pages in the current app session. The toggle is hidden on
+desktop and mobile, whose existing layouts remain unchanged.
+Below 768px the same five route links become a fixed
+bottom navigation bar with icons and localized labels; no duplicate navigation
+DOM or route definitions are needed. User, theme and language controls remain
+in the sticky top header. Page padding reserves the bar height and the device's
+bottom safe area so final rows/actions remain reachable. Sticky analytics filter
+panels also reserve this space on short screens; dialogs remain above navigation.
 
 The shared header uses `position: sticky`, `top: 0`, an opaque themed background,
 and an elevated stacking order. Its responsive height accommodates controls
@@ -351,6 +363,13 @@ not cause overlap. The bar sits above table headers but below dialogs, and is
 height-limited with internal scrolling for short viewports. The last rendered
 content height is retained during reloads so editing a pinned filter does not
 collapse the page and jump the user back to the top. Home is unaffected.
+The filter bar starts collapsed as a compact native `details`/`summary` disclosure
+with a filter icon, the selected period and a count of active extra filters.
+Opening it reveals the existing controls and data coverage; closing it preserves
+all selections. Enter/Space toggle the disclosure; Escape closes it and returns
+focus to the summary. All labels are localized. The expanded mobile controls
+remain a single horizontally swipeable row; collapsed fields are hidden and
+excluded from keyboard navigation by native disclosure semantics.
 The price overview retains its picker selection in the validated `productId` URL
 search parameter. Clicking product links opens the dedicated `/prices/$productId`
 page instead of updating the overview in place. The path ID is validated, and
