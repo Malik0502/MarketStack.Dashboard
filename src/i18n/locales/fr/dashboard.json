@@ -1,0 +1,146 @@
+{
+  "analytics": {
+    "filterBar": {
+      "label": "Filtres",
+      "toggle": "Ouvrir ou fermer les filtres",
+      "custom": "Personnalisé",
+      "activeExtras_one": "Un filtre supplémentaire actif",
+      "activeExtras_many": "{{count}} filtres supplémentaires actifs",
+      "activeExtras_other": "{{count}} filtres supplémentaires actifs"
+    },
+    "period": {
+      "label": "Période",
+      "week": { "short": "1S", "label": "1 semaine" },
+      "month": { "short": "1M", "label": "1 mois" },
+      "ytd": { "short": "YTD", "label": "Depuis le début de l’année" },
+      "year": { "short": "1A", "label": "1 an" },
+      "max": { "short": "Max", "label": "Période maximale" },
+      "unavailable": "Aucune période de données disponible"
+    },
+    "priceProduct": {
+      "title": "Analyse des prix : {{product}}",
+      "description": "Cette page présente uniquement les prix observés pour ce produit. Les filtres de période et de magasin ne concernent que ses indicateurs et son historique de prix.",
+      "fallbackName": "Produit n° {{id}}",
+      "back": "Retour à la vue d’ensemble des prix"
+    },
+    "priceSections": {
+      "productTitle": "Un produit : statistiques et historique des prix",
+      "productDescription": "Choisissez un produit pour les six indicateurs de prix et l’historique présentés dans cette section. La recherche limite uniquement les produits proposés. Les classements ci-dessous sont indépendants du produit sélectionné.",
+      "rankingsTitle": "Classements des prix par produit",
+      "rankingsDescription": "Ces tableaux comparent tous les produits admissibles pour la période et le magasin choisis, indépendamment du produit sélectionné ci-dessus. Cliquez sur le nom d’un produit pour ouvrir sa page d’analyse des prix."
+    },
+    "pagination": {
+      "navigation": "Pagination : {{title}}",
+      "range": "{{from}}–{{to}} sur {{total}} entrées",
+      "page": "Page {{page}} sur {{pages}}",
+      "pageSize": "Entrées par page",
+      "all": "Toutes",
+      "first": "Première",
+      "previous": "Précédente",
+      "next": "Suivante",
+      "last": "Dernière"
+    },
+    "purchaseHistory": "Historique des achats",
+    "purchaseHistoryNote": "Toutes les lignes de ticket correspondant à la période choisie, des plus récentes aux plus anciennes. La pagination permet aussi de consulter les lignes plus anciennes.",
+    "abcDisplay": {
+      "purpose": "Quels produits représentent la plus grande part de la valeur totale de vos lignes d’achat ? Les classes regroupent les produits selon leur contribution au total, et non selon leur fréquence d’achat ou leur importance.",
+      "A": "Principaux postes de dépenses",
+      "B": "Contribution intermédiaire",
+      "C": "Faible contribution restante",
+      "products_one": "{{value}} produit distinct",
+      "products_many": "{{value}} produits distincts",
+      "products_other": "{{value}} produits distincts",
+      "share": "{{value}} de la valeur totale des lignes",
+      "chartHint": "De gauche à droite : produits classés par valeur totale décroissante. Barres = valeur par produit en euros ; courbe = part cumulée de tous les produits jusqu’à ce point. Vous voyez ainsi combien de produits représentent l’essentiel de vos dépenses."
+    },
+    "cardInfo": {
+      "open": "En savoir plus : {{title}}",
+      "close": "Fermer les informations",
+      "calculation": "Comment les valeurs sont calculées",
+      "frequency": {
+        "description": "Le graphique présente le nombre d’achats importés par mois civil sur la période choisie. La deuxième courbe indique combien de ces achats contiennent au moins une ligne en promotion.",
+        "calculation": "Chaque ticket distinct compte comme un achat, quel que soit le nombre de lignes ou d’unités achetées. Un ticket comportant plusieurs lignes en promotion ne compte également qu’une fois dans la courbe des promotions. Le mois est déterminé par la date d’achat en UTC.",
+        "note": "Les mois de début et de fin ne comprennent que les jours inclus dans la période choisie. Zéro signifie qu’aucun ticket n’a été importé, pas nécessairement qu’aucun achat n’a eu lieu. Le regroupement par magasin ou enseigne ne modifie pas ce graphique."
+      },
+      "topExpenses": {
+        "description": "Les dix produits dont la valeur totale des lignes d’achat est la plus élevée sur la période choisie, selon les filtres actifs.",
+        "calculation": "Pour chaque ligne de ticket, le prix unitaire observé est multiplié par la quantité, puis arrondi au centime. Ces valeurs sont additionnées par produit et triées par ordre décroissant. Le pourcentage correspond à la part dans la valeur de tous les produits filtrés, et pas seulement des dix produits affichés.",
+        "note": "Le classement porte sur tous les produits filtrés, indépendamment de la page du tableau. Les remises globales du ticket et les autres écarts ne sont pas répartis. Cliquez sur un produit pour afficher ses détails."
+      },
+      "topFrequency": {
+        "description": "Les dix produits présents dans le plus grand nombre d’achats distincts, et non ceux dont le plus grand nombre d’unités a été acheté.",
+        "calculation": "Pour chaque produit, les tickets distincts correspondant à la période et aux filtres actifs sont comptés. Plusieurs lignes du même produit sur un ticket ne comptent que comme un achat. Les produits sont ensuite triés selon ce nombre, par ordre décroissant.",
+        "note": "Trois paquets sur un ticket comptent comme un achat ; le même produit sur trois tickets compte comme trois achats. Le classement est indépendant de la page du tableau."
+      },
+      "totalProducts": {
+        "description": "Le nombre de produits distincts ayant au moins une ligne d’achat correspondant à la période choisie.",
+        "calculation": "Après application des filtres de période, d’étiquette et d’unité, les identifiants de produit distincts sont comptés. Des achats répétés ou plusieurs lignes du même produit n’augmentent pas ce nombre.",
+        "note": "Il ne s’agit ni du nombre d’unités achetées ni du nombre de produits du catalogue complet. Le total inclut tous les résultats, et pas seulement la page actuelle du tableau."
+      },
+      "itemExpenses": {
+        "description": "La somme des valeurs reconstituées des lignes d’achat pour tous les produits correspondant à la période et aux filtres actifs.",
+        "calculation": "Valeur d’une ligne = prix unitaire observé × quantité, arrondie au centime par ligne. Toutes les lignes correspondantes sont ensuite additionnées. Un produit portant plusieurs étiquettes ne contribue qu’une fois à cette somme.",
+        "note": "Ce n’est pas la somme des totaux des tickets. Des remises globales, consignes ou importations incomplètes peuvent expliquer des écarts avec les dépenses par magasin ou par ticket. La page du tableau n’influence pas le total."
+      },
+      "abcOverview": {
+        "description": "La question est : quels produits représentent ensemble la plus grande part de vos dépenses ? A regroupe les principaux postes de dépenses, B les produits suivants et C le faible montant restant. Les nombres sous A, B et C indiquent des produits distincts. Si vous voyez 8, 3 et 1, huit produits appartiennent à A, trois à B et un à C. Le pourcentage indique la part de la valeur totale des lignes que ces produits représentent ensemble.",
+        "calculation": "Les produits sont d’abord classés par valeur totale décroissante. Ils sont ensuite regroupés dans cet ordre : dans A jusqu’à atteindre au moins 80 % du total, puis dans B jusqu’à ce que A et B atteignent ensemble au moins 95 %. Les produits restants vont dans C. Exemple : quatre produits représentent 50 €, 30 €, 15 € et 5 €, soit 100 €. A contient les deux premiers (80 € = 80 %), B le troisième (15 € = 15 %) et C le quatrième (5 € = 5 %). Le produit qui atteint ou dépasse un seuil reste dans la classe en cours ; les parts peuvent donc différer de 80/15/5. Une classe peut aussi être vide.",
+        "note": "Utilité pratique : pour comparer les prix ou examiner vos dépenses, commencez souvent par A, car ces produits représentent le montant cumulé le plus élevé. A ne signifie ni inutile ni cher à l’unité : des produits bon marché achetés souvent peuvent aussi s’y trouver. Cette analyse ne juge pas les achats et ne calcule pas d’économies potentielles. Les filtres de période et de produit s’appliquent à toutes les classes ; la pagination n’a aucun effet."
+      },
+      "pareto": {
+        "description": "Ce graphique présente les mêmes postes de dépenses que la répartition ABC, mais produit par produit. Le produit ayant la valeur totale la plus élevée se trouve à gauche. La hauteur d’une barre indique sa valeur en euros. La courbe répond à la question : quelle part du total provient des produits situés entre le bord gauche et ce point ?",
+        "calculation": "Exemple : quatre produits représentent 50 €, 30 €, 15 € et 5 €, soit 100 €. Les barres montrent ces quatre montants. La courbe atteint 50 % au premier produit, 80 % au deuxième, 95 % au troisième et 100 % au dernier. Dans cet exemple, les deux premiers produits appartiennent à A, le troisième à B et le dernier à C. Les pourcentages de la courbe s’additionnent : ils ne représentent pas la part individuelle de chaque produit.",
+        "note": "L’objectif est de voir la concentration des dépenses : si la courbe atteint 80 % après quelques produits seulement, peu de produits représentent l’essentiel du total. Si elle monte lentement, les dépenses sont plus réparties. Une répartition 80/20 n’est pas supposée. Tous les filtres de produit s’appliquent, indépendamment de la page du tableau. « Autres produits » peut regrouper le reste sans classe ABC propre."
+      },
+      "stability": {
+        "description": "Le tableau montre la variation des prix unitaires observés pour un même produit dans un même magasin sur la période choisie. Un faible coefficient de variation indique des prix plus réguliers ; une valeur élevée indique de plus fortes fluctuations. D’autres produits que celui sélectionné ci-dessus sont inclus ; le filtre de magasin s’applique toujours.",
+        "calculation": "Les observations sont des prix enregistrés sur les lignes de ticket, et non des unités achetées. La moyenne est celle de ces prix. L’écart-type mesure leur dispersion en euros ; le coefficient de variation divise cette dispersion par la moyenne et multiplie le résultat par 100. Exemple : une moyenne de 2 € et un écart-type de 0,20 € donnent 10 %. Ce n’est pas une hausse de prix : des prix alternant hausses et baisses peuvent aussi produire une valeur élevée.",
+        "note": "Seuls les produits dont la comparabilité est vérifiée, avec au moins trois observations et une moyenne positive, sont inclus. Toutes les combinaisons produit/magasin correspondantes sont accessibles par pagination. Cliquez sur un en-tête pour trier tous les résultats, pas seulement la page actuelle. Le nombre d’observations et leurs intervalles peuvent influencer les résultats ; la stabilité passée ne garantit pas les prix futurs."
+      },
+      "promotionProducts": {
+        "description": "Les dix produits ayant le plus de lignes de ticket portant un identifiant de promotion.",
+        "calculation": "Chaque ligne correspondante avec un identifiant de promotion compte une fois. Les quantités achetées ne comptent pas comme des lignes supplémentaires. Les produits sont classés par nombre de lignes décroissant ; ceux qui n’en ont aucune sont exclus.",
+        "note": "Il s’agit d’un nombre absolu, pas d’un taux de promotion ni d’une mesure des économies. Un identifiant de promotion ne prouve pas l’existence d’un prix de référence habituel. Tous les filtres de produit actifs s’appliquent ; la pagination n’a aucun effet."
+      },
+      "tags": {
+        "description": "Pour chaque étiquette, le tableau présente les produits achetés distincts, les achats distincts, les valeurs de lignes attribuées et leur part.",
+        "calculation": "Les identifiants de produit et de ticket ne sont comptés qu’une fois par étiquette. Si un produit possède plusieurs étiquettes, la valeur de ses lignes est répartie à parts égales entre toutes ses étiquettes. Les parts se rapportent à la valeur de tous les produits filtrés, y compris ceux sans étiquette.",
+        "note": "Les nombres de produits et d’achats des différentes étiquettes ne sont pas additionnables : un produit ou un ticket peut appartenir à plusieurs étiquettes. Même avec un filtre par étiquette, les produits correspondants conservent toutes leurs associations."
+      },
+      "quantities": {
+        "description": "Jusqu’à vingt produits ayant les quantités totales achetées les plus élevées, dans l’unité connue sélectionnée.",
+        "calculation": "Les quantités de toutes les lignes d’achat correspondantes sont additionnées par produit et triées par ordre décroissant. Les filtres de période, d’étiquette et d’unité sont appliqués avant le calcul. Aucun classement des quantités n’est affiché sans unité connue sélectionnée.",
+        "note": "Les kilogrammes et les pièces ne doivent pas être classés ensemble. Les pièces ou paquets ne sont pas des poids normalisés : un petit paquet et un grand paquet comptent chacun comme un paquet."
+      }
+    },
+    "eyebrow": "ANALYSES", "spendingTitle": "Dépenses et habitudes d’achat", "spendingDescription": "Comprendre la répartition des dépenses, le rythme des achats et les achats remarquables.",
+    "pricesTitle": "Analyse des prix", "pricesDescription": "Explorer les prix observés des produits, leurs variations et leur stabilité.",
+    "productsTitle": "Analyse des produits", "productsDescription": "Découvrir vos principaux produits, les quantités et les postes de dépenses.",
+    "storesTitle": "Analyse des magasins", "storesDescription": "Comparer magasins, enseignes et prix historiques de produits comparables.",
+    "mockLabel": "Données fictives", "mockNotice": "Cette page d’analyse utilise uniquement des données d’exemple cohérentes. Il ne s’agit ni d’achats réels ni d’offres actuelles.",
+    "apiLabel": "Données de l’API", "coverage": "Données disponibles : {{from}} – {{to}} · Limites journalières en UTC",
+    "preview": "État d’aperçu", "state_ready": "Normal", "state_loading": "Chargement", "state_empty": "Vide", "state_error": "Erreur", "state_noResults": "Aucun résultat",
+    "loading": "Chargement des analyses…", "empty": "Aucune donnée disponible pour le moment.", "error": "Impossible de charger les données d’analyse.", "noResults": "Aucune donnée ne correspond à cette sélection.", "retry": "Réessayer", "insufficient": "Pas assez d’observations comparables.",
+    "from": "Du", "to": "Au", "invalidRange": "La période est invalide. Veuillez choisir une des périodes disponibles.", "reset": "Réinitialiser les filtres",
+    "groupBy": "Regroupement", "groupStore": "Magasin", "groupChain": "Enseigne", "store": "Magasin", "allStores": "Tous les magasins", "product": "Produit", "searchProduct": "Rechercher un produit", "selectProduct": "Choisir un produit", "refineSearch": "D’autres produits sont disponibles. Veuillez affiner la recherche.", "tag": "Étiquette", "allTags": "Toutes les étiquettes", "unit": "Unité de quantité", "piece": "Pièces / paquets", "kg": "kg", "unknownUnit": "Unité inconnue", "allUnits": "Toutes les unités", "search": "Filtrer les produits", "sortBy": "Trier par", "sortDirection": "Ordre", "ascending": "Croissant", "descending": "Décroissant",
+    "expenses": "Dépenses", "itemExpenses": "Valeur des lignes", "share": "Part", "purchases": "Achats", "quantity": "Quantité", "positions": "Lignes de ticket", "distinctProducts": "Produits distincts", "merchant": "Magasin", "chain": "Enseigne", "date": "Date", "averagePurchase": "Montant moyen par achat", "name": "Nom",
+    "categories": "Dépenses par étiquette", "merchants": "Dépenses par magasin", "allocationNote": "Valeur des lignes = prix unitaire observé × quantité. Pour un produit à plusieurs étiquettes, la valeur est répartie à parts égales. Les écarts au niveau du ticket ne sont pas répartis.", "untagged": "Sans étiquette", "weekdays": "Achats par jour de la semaine", "weekdayAverage": "Dépenses moyennes par jour de la semaine", "frequency": "Fréquence des achats", "frequencyComparison": "Comparaison de périodes consécutives de même durée", "currentPeriod": "Période choisie", "previousPeriod": "Période précédente", "noComparison": "Les données ne couvrent pas entièrement la période de comparaison.", "specials": "Achats remarquables", "expensive": "Achat le plus cher", "cheapest": "Achat le moins cher", "mostPositions": "Le plus de lignes", "mostUnits": "Le plus de pièces / paquets", "unitsScope": "Uniquement les tickets dont toutes les lignes ont une unité pièce/paquet connue. Des quantités d’unités différentes ne sont pas comparables.",
+    "promotionPositions": "Lignes en promotion", "promotionPurchases": "Achats avec promotion", "promotionShare": "Part des achats avec promotion", "promotionFrequency": "Évolution des achats avec promotion", "promotionProducts": "Produits ayant le plus de lignes en promotion", "promotionNote": "Les identifiants de promotion signalent des offres, mais ne prouvent pas une économie précise.",
+    "priceHistory": "Historique des prix observés", "historicalNote": "Observations historiques, et non prix de vente actuels garantis. Les comparaisons exigent une identité produit/conditionnement et une unité vérifiées et identiques.", "last": "Dernier prix observé", "mean": "Moyenne", "minimum": "Minimum", "maximum": "Maximum", "median": "Médiane", "observations": "Observations", "unitPrice": "Prix unitaire observé", "priceStatistics": "Statistiques de prix", "increases": "Plus fortes hausses de prix", "decreases": "Plus fortes baisses de prix", "previous": "Premier prix de la période", "change": "Variation absolue", "changePercent": "Variation en %", "firstDate": "Première observation", "lastDate": "Dernière observation", "stability": "Stabilité des prix par produit et magasin", "cv": "Coefficient de variation", "standardDeviation": "Écart-type", "stabilityNote": "Écart-type de la population / moyenne × 100. Au moins trois observations ; une faible valeur indique des prix plus stables.", "rankingsNote": "Les variations comparent la première et la dernière observation de la période, pour un même magasin et une même identité de produit.", "truncated": "L’historique est limité. Réduisez la période pour plus de détails.",
+    "topExpenses": "Principaux produits par valeur des lignes", "topFrequency": "Produits présents dans le plus d’achats distincts", "quantities": "Quantités par produit", "quantityNote": "Comparez les quantités uniquement au sein d’une même unité. Les pièces/paquets ne sont pas des poids normalisés. Les unités inconnues sont exclues des classements de quantités.", "selectUnit": "Choisissez une unité connue pour le classement des quantités.", "tags": "Catégories et étiquettes", "tagProducts": "Produits", "tagNote": "Les nombres d’achats par étiquette comptent les tickets distincts et ne sont pas additionnables ; les valeurs de lignes sont réparties entre les étiquettes multiples.", "pareto": "Analyse ABC / Pareto", "cumulative": "Part cumulée des dépenses", "abc": "Classe ABC", "paretoNote": "A : part avant le produit < 80 %, B : < 95 %, C : reste. La classification porte sur tous les produits filtrés, avant pagination.", "other": "Autres produits", "productList": "Vue d’ensemble des produits", "details": "Détails", "productDetails": "Détails du produit", "closeDetails": "Fermer les détails", "recentPurchases": "Achats récents", "recentLimit": "Les {{count}} dernières lignes de ticket de la période choisie.", "openPrices": "Voir l’analyse des prix", "page": "Page {{page}} sur {{pages}}", "previousPage": "Page précédente", "nextPage": "Page suivante", "totalProducts": "Produits sur la période", "abcOverview": "Répartition ABC",
+    "storeOverview": "Vue d’ensemble des magasins", "storePurchases": "Achats par magasin", "storeAverage": "Montant moyen par achat et magasin", "productComparison": "Comparaison historique des prix d’un produit", "lowestObserved": "Prix observé le plus bas", "minimumDate": "Date du minimum", "differences": "Écarts de prix historiques", "baseline": "Magasin de référence", "alternative": "Autre magasin", "baselinePrice": "Prix de référence observé", "alternativePrice": "Prix observé dans l’autre magasin", "baselineAt": "Observation de référence", "alternativeAt": "Observation dans l’autre magasin", "difference": "Écart", "differencePercent": "Écart en %", "historicalDifferencesNote": "Les comparaisons portent sur les derniers prix observés de produits identiques dans différents magasins. Les dates peuvent différer. Il ne s’agit ni d’une économie garantie ni d’une offre actuelle.", "noMerchantRanking": "Les montants moyens par achat décrivent des paniers, pas le niveau général des prix d’un magasin.", "dataBasis": "Analyse de la période choisie", "yes": "Oui", "no": "Non", "missing": "Aucune donnée"
+  },
+  "hero": { "eyebrow": "VOS ACHATS. EN CHIFFRES.", "title": "Tout en un coup d’œil", "subtitle": "Comprendre vos dépenses. Découvrir vos habitudes." },
+  "status": { "demo": "Données fictives", "connecting": "Connexion…", "limited": "API limitée", "connected": "API connectée" },
+  "help": { "label": "À propos des données", "title": "À propos des données", "body": "Les indicateurs portent sur tous les achats importés. Le filtre de période ne concerne que le graphique et la vue mensuelle. L’API additionne TaxBaseAmount pour les dépenses et TaxAmount pour les taxes, sans interprétation HT/TTC. La valeur hebdomadaire représente l’augmentation du total cumulé due aux tickets des sept derniers jours, et non une comparaison avec la semaine précédente. Les valeurs manquantes sont indiquées par « — »." },
+  "demo": { "title": "Vue de démonstration · données fictives uniquement", "description": "Valeurs d’exemple pour l’aperçu. Aucun achat réel ni donnée en direct.", "back": "Revenir à l’API", "view": "Voir la démonstration", "toggle": "Démonstration", "footer": "Aperçu avec données fictives" },
+  "error": { "offline": "API actuellement inaccessible", "partial": "Certaines données sont indisponibles", "requests": "{{count}} requêtes sur 10 ont échoué. Les valeurs manquantes ne sont pas remplacées par des zéros.", "history": "L’historique est actuellement indisponible.", "table": "Les données mensuelles sont actuellement indisponibles." },
+  "kpi": { "section": "Vos indicateurs clés", "label": "Indicateurs de tous les achats enregistrés", "scope": "Toutes les données enregistrées", "total": "Dépenses totales", "weekly": "Hausse du total cumulé · 7 jours", "purchases": "Achats enregistrés", "receipts": "Tickets importés", "average": "Montant moyen par achat", "perPurchase": "Moyenne par achat", "tax": "Total des taxes" },
+  "analysis": { "title": "Un regard sur l’évolution", "label": "Analyse des dépenses", "range": "Période du graphique et de la vue mensuelle", "last6": "6 derniers mois", "last12": "12 derniers mois", "all": "Toute la période", "period": "{{start}} – {{end}} · mois en cours inclus", "allPeriod": "{{start}} – {{end}} · historique complet", "noPeriod": "Aucune période disponible pour le moment", "chartTitle": "Évolution des dépenses", "eyebrow": "FLUX FINANCIERS", "series": "Séries de données du graphique", "summary": "{{count}} mois civils · {{available}} avec des données", "partialSum": "Somme des valeurs disponibles", "expensesLabel": "Évolution mensuelle des dépenses", "taxLabel": "Évolution mensuelle des taxes", "unit": "{{series}} en EUR", "hint": "Totaux mensuels · Explorez les points avec la souris, au toucher ou avec la touche Tab.", "missingHint": "Absence de données ≠ 0. Les mois manquants interrompent la courbe.", "point": "{{month}} : {{value}}" },
+  "profile": { "title": "Vos habitudes d’achat", "eyebrow": "HABITUDES D’ACHAT", "promotions": "Articles en promotion", "description": "Part des articles achetés portant un identifiant de promotion.", "items": "Articles par achat", "average": "en moyenne", "note": "Tous les achats enregistrés. Les articles pesés comptent comme un article par ligne." },
+  "focus": { "title": "Dernier mois enregistré", "eyebrow": "ZOOM MENSUEL", "comparison": "par rapport au mois précédent", "noComparison": "Aucune comparaison directe avec le mois précédent disponible.", "note": "La valeur de {{month}} ne comprend que les tickets importés. Les mois en cours peuvent être incomplets.", "empty": "Dès que des données mensuelles seront disponibles, une comparaison avec le mois immédiatement précédent apparaîtra ici." },
+  "table": { "title": "Vue mensuelle", "eyebrow": "EN DÉTAIL", "caption": "Dépenses et taxes mensuelles de la période choisie" },
+  "note": { "title": "Plus de clarté. Moins d’incertitude.", "body": "Les analyses reposent sur les tickets importés. Les mois manquants restent visibles comme des lacunes dans les données." },
+  "footer": { "description": "Analyse personnelle des achats", "updated": "Données récupérées à {{time}}", "noData": "Aucune donnée récupérée de l’API" },
+  "csv": { "expenses": "Dépenses EUR", "taxes": "Taxes EUR", "filename": "donnees-mensuelles" }
+}

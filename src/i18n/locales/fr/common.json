@@ -1,0 +1,18 @@
+{
+  "appTitle": "MarketStack · Analyse des achats",
+  "description": "MarketStack – vos achats, dépenses et habitudes d’achat en un coup d’œil.",
+  "skipContent": "Aller au contenu",
+  "loading": "Chargement des données…",
+  "empty": "Aucune donnée disponible pour le moment.",
+  "missing": "Aucune donnée",
+  "unavailableValue": "—",
+  "close": "Fermer",
+  "refresh": "Actualiser",
+  "export": "Exporter",
+  "expenses": "Dépenses",
+  "taxes": "Taxes",
+  "month": "Mois",
+  "notFoundTitle": "Page introuvable",
+  "notFoundDescription": "Cette adresse ne correspond à aucune page disponible.",
+  "backHome": "Retour à l’accueil"
+}

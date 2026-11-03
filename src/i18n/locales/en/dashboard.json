@@ -5,6 +5,7 @@
       "toggle": "Open or close filters",
       "custom": "Custom",
       "activeExtras_one": "One additional filter active",
+      "activeExtras_many": "{{count}} additional filters active",
       "activeExtras_other": "{{count}} additional filters active"
     },
     "period": {
@@ -47,6 +48,7 @@
       "B": "Medium contribution",
       "C": "Small remaining contribution",
       "products_one": "{{value}} distinct product",
+      "products_many": "{{value}} distinct products",
       "products_other": "{{value}} distinct products",
       "share": "{{value}} of total item value",
       "chartHint": "From left to right: products with high to low total item value. Bars = value per product in euros; line = combined share of all products up to this point. This shows how many products account for most of your spending."

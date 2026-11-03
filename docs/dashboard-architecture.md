@@ -74,7 +74,7 @@ src/
   i18n/
     index.ts                      Translation resources and initialization
     format.ts                     Shared Intl formatters and formatting hook
-    locales/{de,en}/              Translation JSON files
+    locales/{de,en,fr}/           Translation JSON files
   lib/
     preferences.ts                Storage access and preference resolution
     utils.ts                      Shared utilities
@@ -286,7 +286,7 @@ for main text, 4.5:1 for secondary text, and 3:1 for chart accents.
 
 ## Internationalization
 
-Translation resources live in `src/i18n/locales/{de,en}/`:
+Translation resources live in `src/i18n/locales/{de,en,fr}/`:
 
 | Namespace | Content |
 | --- | --- |
@@ -296,24 +296,32 @@ Translation resources live in `src/i18n/locales/{de,en}/`:
 | `user` | User-page availability notice |
 
 Components use typed translation keys through react-i18next. The
-`marketstack.language` localStorage key stores `de` or `en`. The initial language
+`marketstack.language` localStorage key stores `de`, `en` or `fr`. The initial language
 comes from the saved preference or browser language; unsupported languages fall
-back to German. Theme and language preferences are independent.
+back to German. Regional variants such as `fr-FR` and `fr-CA` resolve to French.
+Theme and language preferences are independent. All four namespaces, including
+analytics explanations and accessible labels, are translated in all three languages.
 
-The language selector uses fixed English navigation resources: "Select language",
-"German", and "English", regardless of the active UI language. Other controls
-follow the selected language.
+The language selector and its accessible label follow the active UI language:
+"Deutsch / Englisch / Französisch", "German / English / French", or
+"Allemand / Anglais / Français". The language codes and saved preference remain
+unchanged when the displayed option names are translated.
 
-`src/i18n/format.ts` centralizes native `Intl` formatting for de-DE and en-GB,
+`src/i18n/format.ts` centralizes native `Intl` formatting for de-DE, en-GB and fr-FR,
 including numbers, decimal values, EUR amounts, percentages, months, and times.
 Language changes update the document language, title, and meta description
 without resetting data, filters, or demo state. Brand names, API identifiers,
 and ISO dates are not translated.
+Tests enforce equal resource keys and interpolation variables across all three
+languages. Explicit `_many` resources support French million-count plural forms;
+the matching keys in German/English retain their existing plural wording. French
+period shortcuts use 1S (semaine) and 1A (an); preset calculations and API filters
+are language-independent. French CSV headers/decimal formatting are tested too.
 
 ## User area
 
 The user icon opens `/user`, which displays a localized availability notice:
-"In Arbeit" in German and "Coming soon" in English. The page shares the sticky
+"In Arbeit" in German, "Coming soon" in English and "Bientôt disponible" in French. The page shares the sticky
 header and preference controls. Authentication, account settings, and user
 management are not implemented.
 
@@ -347,8 +355,8 @@ Those proposed endpoints are not existing backend features. The contract
 documents price/unit limitations, allocation rules, filters, examples, edge
 cases and aggregate calculations needed for a server implementation.
 
-Analytics period filters use inclusive UTC day boundaries and compact 1W, 1M,
-YTD, 1J/1Y and Max buttons, without editable date inputs or a reset button.
+Analytics period filters use inclusive UTC day boundaries and compact 1W/1S, 1M,
+YTD, 1J/1Y/1A and Max buttons, without editable date inputs or a reset button.
 The default is one rolling calendar year. Mock periods end at the fixed fixture
 coverage date; API periods end at the current UTC date. Month/year subtraction
 clamps invalid month-end days and adds one day for the inclusive start. Max

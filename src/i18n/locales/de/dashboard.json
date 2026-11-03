@@ -5,6 +5,7 @@
       "toggle": "Filter öffnen oder schließen",
       "custom": "Individuell",
       "activeExtras_one": "Ein zusätzlicher Filter aktiv",
+      "activeExtras_many": "{{count}} zusätzliche Filter aktiv",
       "activeExtras_other": "{{count}} zusätzliche Filter aktiv"
     },
     "period": {
@@ -47,6 +48,7 @@
       "B": "Mittlerer Beitrag",
       "C": "Kleiner Restbeitrag",
       "products_one": "{{value}} unterschiedliches Produkt",
+      "products_many": "{{value}} unterschiedliche Produkte",
       "products_other": "{{value}} unterschiedliche Produkte",
       "share": "{{value}} der gesamten Positionswerte",
       "chartHint": "Von links nach rechts: Produkte mit hohem bis niedrigem Positionswert. Balken = Wert je Produkt in Euro; Linie = gemeinsamer Anteil aller Produkte bis zu dieser Stelle. So erkennst du, wie viele Produkte den Großteil deiner Ausgaben ausmachen."

@@ -120,7 +120,7 @@ test('analytics period presets use inclusive UTC days, calendar boundaries and c
   assert.deepEqual(analyticsPeriodRange('max', fixtures.coverage.to, fixtures.coverage), fixtures.coverage)
   const defaults = source.defaultAnalyticsQuery()
   assert.deepEqual({ from: defaults.from, to: defaults.to }, analyticsPeriodRange('year', source.analyticsReferenceDate()))
-  for (const language of ['de', 'en']) {
+  for (const language of ['de', 'en', 'fr']) {
     const resources = JSON.parse(await readFile(new URL(`../src/i18n/locales/${language}/dashboard.json`, import.meta.url), 'utf8')).analytics.period
     assert.ok(resources.label.length)
     for (const period of analyticsPeriods) {
@@ -135,7 +135,7 @@ test('compact filter bar starts collapsed with a localized summary and persisten
   const { AnalyticsFilters } = await server.ssrLoadModule('/src/features/analytics/components/filters.tsx')
   const previousLanguage = i18n.language
   try {
-    for (const language of ['de', 'en']) {
+    for (const language of ['de', 'en', 'fr']) {
       await i18n.changeLanguage(language)
       const html = renderToStaticMarkup(createElement(AnalyticsFilters, {
         query: { ...query, storeId: 'north-centre' }, update: () => {}, catalog: model.getCatalog(), store: true,
@@ -143,9 +143,9 @@ test('compact filter bar starts collapsed with a localized summary and persisten
       assert.match(html, /<details[^>]*analytics-sticky-filters/)
       assert.doesNotMatch(html, /<details[^>]*\sopen(?:[=>\s])/)
       const summary = html.match(/<summary[^>]*>([\s\S]*?)<\/summary>/)[1]
-      assert.ok(summary.includes(language === 'de' ? 'Filter' : 'Filters'))
-      assert.ok(summary.includes(language === 'de' ? '1J' : '1Y'))
-      assert.ok(summary.includes(language === 'de' ? 'Ein zusätzlicher Filter aktiv' : 'One additional filter active'))
+      assert.ok(summary.includes({ de: 'Filter', en: 'Filters', fr: 'Filtres' }[language]))
+      assert.ok(summary.includes({ de: '1J', en: '1Y', fr: '1A' }[language]))
+      assert.ok(summary.includes({ de: 'Ein zusätzlicher Filter aktiv', en: 'One additional filter active', fr: 'Un filtre supplémentaire actif' }[language]))
       assert.ok(!summary.includes('<select'))
       const panelId = html.match(/aria-controls="([^"]+)"/)[1]
       assert.ok(html.includes(`id="${panelId}"`))
@@ -424,11 +424,11 @@ test('documented schemas declare exactly the fields of each frontend DTO, includ
   }
 })
 
-test('analytics card explanations cover every wired topic in German and English', async () => {
+test('analytics card explanations cover every wired topic in all three languages', async () => {
   const pages = await Promise.all(['spending', 'products', 'prices'].map(page => readFile(new URL(`../src/features/analytics/${page}-page.tsx`, import.meta.url), 'utf8')))
   const topics = pages.flatMap(page => [...page.matchAll(/<CardInfo topic="([^"]+)"/g)].map(match => match[1]))
   assert.deepEqual([...topics].sort(), ['frequency', 'topExpenses', 'topFrequency', 'totalProducts', 'itemExpenses', 'abcOverview', 'pareto', 'promotionProducts', 'tags', 'quantities', 'stability'].sort())
-  for (const language of ['de', 'en']) {
+  for (const language of ['de', 'en', 'fr']) {
     const resources = JSON.parse(await readFile(new URL(`../src/i18n/locales/${language}/dashboard.json`, import.meta.url), 'utf8')).analytics
     for (const key of ['open', 'close', 'calculation']) assert.ok(resources.cardInfo[key].length > 0)
     assert.ok(resources.cardInfo.open.includes('{{title}}'))

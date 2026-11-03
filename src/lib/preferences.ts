@@ -15,9 +15,9 @@ export function resolveTheme(saved: string | null, systemDark: boolean): Theme {
   return saved === 'light' || saved === 'dark' ? saved : systemDark ? 'dark' : 'light'
 }
 
-export const languages = ['de', 'en'] as const
+export const languages = ['de', 'en', 'fr'] as const
 export type Language = typeof languages[number]
 export function resolveLanguage(value: string | null | undefined): Language {
   const base = value?.toLowerCase().split(/[-_]/)[0]
-  return base === 'en' ? 'en' : 'de'
+  return languages.find(language => language === base) ?? 'de'
 }

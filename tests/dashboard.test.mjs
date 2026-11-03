@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { createServer } from 'vite'
 import { readFile } from 'node:fs/promises'
 import { runInNewContext } from 'node:vm'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 let server
 let dashboard
@@ -199,37 +201,75 @@ test('unavailable series remain null while loaded but missing months remain expl
   assert.deepEqual(selectors.selectHistoryWindow({ expenses: [], taxes: null }, 'all').months, [])
 })
 
-test('German and English resources cover the exact same translation keys', () => {
+test('German, English and French resources cover the same translation keys and interpolation variables', () => {
   const paths = (value, prefix = '') => Object.entries(value).flatMap(([key, entry]) =>
     typeof entry === 'object' ? paths(entry, `${prefix}${key}.`) : [`${prefix}${key}`])
   const { resources } = localization
   assert.deepEqual(paths(resources.de).sort(), paths(resources.en).sort())
+  assert.deepEqual(paths(resources.de).sort(), paths(resources.fr).sort())
   assert.ok(paths(resources.de).length > 100)
+  const valueAt = (resource, path) => path.split('.').reduce((value, key) => value[key], resource)
+  const variables = text => [...text.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map(match => match[1]).sort()
+  for (const path of paths(resources.en)) {
+    const french = valueAt(resources.fr, path)
+    assert.equal(typeof french, 'string', path)
+    assert.ok(french.trim().length > 0, path)
+    assert.deepEqual(variables(french), variables(valueAt(resources.en, path)), path)
+  }
 })
 
-test('the future user feature has complete German and English status labels', async () => {
+test('the future user feature has complete German, English and French status labels', async () => {
   await localization.changeLanguage('de')
   assert.equal(localization.default.t('user:status'), 'In Arbeit')
   assert.equal(localization.default.t('navigation:user'), 'Benutzer')
   await localization.changeLanguage('en')
   assert.equal(localization.default.t('user:status'), 'Coming soon')
   assert.equal(localization.default.t('navigation:user'), 'User account')
+  await localization.changeLanguage('fr')
+  assert.equal(localization.default.t('user:status'), 'Bientôt disponible')
+  assert.equal(localization.default.t('navigation:user'), 'Compte utilisateur')
 })
 
-test('language selector labels stay English independently of the active UI language', async () => {
-  const languageT = localization.default.getFixedT('en', 'navigation')
-  for (const language of ['de', 'en']) {
+test('language selector labels follow the active UI language', async () => {
+  const labels = {
+    de: ['Sprache auswählen', 'Deutsch', 'Englisch', 'Französisch'],
+    en: ['Select language', 'German', 'English', 'French'],
+    fr: ['Choisir la langue', 'Allemand', 'Anglais', 'Français'],
+  }
+  for (const language of ['de', 'en', 'fr']) {
     await localization.changeLanguage(language)
-    assert.equal(languageT('language'), 'Select language')
-    assert.equal(languageT('german'), 'German')
-    assert.equal(languageT('english'), 'English')
+    assert.deepEqual(['language', 'german', 'english', 'french'].map(key => localization.default.t(`navigation:${key}`)), labels[language])
     assert.equal(localization.default.resolvedLanguage, language)
   }
+})
+
+test('rendered language selector displays translated option names and its accessible label', async () => {
+  const { PreferenceControls } = await server.ssrLoadModule('/src/Components/Navigation/preference-controls.tsx')
+  const { ThemeContext } = await server.ssrLoadModule('/src/theme/theme-context.ts')
+  const expected = {
+    de: { label: 'Sprache auswählen', options: ['Deutsch', 'Englisch', 'Französisch'] },
+    en: { label: 'Select language', options: ['German', 'English', 'French'] },
+    fr: { label: 'Choisir la langue', options: ['Allemand', 'Anglais', 'Français'] },
+  }
+  const previousLanguage = localization.default.language
+  try {
+    for (const language of preferences.languages) {
+      await localization.changeLanguage(language)
+      const html = renderToStaticMarkup(createElement(ThemeContext.Provider, {
+        value: { theme: 'light', setTheme: () => {} },
+      }, createElement(PreferenceControls)))
+      assert.deepEqual([...html.matchAll(/<option[^>]*>([^<]*)<\/option>/g)].map(match => match[1]), expected[language].options)
+      assert.ok(html.includes(`aria-label="${expected[language].label}"`))
+      assert.doesNotMatch(html, /lang="en"/)
+      assert.match(html, new RegExp(`<option value="${language}"[^>]*selected`))
+    }
+  } finally { await localization.changeLanguage(previousLanguage) }
 })
 
 test('language changes localize numbers, dates, percentages and CSV without changing data', async () => {
   const de = formatting.createFormat('de')
   const en = formatting.createFormat('en')
+  const fr = formatting.createFormat('fr')
   assert.equal(de.number(1234.5, 1), '1.234,5')
   assert.equal(en.number(1234.5, 1), '1,234.5')
   assert.equal(de.month('2026-10-01', true), 'Oktober 2026')
@@ -238,6 +278,14 @@ test('language changes localize numbers, dates, percentages and CSV without chan
   assert.equal(en.percent(27.8), '27.8%')
   assert.equal(de.decimal(12.5), '12,50')
   assert.equal(en.decimal(12.5), '12.50')
+  assert.equal(fr.locale, 'fr-FR')
+  assert.equal(fr.number(1234.5, 1).replaceAll(/\s/g, ''), '1234,5')
+  assert.equal(fr.money(12.5).replaceAll(/\s/g, ''), '12,50€')
+  assert.equal(fr.percent(27.8).replaceAll(/\s/g, ''), '27,8%')
+  assert.equal(fr.decimal(12.5), '12,50')
+  assert.equal(fr.month('2026-10-01', true), 'octobre 2026')
+  assert.equal(fr.weekday(1), 'lundi')
+  assert.ok(fr.date('2026-10-02').includes('oct.'))
   const source = structuredClone(dashboard.demoData)
   const now = new Date(2026, 9, 31)
   await localization.changeLanguage('de')
@@ -245,7 +293,21 @@ test('language changes localize numbers, dates, percentages and CSV without chan
   await localization.changeLanguage('en')
   assert.equal(localization.default.t('navigation:overview'), 'Overview')
   assert.deepEqual(selectors.selectHistoryWindow(source, '12', now), windowDe)
+  await localization.changeLanguage('fr')
+  assert.equal(localization.default.t('navigation:overview'), 'Vue d’ensemble')
+  assert.deepEqual(selectors.selectHistoryWindow(source, '12', now), windowDe)
   assert.deepEqual(source, dashboard.demoData)
+})
+
+test('French plural forms and CSV labels remain French for zero, one, multiple and million counts', async () => {
+  await localization.changeLanguage('fr')
+  const t = localization.default.getFixedT('fr', 'dashboard')
+  for (const [count, expected] of [[0, '0 produit distinct'], [1, '1 produit distinct'], [2, '2 produits distincts'], [1000000, '1000000 produits distincts']]) {
+    assert.equal(t('analytics.abcDisplay.products', { count, value: String(count) }), expected)
+  }
+  const result = csv.buildHistoryCsv(['2026-01-01'], [{ purchasedAt: '2026-01-01', expense: 12.5 }], null,
+    [localization.default.t('common:month'), t('csv.expenses'), t('csv.taxes')], formatting.createFormat('fr').decimal)
+  assert.equal(result, '\uFEFFMois;Dépenses EUR;Taxes EUR\r\n2026-01-01;12,50;')
 })
 
 test('CSV keeps gaps empty, zero numeric, ISO dates stable and headers escaped', () => {
@@ -264,7 +326,11 @@ test('preference resolution supports system defaults, explicit choices and langu
   assert.equal(preferences.resolveTheme('invalid', true), 'dark')
   assert.equal(preferences.resolveLanguage('en-US'), 'en')
   assert.equal(preferences.resolveLanguage('de-AT'), 'de')
-  assert.equal(preferences.resolveLanguage('fr-FR'), 'de')
+  assert.deepEqual(preferences.languages, ['de', 'en', 'fr'])
+  assert.equal(preferences.resolveLanguage('fr-FR'), 'fr')
+  assert.equal(preferences.resolveLanguage('FR_ca'), 'fr')
+  assert.equal(preferences.resolveLanguage('es-ES'), 'de')
+  assert.equal(preferences.resolveLanguage(undefined), 'de')
   assert.doesNotThrow(() => preferences.writePreference('test', 'value'))
 })
 
