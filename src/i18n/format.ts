@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { resolveLanguage } from '@/lib/preferences'
 
 export function createFormat(language: string) {
-  const locale = { de: 'de-DE', en: 'en-GB', fr: 'fr-FR' }[resolveLanguage(language)]
+  const locale = { de: 'de-DE', en: 'en-GB', fr: 'fr-FR', tr: 'tr-TR' }[resolveLanguage(language)]
   const currency = new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' })
   const percentage = new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 })
   const short = new Intl.DateTimeFormat(locale, { month: 'short', year: '2-digit' })

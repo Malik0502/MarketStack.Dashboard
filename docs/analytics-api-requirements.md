@@ -701,11 +701,11 @@ sent to the backend.
 
 | Preset | Inclusive UTC range |
 | --- | --- |
-| 1W (French: 1S) | Today and the preceding six days |
-| 1M | One rolling calendar month through today; subtract one month, clamp the day to that month's end, then add one day for the inclusive start |
+| 1W (French: 1S; Turkish: 1H) | Today and the preceding six days |
+| 1M (Turkish: 1A) | One rolling calendar month through today; subtract one month, clamp the day to that month's end, then add one day for the inclusive start |
 | YTD | January 1 of the reference year through today |
-| 1J (English: 1Y; French: 1A) | One rolling calendar year through today; subtract twelve months with the same clamping/inclusive-start rule |
-| Max | Earliest `Catalog.coverage.from` through today; unavailable if coverage is null |
+| 1J (English/Turkish: 1Y; French: 1A) | One rolling calendar year through today; subtract twelve months with the same clamping/inclusive-start rule |
+| Max (Turkish: Maks) | Earliest `Catalog.coverage.from` through today; unavailable if coverage is null |
 
 "Today" means the current UTC date in API mode, or the fixed fixture coverage
 end in mock mode. The initial preset is 1J/1Y/1A. Selecting another preset preserves

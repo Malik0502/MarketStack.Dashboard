@@ -5,7 +5,7 @@ import { useTheme } from '@/theme/theme-context'
 import { changeLanguage } from '@/i18n'
 import { languages, resolveLanguage } from '@/lib/preferences'
 
-const languageNames = { de: 'german', en: 'english', fr: 'french' } as const
+const languageNames = { de: 'german', en: 'english', fr: 'french', tr: 'turkish' } as const
 
 export function PreferenceControls() {
   const { t, i18n } = useTranslation('navigation')

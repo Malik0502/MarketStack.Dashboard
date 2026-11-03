@@ -1,0 +1,146 @@
+{
+  "analytics": {
+    "filterBar": {
+      "label": "Filtreler",
+      "toggle": "Filtreleri aç veya kapat",
+      "custom": "Özel",
+      "activeExtras_one": "Bir ek filtre etkin",
+      "activeExtras_many": "{{count}} ek filtre etkin",
+      "activeExtras_other": "{{count}} ek filtre etkin"
+    },
+    "period": {
+      "label": "Dönem",
+      "week": { "short": "1H", "label": "1 hafta" },
+      "month": { "short": "1A", "label": "1 ay" },
+      "ytd": { "short": "YTD", "label": "Yılbaşından bugüne" },
+      "year": { "short": "1Y", "label": "1 yıl" },
+      "max": { "short": "Maks", "label": "Tüm dönem" },
+      "unavailable": "Kayıtlı bir veri dönemi yok"
+    },
+    "priceProduct": {
+      "title": "Fiyat analizi: {{product}}",
+      "description": "Bu sayfa yalnızca bu ürünün gözlemlenen fiyatlarını gösterir. Dönem ve mağaza filtreleri yalnızca bu ürünün göstergelerini ve fiyat geçmişini etkiler.",
+      "fallbackName": "Ürün #{{id}}",
+      "back": "Fiyat genel bakışına dön"
+    },
+    "priceSections": {
+      "productTitle": "Tek ürün: fiyat istatistikleri ve geçmişi",
+      "productDescription": "Bu bölümdeki altı fiyat göstergesi ve fiyat geçmişi için bir ürün seçin. Arama yalnızca ürün seçeneklerini daraltır. Aşağıdaki sıralamalar ürün seçiminden bağımsızdır.",
+      "rankingsTitle": "Ürünler arası fiyat sıralamaları",
+      "rankingsDescription": "Bu tablolar, yukarıda seçilen üründen bağımsız olarak, seçilen dönem ve mağazadaki tüm uygun ürünleri karşılaştırır. Bir ürünün ayrı fiyat analizi sayfasını açmak için adına tıklayın."
+    },
+    "pagination": {
+      "navigation": "Sayfalama: {{title}}",
+      "range": "{{total}} kayıttan {{from}}–{{to}} arası",
+      "page": "Sayfa {{page}} / {{pages}}",
+      "pageSize": "Sayfa başına kayıt",
+      "all": "Tümü",
+      "first": "İlk",
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "last": "Son"
+    },
+    "purchaseHistory": "Alışveriş geçmişi",
+    "purchaseHistoryNote": "Seçilen döneme uyan tüm fiş satırları, en yeniden en eskiye doğru gösterilir. Daha eski satırlara da sayfalama ile ulaşabilirsiniz.",
+    "abcDisplay": {
+      "purpose": "Hangi ürünler toplam satır tutarınızın büyük bölümünü oluşturuyor? Sınıflar, ürünleri alışveriş sıklığına veya önemine göre değil, toplam tutara katkılarına göre gruplar.",
+      "A": "En büyük harcama kalemleri",
+      "B": "Orta düzey katkı",
+      "C": "Kalan küçük katkı",
+      "products_one": "{{value}} farklı ürün",
+      "products_many": "{{value}} farklı ürün",
+      "products_other": "{{value}} farklı ürün",
+      "share": "Toplam satır tutarının {{value}} kadarı",
+      "chartHint": "Soldan sağa: toplam satır tutarı yüksekten düşüğe sıralanmış ürünler. Çubuklar = ürün başına avro tutarı; çizgi = bu noktaya kadar tüm ürünlerin toplam payı. Böylece kaç ürünün harcamalarınızın büyük bölümünü oluşturduğunu görebilirsiniz."
+    },
+    "cardInfo": {
+      "open": "Daha fazla bilgi: {{title}}",
+      "close": "Bilgiyi kapat",
+      "calculation": "Değerler nasıl hesaplanıyor?",
+      "frequency": {
+        "description": "Grafik, seçilen dönemde takvim ayı başına içe aktarılan alışveriş sayısını gösterir. İkinci çizgi, bu alışverişlerden kaçının en az bir promosyonlu satır içerdiğini gösterir.",
+        "calculation": "Satır veya satın alınan birim sayısından bağımsız olarak her farklı fiş bir alışveriş sayılır. Birden fazla promosyonlu satır içeren fiş de promosyon çizgisinde yalnızca bir kez sayılır. Ay, UTC alışveriş tarihine göre belirlenir.",
+        "note": "İlk ve son aylar yalnızca seçilen döneme dahil günleri kapsar. Sıfır, içe aktarılmış fiş olmadığı anlamına gelir; gerçekte alışveriş yapılmadığı anlamına gelmez. Mağaza veya zincir gruplaması bu grafiği değiştirmez."
+      },
+      "topExpenses": {
+        "description": "Seçilen dönemde ve etkin ürün filtreleri altında toplam satır tutarı en yüksek olan on ürün.",
+        "calculation": "Her fiş satırı için gözlemlenen birim fiyat miktarla çarpılır ve sente yuvarlanır. Bu değerler ürün başına toplanıp azalan sırada sıralanır. Yüzde, yalnızca gösterilen ilk on ürünün değil, filtrelenen tüm ürünlerin satır tutarları içindeki payıdır.",
+        "note": "Sıralama, tablonun sayfasından bağımsız olarak filtrelenen tüm ürünleri kapsar. Fişin tamamına uygulanan indirimler veya diğer farklar dağıtılmaz. Ayrıntılarını açmak için bir ürüne tıklayın."
+      },
+      "topFrequency": {
+        "description": "En fazla birimi satın alınanlar değil, en çok farklı alışverişte yer alan on ürün.",
+        "calculation": "Her ürün için seçilen döneme ve etkin filtrelere uyan farklı fişler sayılır. Aynı ürünün bir fişteki birden fazla satırı birlikte tek alışveriş sayılır. Ürünler daha sonra bu sayıya göre azalan sırada sıralanır.",
+        "note": "Bir fişte üç paket, bir alışveriş sayılır; aynı ürünün üç ayrı fişte bulunması üç alışveriş sayılır. Sıralama, tablonun sayfasından bağımsızdır."
+      },
+      "totalProducts": {
+        "description": "Seçilen dönemde en az bir uygun alışveriş satırı bulunan farklı ürünlerin sayısı.",
+        "calculation": "Dönem, etiket ve miktar birimi filtreleri uygulandıktan sonra farklı ürün kimlikleri sayılır. Aynı ürünün tekrar satın alınması veya birden fazla satırda yer alması bu sayıyı artırmaz.",
+        "note": "Bu, satın alınan birim sayısı veya tüm ürün kataloğunun büyüklüğü değildir. Yalnızca mevcut tablo sayfasını değil, tüm eşleşmeleri kapsar."
+      },
+      "itemExpenses": {
+        "description": "Seçilen döneme ve etkin filtrelere uyan tüm ürünlerin yeniden hesaplanan satır tutarlarının toplamı.",
+        "calculation": "Satır tutarı = gözlemlenen birim fiyat × miktar; her satır için sente yuvarlanır. Ardından tüm uygun satırlar toplanır. Bir ürünün birden fazla etiketi olsa bile satır tutarı bu toplama yalnızca bir kez dahil edilir.",
+        "note": "Bu değer, fişlerin son toplamlarının toplamı değildir. Fiş geneli indirimleri, depozitolar veya eksik içe aktarımlar, mağaza ve fiş harcamalarıyla farklara yol açabilir. Tablonun sayfası toplamı etkilemez."
+      },
+      "abcOverview": {
+        "description": "Soru şu: hangi ürünler birlikte harcamalarınızın büyük bölümünü oluşturuyor? A en büyük harcama kalemlerini, B sonraki ürünleri, C ise kalan küçük kısmı içerir. A, B ve C altındaki sayılar farklı ürünleri sayar. 8, 3 ve 1 görüyorsanız A’da sekiz, B’de üç ve C’de bir ürün vardır. Yüzde, bu ürünlerin birlikte toplam satır tutarının ne kadarını oluşturduğunu gösterir.",
+        "calculation": "Önce ürünler toplam satır tutarına göre büyükten küçüğe sıralanır. Sonra sırayla gruplara alınır: toplam tutarın en az %80’ine ulaşılana kadar A’ya; ardından A ve B birlikte en az %95’e ulaşana kadar B’ye. Kalan ürünler C’ye girer. Örnek: dört ürün 50 €, 30 €, 15 € ve 5 €, toplam 100 € tutarındadır. A ilk iki ürünü içerir (80 € = %80), B üçüncüyü (15 € = %15), C dördüncüyü (5 € = %5). Bir eşiğe ulaşan veya onu aşan ürün, o anda doldurulan sınıfta kalır; paylar bu yüzden 80/15/5’ten farklı olabilir. Bir sınıf boş da kalabilir.",
+        "note": "Pratik yararı: fiyatları karşılaştırırken veya harcamalarınızı incelerken önce A’ya bakmak çoğu zaman faydalıdır; çünkü bu ürünler en büyük toplam tutarı oluşturur. A, gereksiz veya birim başına pahalı demek değildir: sık alınan ucuz ürünler de burada yer alabilir. Bu analiz alışveriş kararlarını yargılamaz ve olası tasarrufu hesaplamaz. Dönem ve ürün filtreleri tüm sınıflara uygulanır; tablo sayfalamasının etkisi yoktur."
+      },
+      "pareto": {
+        "description": "Bu grafik, ABC dağılımıyla aynı harcama kalemlerini ürün ürün gösterir. Toplam satır tutarı en yüksek ürün soldadır. Çubuğun yüksekliği ürünün avro tutarını gösterir. Çizgi şu soruyu yanıtlar: toplam harcamalarımın ne kadarı sol kenardan bu noktaya kadar olan ürünlerden geliyor?",
+        "calculation": "Örnek: dört ürünün satır tutarları 50 €, 30 €, 15 € ve 5 €, toplam 100 € olsun. Çubuklar bu dört tutarı gösterir. Çizgi ilk üründe %50, ikincide %80, üçüncüde %95 ve sonuncuda %100’dür. Bu örnekte ilk iki ürün A’ya, üçüncüsü B’ye, sonuncusu C’ye aittir. Dolayısıyla çizginin yüzdeleri birikimli değerlerdir; her ürünün tek başına payını göstermez.",
+        "note": "Amaç harcamaların yoğunlaşmasını görmektir: çizgi birkaç üründen sonra %80’e ulaşıyorsa az sayıda ürün harcamaların büyük bölümünü oluşturur. Yavaş yükseliyorsa harcamalar daha geniş bir ürün grubuna yayılmıştır. 80/20 dağılımı varsayılmaz. Tablonun sayfasından bağımsız olarak tüm ürün filtreleri uygulanır. « Diğer ürünler », kendi ABC sınıfı olmayan toplu bir kalan grubu gösterebilir."
+      },
+      "stability": {
+        "description": "Tablo, aynı ürünün aynı mağazadaki gözlemlenen birim fiyatlarının seçilen dönemde ne kadar değiştiğini gösterir. Düşük değişim katsayısı daha düzenli fiyatlar, yüksek değer daha fazla dalgalanma anlamına gelir. Yukarıda seçilen ürün dışındaki ürünler de dahildir; mağaza filtresi geçerliliğini korur.",
+        "calculation": "Gözlemler, satın alınan birim sayıları değil, fiş satırlarında kaydedilmiş fiyatlardır. Ortalama bu fiyatların aritmetik ortalamasıdır. Standart sapma fiyatların avro cinsinden dağılımını ölçer; değişim katsayısı bu dağılımı ortalamaya böler ve 100 ile çarpar. Örnek: 2 € ortalama ve 0,20 € standart sapma %10 verir. Bu bir fiyat artışı değildir: sürekli yükselip düşen fiyatlar da yüksek bir değer oluşturabilir.",
+        "note": "Yalnızca karşılaştırılabilirliği doğrulanmış, en az üç fiyat gözlemi ve pozitif ortalaması bulunan ürünler dahildir. Tüm uygun ürün/mağaza birleşimlerine sayfalama ile ulaşılabilir. Bir sütun başlığına tıklamak yalnızca mevcut sayfayı değil, tüm sonuçları sıralar. Gözlem sayıları ve aralarındaki süreler sonucu etkileyebilir; geçmişteki istikrar gelecekteki fiyatları garanti etmez."
+      },
+      "promotionProducts": {
+        "description": "Promosyon kimliği içeren fiş satırı sayısı en yüksek olan on ürün.",
+        "calculation": "Promosyon kimliği bulunan her uygun satır bir kez sayılır. Satın alınan miktarlar ek satır olarak sayılmaz. Ürünler bu satır sayısına göre azalan sırada sıralanır; böyle satırı olmayan ürünler gösterilmez.",
+        "note": "Bu bir mutlak sayıdır; promosyon oranı veya tasarruf ölçüsü değildir. Bir promosyon kimliği, normal bir referans fiyatın varlığını kanıtlamaz. Tüm etkin ürün filtreleri uygulanır; tablo sayfalamasının etkisi yoktur."
+      },
+      "tags": {
+        "description": "Tablo her etiket için satın alınan farklı ürünleri, farklı alışverişleri, dağıtılan satır tutarlarını ve bunların payını gösterir.",
+        "calculation": "Ürün ve fiş kimlikleri her etiket için yalnızca bir kez sayılır. Bir ürünün birden fazla etiketi varsa satır tutarları tüm etiketlerine eşit olarak dağıtılır. Paylar, etiketsiz ürünler dahil filtrelenen tüm ürünlerin toplam tutarına göre hesaplanır.",
+        "note": "Farklı etiketlerdeki ürün ve alışveriş sayıları toplanamaz: bir ürün veya fiş birden fazla etikete ait olabilir. Etiket filtresi uygulandığında bile uygun ürünler tüm etiket bağlantılarını korur."
+      },
+      "quantities": {
+        "description": "Seçilen, bilinen miktar birimi içinde toplam satın alma miktarı en yüksek olan en fazla yirmi ürün.",
+        "calculation": "Tüm uygun alışveriş satırlarının miktarları ürün başına toplanır ve azalan sırada sıralanır. Dönem, etiket ve birim filtreleri hesaplamadan önce uygulanır. Bilinen bir birim seçilmeden miktar sıralaması gösterilmez.",
+        "note": "Kilogram ve adet birlikte sıralanmamalıdır. Adet veya paket standartlaştırılmış ağırlık değildir: küçük bir paket de büyük bir paket de bir paket sayılır."
+      }
+    },
+    "eyebrow": "ANALİZLER", "spendingTitle": "Harcamalar ve alışveriş alışkanlıkları", "spendingDescription": "Harcama dağılımını, alışveriş düzenini ve dikkat çeken alışverişleri anlayın.",
+    "pricesTitle": "Fiyat analizi", "pricesDescription": "Gözlemlenen ürün fiyatlarını, değişimlerini ve istikrarını inceleyin.",
+    "productsTitle": "Ürün analizi", "productsDescription": "Öne çıkan ürünlerinizi, miktarları ve harcama kalemlerini keşfedin.",
+    "storesTitle": "Mağaza analizi", "storesDescription": "Mağazaları, zincirleri ve karşılaştırılabilir geçmiş ürün fiyatlarını karşılaştırın.",
+    "mockLabel": "Örnek veriler", "mockNotice": "Bu analiz sayfası yalnızca tutarlı örnek veriler kullanır. Gerçek alışverişler veya güncel teklifler değildir.",
+    "apiLabel": "API verileri", "coverage": "Veri kapsamı: {{from}} – {{to}} · Gün sınırları UTC’ye göre",
+    "preview": "Önizleme durumu", "state_ready": "Normal", "state_loading": "Yükleniyor", "state_empty": "Boş", "state_error": "Hata", "state_noResults": "Sonuç yok",
+    "loading": "Analizler yükleniyor…", "empty": "Henüz veri yok.", "error": "Analiz verileri yüklenemedi.", "noResults": "Bu seçime uyan veri yok.", "retry": "Yeniden dene", "insufficient": "Yeterli karşılaştırılabilir gözlem yok.",
+    "from": "Başlangıç", "to": "Bitiş", "invalidRange": "Dönem geçersiz. Lütfen kullanılabilir dönemlerden birini seçin.", "reset": "Filtreleri sıfırla",
+    "groupBy": "Gruplama", "groupStore": "Mağaza", "groupChain": "Zincir", "store": "Mağaza", "allStores": "Tüm mağazalar", "product": "Ürün", "searchProduct": "Ürün ara", "selectProduct": "Ürün seç", "refineSearch": "Daha fazla ürün var. Lütfen aramayı daraltın.", "tag": "Etiket", "allTags": "Tüm etiketler", "unit": "Miktar birimi", "piece": "Adet / paket", "kg": "kg", "unknownUnit": "Birim bilinmiyor", "allUnits": "Tüm birimler", "search": "Ürünleri filtrele", "sortBy": "Sıralama ölçütü", "sortDirection": "Sıralama yönü", "ascending": "Artan", "descending": "Azalan",
+    "expenses": "Harcamalar", "itemExpenses": "Satır tutarları", "share": "Pay", "purchases": "Alışverişler", "quantity": "Miktar", "positions": "Fiş satırları", "distinctProducts": "Farklı ürünler", "merchant": "Mağaza", "chain": "Zincir", "date": "Tarih", "averagePurchase": "Ortalama alışveriş tutarı", "name": "Ad",
+    "categories": "Etikete göre harcamalar", "merchants": "Mağazaya göre harcamalar", "allocationNote": "Satır tutarları = gözlemlenen birim fiyat × miktar. Birden fazla etiket varsa tutar eşit olarak dağıtılır. Fiş düzeyindeki farklar dağıtılmaz.", "untagged": "Etiketsiz", "weekdays": "Haftanın günlerine göre alışverişler", "weekdayAverage": "Haftanın günlerine göre ortalama harcama", "frequency": "Alışveriş sıklığı", "frequencyComparison": "Aynı uzunluktaki ardışık dönemlerin karşılaştırması", "currentPeriod": "Seçilen dönem", "previousPeriod": "Önceki dönem", "noComparison": "Karşılaştırma dönemi için tam veri kapsamı yok.", "specials": "Dikkat çeken alışverişler", "expensive": "En pahalı alışveriş", "cheapest": "En ucuz alışveriş", "mostPositions": "En çok fiş satırı", "mostUnits": "En çok adet / paket", "unitsScope": "Yalnızca tüm satırları bilinen adet/paket biriminde olan fişler. Farklı birimlerdeki miktarlar karşılaştırılamaz.",
+    "promotionPositions": "Promosyonlu satırlar", "promotionPurchases": "Promosyon içeren alışverişler", "promotionShare": "Promosyon içeren alışverişlerin payı", "promotionFrequency": "Zamana göre promosyon içeren alışverişler", "promotionProducts": "En çok promosyonlu satırı olan ürünler", "promotionNote": "Promosyon kimlikleri kampanyaları belirtir, ancak belirli bir tasarrufu kanıtlamaz.",
+    "priceHistory": "Gözlemlenen fiyat geçmişi", "historicalNote": "Bunlar geçmiş gözlemlerdir, güncel satış fiyatı garantisi değildir. Karşılaştırmalar, aynı doğrulanmış ürün/paket kimliğini ve miktar birimini gerektirir.", "last": "Son gözlemlenen fiyat", "mean": "Ortalama", "minimum": "En düşük", "maximum": "En yüksek", "median": "Medyan", "observations": "Gözlemler", "unitPrice": "Gözlemlenen birim fiyat", "priceStatistics": "Fiyat istatistikleri", "increases": "En büyük fiyat artışları", "decreases": "En büyük fiyat düşüşleri", "previous": "Dönemdeki ilk fiyat", "change": "Mutlak değişim", "changePercent": "Yüzde değişim", "firstDate": "İlk gözlem", "lastDate": "Son gözlem", "stability": "Ürün ve mağazaya göre fiyat istikrarı", "cv": "Değişim katsayısı", "standardDeviation": "Standart sapma", "stabilityNote": "Popülasyon standart sapması / ortalama × 100. En az üç gözlem gerekir; düşük değerler daha istikrarlı fiyatları gösterir.", "rankingsNote": "Değişimler, aynı mağaza ve ürün kimliği için dönemin ilk ve son gözlemini karşılaştırır.", "truncated": "Geçmiş sınırlıdır. Daha fazla ayrıntı için dönemi daraltın.",
+    "topExpenses": "Satır tutarına göre öne çıkan ürünler", "topFrequency": "En çok farklı alışverişte yer alan ürünler", "quantities": "Ürün başına miktarlar", "quantityNote": "Miktarları yalnızca aynı birim içinde karşılaştırın. Adet/paket standartlaştırılmış ağırlık değildir. Bilinmeyen birimler miktar sıralamasına dahil edilmez.", "selectUnit": "Miktar sıralaması için bilinen bir birim seçin.", "tags": "Kategoriler ve etiketler", "tagProducts": "Ürünler", "tagNote": "Etiket başına alışveriş sayıları farklı fişleri sayar ve toplanamaz; satır tutarları birden fazla etiket arasında paylaştırılır.", "pareto": "ABC / Pareto analizi", "cumulative": "Birikimli harcama payı", "abc": "ABC sınıfı", "paretoNote": "A: üründen önceki pay < %80, B: < %95, C: kalanı. Sınıflandırma, sayfalamadan önce filtrelenen tüm ürünleri kapsar.", "other": "Diğer ürünler", "productList": "Ürün genel bakışı", "details": "Ayrıntılar", "productDetails": "Ürün ayrıntıları", "closeDetails": "Ayrıntıları kapat", "recentPurchases": "Son alışverişler", "recentLimit": "Seçilen dönemdeki son {{count}} fiş satırı.", "openPrices": "Fiyat analizini aç", "page": "Sayfa {{page}} / {{pages}}", "previousPage": "Önceki sayfa", "nextPage": "Sonraki sayfa", "totalProducts": "Dönemdeki ürünler", "abcOverview": "ABC dağılımı",
+    "storeOverview": "Mağaza genel bakışı", "storePurchases": "Mağazaya göre alışverişler", "storeAverage": "Mağazaya göre ortalama alışveriş tutarı", "productComparison": "Geçmiş ürün fiyatlarının karşılaştırması", "lowestObserved": "Gözlemlenen en düşük fiyat", "minimumDate": "En düşük fiyatın tarihi", "differences": "Geçmiş fiyat farkları", "baseline": "Referans mağaza", "alternative": "Alternatif mağaza", "baselinePrice": "Gözlemlenen referans fiyat", "alternativePrice": "Gözlemlenen alternatif fiyat", "baselineAt": "Referans gözlemi", "alternativeAt": "Alternatif gözlemi", "difference": "Fark", "differencePercent": "Yüzde fark", "historicalDifferencesNote": "Karşılaştırmalar, farklı mağazalardaki aynı ürünlerin son gözlemlenen fiyatlarını kullanır. Gözlem tarihleri farklı olabilir. Bunlar tasarruf garantisi veya güncel teklif değildir.", "noMerchantRanking": "Ortalama alışveriş tutarları sepetleri tanımlar, bir mağazanın genel fiyat düzeyini değil.", "dataBasis": "Seçilen dönemin analizi", "yes": "Evet", "no": "Hayır", "missing": "Veri yok"
+  },
+  "hero": { "eyebrow": "ALIŞVERİŞLERİNİZ. RAKAMLARLA.", "title": "Her şey bir bakışta", "subtitle": "Harcamalarınızı anlayın. Alışkanlıklarınızı keşfedin." },
+  "status": { "demo": "Örnek veriler", "connecting": "Bağlanıyor…", "limited": "API sınırlı", "connected": "API bağlı" },
+  "help": { "label": "Veriler hakkında", "title": "Veriler hakkında", "body": "Göstergeler içe aktarılan tüm alışverişleri kapsar. Dönem filtresi yalnızca grafiği ve aylık genel bakışı etkiler. API, harcamalar için TaxBaseAmount ve vergiler için TaxAmount toplamını alır; net/brüt yorumu yapılmaz. Haftalık değer, önceki haftayla karşılaştırmayı değil, son yedi gündeki fişlerin birikimli toplama katkısını gösterir. Eksik değerler « — » ile gösterilir." },
+  "demo": { "title": "Demo görünümü · yalnızca örnek veriler", "description": "Önizleme için örnek değerler. Gerçek alışveriş veya canlı veri içermez.", "back": "API’ye dön", "view": "Demoyu görüntüle", "toggle": "Demo görünümü", "footer": "Örnek verilerle önizleme" },
+  "error": { "offline": "API’ye şu anda ulaşılamıyor", "partial": "Bazı veriler kullanılamıyor", "requests": "10 isteğin {{count}} tanesi başarısız oldu. Eksik değerler sıfırla değiştirilmez.", "history": "Geçmiş şu anda kullanılamıyor.", "table": "Aylık veriler şu anda kullanılamıyor." },
+  "kpi": { "section": "Temel göstergeleriniz", "label": "Kayıtlı tüm alışverişlerin göstergeleri", "scope": "Kayıtlı tüm veriler", "total": "Toplam harcama", "weekly": "Birikimli toplam artışı · 7 gün", "purchases": "Kayıtlı alışverişler", "receipts": "İçe aktarılan fişler", "average": "Ortalama alışveriş tutarı", "perPurchase": "Alışveriş başına ortalama", "tax": "Toplam vergi" },
+  "analysis": { "title": "Gelişime bir bakış", "label": "Harcama analizi", "range": "Grafik ve aylık genel bakış dönemi", "last6": "Son 6 ay", "last12": "Son 12 ay", "all": "Tüm dönem", "period": "{{start}} – {{end}} · içinde bulunulan ay dahil", "allPeriod": "{{start}} – {{end}} · tüm geçmiş", "noPeriod": "Henüz bir dönem yok", "chartTitle": "Harcamaların gelişimi", "eyebrow": "NAKİT AKIŞI", "series": "Grafik veri serileri", "summary": "{{count}} takvim ayı · {{available}} ayda veri var", "partialSum": "Mevcut değerlerin toplamı", "expensesLabel": "Aylık harcamaların gelişimi", "taxLabel": "Aylık vergilerin gelişimi", "unit": "{{series}} (EUR)", "hint": "Aylık toplamlar · Noktaları fareyle, dokunarak veya Tab tuşuyla inceleyin.", "missingHint": "Veri yok ≠ 0. Eksik aylar çizgiyi keser.", "point": "{{month}}: {{value}}" },
+  "profile": { "title": "Alışveriş profiliniz", "eyebrow": "ALIŞVERİŞ ALIŞKANLIKLARI", "promotions": "Promosyonlu ürünler", "description": "Promosyon kimliği bulunan satın alınmış ürünlerin payı.", "items": "Alışveriş başına ürün", "average": "ortalama", "note": "Kayıtlı tüm alışverişler. Tartılan ürünler satır başına bir ürün sayılır." },
+  "focus": { "title": "Son kayıtlı ay", "eyebrow": "AYLIK ODAK", "comparison": "önceki aya göre", "noComparison": "Önceki ayla doğrudan karşılaştırma yapılamıyor.", "note": "{{month}} değeri yalnızca içe aktarılan fişleri içerir. Devam eden aylarda veriler eksik olabilir.", "empty": "Aylık veriler hazır olduğunda hemen önceki ayla bir karşılaştırma burada görünecek." },
+  "table": { "title": "Aylık genel bakış", "eyebrow": "AYRINTILAR", "caption": "Seçilen dönemin aylık harcama ve vergileri" },
+  "note": { "title": "Daha fazla netlik. Daha az tahmin.", "body": "Analizler içe aktarılan fişlere dayanır. Eksik aylar veri boşlukları olarak görünür kalır." },
+  "footer": { "description": "Kişisel alışveriş analizi", "updated": "Verilerin alındığı saat: {{time}}", "noData": "API’den henüz veri alınmadı" },
+  "csv": { "expenses": "Harcamalar EUR", "taxes": "Vergiler EUR", "filename": "aylik-veriler" }
+}

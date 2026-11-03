@@ -74,7 +74,7 @@ src/
   i18n/
     index.ts                      Translation resources and initialization
     format.ts                     Shared Intl formatters and formatting hook
-    locales/{de,en,fr}/           Translation JSON files
+    locales/{de,en,fr,tr}/        Translation JSON files
   lib/
     preferences.ts                Storage access and preference resolution
     utils.ts                      Shared utilities
@@ -286,7 +286,7 @@ for main text, 4.5:1 for secondary text, and 3:1 for chart accents.
 
 ## Internationalization
 
-Translation resources live in `src/i18n/locales/{de,en,fr}/`:
+Translation resources live in `src/i18n/locales/{de,en,fr,tr}/`:
 
 | Namespace | Content |
 | --- | --- |
@@ -296,32 +296,38 @@ Translation resources live in `src/i18n/locales/{de,en,fr}/`:
 | `user` | User-page availability notice |
 
 Components use typed translation keys through react-i18next. The
-`marketstack.language` localStorage key stores `de`, `en` or `fr`. The initial language
+`marketstack.language` localStorage key stores `de`, `en`, `fr` or `tr`. The initial language
 comes from the saved preference or browser language; unsupported languages fall
-back to German. Regional variants such as `fr-FR` and `fr-CA` resolve to French.
+back to German. Regional variants such as `fr-FR`/`fr-CA` and `tr-TR` resolve to
+French and Turkish respectively.
 Theme and language preferences are independent. All four namespaces, including
-analytics explanations and accessible labels, are translated in all three languages.
+analytics explanations and accessible labels, are translated in all four languages.
 
 The language selector and its accessible label follow the active UI language:
-"Deutsch / Englisch / Französisch", "German / English / French", or
-"Allemand / Anglais / Français". The language codes and saved preference remain
+"Deutsch / Englisch / Französisch / Türkisch", "German / English / French / Turkish",
+"Allemand / Anglais / Français / Turc", or "Almanca / İngilizce / Fransızca / Türkçe".
+The language codes and saved preference remain
 unchanged when the displayed option names are translated.
 
-`src/i18n/format.ts` centralizes native `Intl` formatting for de-DE, en-GB and fr-FR,
+`src/i18n/format.ts` centralizes native `Intl` formatting for de-DE, en-GB, fr-FR and tr-TR,
 including numbers, decimal values, EUR amounts, percentages, months, and times.
 Language changes update the document language, title, and meta description
 without resetting data, filters, or demo state. Brand names, API identifiers,
 and ISO dates are not translated.
-Tests enforce equal resource keys and interpolation variables across all three
+Tests enforce equal resource keys and interpolation variables across all four
 languages. Explicit `_many` resources support French million-count plural forms;
 the matching keys in German/English retain their existing plural wording. French
 period shortcuts use 1S (semaine) and 1A (an); preset calculations and API filters
-are language-independent. French CSV headers/decimal formatting are tested too.
+are language-independent. Turkish shortcuts use 1H (hafta), 1A (ay), 1Y (yıl)
+and Maks. French and Turkish CSV headers/decimal formatting are tested too.
+Turkish formatting uses its native percentage placement (e.g. `%27,8`); amounts
+remain denominated in EUR, not TRY, because language selection does not convert currency.
 
 ## User area
 
 The user icon opens `/user`, which displays a localized availability notice:
-"In Arbeit" in German, "Coming soon" in English and "Bientôt disponible" in French. The page shares the sticky
+"In Arbeit" in German, "Coming soon" in English, "Bientôt disponible" in French
+and "Yakında" in Turkish. The page shares the sticky
 header and preference controls. Authentication, account settings, and user
 management are not implemented.
 

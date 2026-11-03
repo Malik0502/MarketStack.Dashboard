@@ -1,0 +1,18 @@
+{
+  "appTitle": "MarketStack · Alışveriş analizi",
+  "description": "MarketStack – alışverişleriniz, harcamalarınız ve alışveriş alışkanlıklarınız bir bakışta.",
+  "skipContent": "İçeriğe geç",
+  "loading": "Veriler yükleniyor…",
+  "empty": "Henüz veri yok.",
+  "missing": "Veri yok",
+  "unavailableValue": "—",
+  "close": "Kapat",
+  "refresh": "Yenile",
+  "export": "Dışa aktar",
+  "expenses": "Harcamalar",
+  "taxes": "Vergiler",
+  "month": "Ay",
+  "notFoundTitle": "Sayfa bulunamadı",
+  "notFoundDescription": "Bu adreste kullanılabilir bir sayfa yok.",
+  "backHome": "Ana sayfaya dön"
+}
