@@ -1,10 +1,10 @@
 {
   "main": "Ana gezinme",
-  "expandNavigation": "Menüyü genişlet",
-  "collapseNavigation": "Menüyü daralt",
+  "expandNavigation": "Menüyü genişletin",
+  "collapseNavigation": "Menüyü daraltın",
   "overview": "Genel bakış",
   "home": "Ana sayfa",
-  "spending": "Giderler",
+  "spending": "Harcamalar",
   "prices": "Fiyatlar",
   "products": "Ürünler",
   "stores": "Mağazalar",
@@ -20,8 +20,8 @@
   "english": "İngilizce",
   "french": "Fransızca",
   "turkish": "Türkçe",
-  "switchLight": "Açık temaya geç",
-  "switchDark": "Koyu temaya geç",
+  "switchLight": "Açık temaya geçin",
+  "switchDark": "Koyu temaya geçin",
   "light": "Açık",
   "dark": "Koyu"
 }
