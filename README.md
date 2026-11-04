@@ -24,7 +24,7 @@ The MarketStack UI is currently under development. The dashboard and its statist
 
 <!-- Add screenshot here -->
 
-![MarketStack UI](docs/assets/currentDevStatus.png)
+![MarketStack UI](docs/assets/v2.png)
 
 ## Planned Features
 
