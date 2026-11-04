@@ -37,7 +37,7 @@ export function DataTable<T>({ rows, columns, rowKey, caption, initialSort, empt
     <div className="max-h-[460px] overflow-auto">
     <table id={tableId} className="w-full min-w-[520px] text-left text-xs">
       <caption className="sr-only">{caption}</caption>
-      <thead className="sticky top-0 z-10 bg-card"><tr className="border-b text-[10px] tracking-wider text-muted-foreground uppercase">
+      <thead className="sticky top-0 z-10 bg-card"><tr className="border-b text-xs text-muted-foreground">
         {columns.map(item => <th key={item.key} scope="col" className={`px-2 pb-3 font-medium ${item.numeric ? 'text-right' : ''}`}
           aria-sort={sort?.key === item.key ? sort.direction === 'asc' ? 'ascending' : 'descending' : 'none'}>
           {item.sortValue ? <button className={`inline-flex min-h-8 items-center gap-1 ${item.numeric ? 'justify-end' : ''}`} onClick={() => {
@@ -49,7 +49,7 @@ export function DataTable<T>({ rows, columns, rowKey, caption, initialSort, empt
         </th>)}
       </tr></thead>
       <tbody>{(paginate ? page.rows : sorted).map(row => <tr key={rowKey(row)} className="border-b last:border-0 hover:bg-muted/40">
-        {columns.map(item => <td key={item.key} className={`px-2 py-3.5 ${item.numeric ? 'text-right tabular-nums' : ''}`}>{item.render(row)}</td>)}
+        {columns.map(item => <td key={item.key} className={`px-2 py-3 ${item.numeric ? 'text-right tabular-nums' : ''}`}>{item.render(row)}</td>)}
       </tr>)}</tbody>
     </table>
     </div>

@@ -17,7 +17,7 @@ export function HistoryTable({ expenses, taxes, loading }: {
   return <div className="overflow-x-auto">
     <table className="w-full min-w-[340px] text-left text-xs">
       <caption className="sr-only">{t('table.caption')}</caption>
-      <thead><tr className="border-b text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
+      <thead><tr className="border-b text-xs font-medium text-muted-foreground">
         <th scope="col" className="pb-3 font-medium">{t('common:month')}</th>
         <th scope="col" className="pb-3 text-right font-medium">{t('common:expenses')}</th>
         <th scope="col" className="pb-3 text-right font-medium">{t('common:taxes')}</th>

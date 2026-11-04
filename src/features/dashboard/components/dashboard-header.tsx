@@ -29,8 +29,8 @@ export function DashboardHeading({ loading, demo, canExport, onRefresh, onExport
   return <div className="mb-7 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
     <div>
       <p className="eyebrow mb-2.5">{t('hero.eyebrow')}</p>
-      <h1 className="text-[28px] leading-tight font-semibold tracking-[-0.045em] sm:text-[32px]">
-        {t('hero.title')}<span className="text-primary">.</span>
+      <h1 className="text-[28px] leading-tight font-medium tracking-[-0.02em] sm:text-[32px]">
+        {t('hero.title')}
       </h1>
       <p className="mt-2 text-[13px] text-muted-foreground">{t('hero.subtitle')}</p>
     </div>

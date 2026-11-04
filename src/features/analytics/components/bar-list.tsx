@@ -12,6 +12,6 @@ export function BarList({ rows, format, onSelect }: {
       <span className="shrink-0 font-medium tabular-nums">{format(row.value)}</span>
     </div>
     <div className="h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden="true"><div className="h-full rounded-full bg-[var(--chart-expense)]" style={{ width: `${Math.max(0, row.value / max * 100)}%` }} /></div>
-    {row.detail && <p className="mt-1 text-[10px] text-muted-foreground">{row.detail}</p>}
+    {row.detail && <p className="mt-1 text-xs text-muted-foreground tabular-nums">{row.detail}</p>}
   </li>)}</ul>
 }

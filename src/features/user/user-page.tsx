@@ -10,7 +10,7 @@ export function UserPage() {
     <AppHeader title={t('navigation:user')} />
     <div className="dashboard-page">
       <p className="eyebrow mb-2.5">{t('eyebrow')}</p>
-      <h1 className="text-[28px] font-semibold tracking-[-0.045em] sm:text-[32px]">{t('title')}</h1>
+      <h1 className="text-[28px] font-medium tracking-[-0.02em] sm:text-[32px]">{t('title')}</h1>
       <Card className="dashboard-card mt-7 max-w-2xl">
         <CardContent className="px-5 sm:px-6">
           <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-muted text-primary">

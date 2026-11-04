@@ -53,7 +53,7 @@ export function Dashboard() {
       <section aria-label={t('kpi.label')}>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xs font-semibold">{t('kpi.section')}</h2>
-          <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground"><CalendarDays className="size-3" />{t('kpi.scope')}</span>
+          <span className="flex items-center gap-2 text-xs text-muted-foreground"><CalendarDays className="size-4" />{t('kpi.scope')}</span>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <KpiCard title={t('kpi.total')} value={metric(metrics.totalExpense)} detail={t('kpi.weekly')} icon={Wallet} change={metrics.expenseChange} accent loading={loading} />
@@ -72,7 +72,7 @@ export function Dashboard() {
             </button>)}
           </div>
         </div>
-        <p className="mb-4 text-[11px] text-muted-foreground">{period}</p>
+        <p className="mb-4 text-xs text-muted-foreground">{period}</p>
         <div className="dashboard-grid">
           <DashboardCard title={t('analysis.chartTitle')} eyebrow={t('analysis.eyebrow')} className="lg:col-span-8"
             action={<div className="series-control" role="group" aria-label={t('analysis.series')}>
@@ -80,16 +80,16 @@ export function Dashboard() {
               <button aria-pressed={series === 'taxes'} onClick={() => setSeries('taxes')}>{t('common:taxes')}</button>
             </div>}>
             <div className="mb-4 mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <p className="text-[28px] font-semibold tracking-[-0.04em] tabular-nums">{loading || chartTotal === null ? t('common:unavailableValue') : format.money(chartTotal)}</p>
-              <span className="text-[11px] text-muted-foreground">{t('analysis.summary', { count: months.length, available: loading ? 0 : available.length })}</span>
+              <p className="text-[28px] font-medium tracking-[-0.02em] tabular-nums">{loading || chartTotal === null ? t('common:unavailableValue') : format.money(chartTotal)}</p>
+              <span className="text-xs text-muted-foreground">{t('analysis.summary', { count: months.length, available: loading ? 0 : available.length })}</span>
             </div>
-            <p className="mb-2 text-[10px] text-muted-foreground">{t('analysis.partialSum')}</p>
+            <p className="mb-2 text-xs text-muted-foreground">{t('analysis.partialSum')}</p>
             <ExpenseChart data={chartData} loading={loading} tax={series === 'taxes'} />
           </DashboardCard>
           <ShoppingInsights metrics={metrics} loading={loading} />
           <div className="min-w-0 lg:col-span-8">
             <DashboardCard title={t('table.title')} eyebrow={t('table.eyebrow')}
-              action={<span className="rounded-md border px-2 py-1 text-[10px] text-muted-foreground">EUR</span>}
+              action={<span className="text-xs text-muted-foreground">EUR</span>}
               contentClassName="max-h-[330px] overflow-auto">
               <HistoryTable expenses={expenses} taxes={taxes} loading={loading} />
             </DashboardCard>
@@ -98,12 +98,12 @@ export function Dashboard() {
             <MonthlyInsight expenses={loading ? null : data.expenses} />
             <div className="info-note flex items-start gap-3 rounded-xl border p-4">
               <span className="mt-0.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              <div><p className="text-xs font-medium">{t('note.title')}</p><p className="mt-1.5 text-[11px] leading-relaxed">{t('note.body')}</p></div>
+              <div><p className="text-xs font-medium">{t('note.title')}</p><p className="mt-2 text-xs leading-relaxed">{t('note.body')}</p></div>
             </div>
           </div>
         </div>
       </section>
-      <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-[10px] text-muted-foreground">
+      <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs text-muted-foreground">
         <span>MarketStack <span className="mx-1.5 text-border">/</span> {t('footer.description')}</span>
         <div className="flex items-center gap-3">
           <span>{demo ? t('demo.footer') : data.updatedAt ? t('footer.updated', { time: format.time(data.updatedAt) }) : t('footer.noData')}</span>

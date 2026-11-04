@@ -38,13 +38,13 @@ export function AnalyticsLayout({ page, scenario, onScenario, filters, children,
     <AppHeader title={nav(page)} />
     <div className="dashboard-page">
       <div className="mb-7"><p className="eyebrow mb-2.5">{t('eyebrow')}</p>
-        <h1 className="text-[28px] font-semibold tracking-[-0.045em] sm:text-[32px]">{title ?? t(`${page}Title`)}</h1>
+        <h1 className="text-[28px] font-medium tracking-[-0.02em] sm:text-[32px]">{title ?? t(`${page}Title`)}</h1>
         <p className="mt-2 text-[13px] text-muted-foreground">{description ?? t(`${page}Description`)}</p>
       </div>
       {analyticsSource === 'mock' && <div className="data-notice notice-demo mb-5">
         <FlaskConical className="size-4 shrink-0" />
-        <div className="flex-1"><strong>{t('mockLabel')}</strong><p className="mt-1 text-[11px] leading-relaxed">{t('mockNotice')}</p></div>
-        <label className="analytics-field text-[11px]">{t('preview')}
+        <div className="flex-1"><strong>{t('mockLabel')}</strong><p className="mt-1 text-xs leading-relaxed">{t('mockNotice')}</p></div>
+        <label className="analytics-field">{t('preview')}
           <select value={scenario} onChange={event => onScenario(event.target.value as Scenario)}>
             {(['ready', 'loading', 'empty', 'error', 'noResults'] as const).map(value => <option key={value} value={value}>{t(`state_${value}`)}</option>)}
           </select>
