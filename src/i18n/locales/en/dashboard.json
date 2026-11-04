@@ -1,5 +1,9 @@
 {
   "analytics": {
+    "storeProductSection": {
+      "title": "Single product: price comparison",
+      "description": "Choose a product for the price comparison in this section. Search only narrows the product selection; the historical price differences above remain independent of the selected product."
+    },
     "filterBar": {
       "label": "Filters",
       "toggle": "Open or close filters",

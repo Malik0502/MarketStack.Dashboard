@@ -1,5 +1,9 @@
 {
   "analytics": {
+    "storeProductSection": {
+      "title": "Einzelprodukt: Preisvergleich",
+      "description": "Wähle ein Produkt für den Preisvergleich in diesem Bereich. Die Produktsuche grenzt nur die Auswahl ein; die historischen Preisunterschiede darüber bleiben unabhängig vom ausgewählten Produkt."
+    },
     "filterBar": {
       "label": "Filter",
       "toggle": "Filter öffnen oder schließen",

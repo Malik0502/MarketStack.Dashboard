@@ -1,5 +1,9 @@
 {
   "analytics": {
+    "storeProductSection": {
+      "title": "Tek ürün: fiyat karşılaştırması",
+      "description": "Bu bölümdeki fiyat karşılaştırması için bir ürün seçin. Arama yalnızca ürün seçimini daraltır; yukarıdaki geçmiş fiyat farkları seçilen üründen bağımsızdır."
+    },
     "filterBar": {
       "label": "Filtreler",
       "toggle": "Filtreleri aç veya kapat",

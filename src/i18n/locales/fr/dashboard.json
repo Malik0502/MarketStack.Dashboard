@@ -1,5 +1,9 @@
 {
   "analytics": {
+    "storeProductSection": {
+      "title": "Produit individuel : comparaison des prix",
+      "description": "Choisissez un produit pour la comparaison des prix dans cette section. La recherche limite uniquement la sélection ; les écarts de prix historiques ci-dessus restent indépendants du produit choisi."
+    },
     "filterBar": {
       "label": "Filtres",
       "toggle": "Ouvrir ou fermer les filtres",

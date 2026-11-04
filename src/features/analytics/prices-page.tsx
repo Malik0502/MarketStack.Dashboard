@@ -37,8 +37,8 @@ export function PricesPage({ selectedProductId, onProductChange, initialFilters 
     <div className="space-y-8">
       <section aria-labelledby="prices-product-heading" aria-describedby="prices-product-scope" className="rounded-xl border bg-muted/20 p-4 sm:p-6">
         <header className="mb-5">
-          <h2 id="prices-product-heading" className="text-lg font-semibold tracking-tight">{t('priceSections.productTitle')}</h2>
-          <p id="prices-product-scope" className="mt-2 max-w-3xl text-xs leading-relaxed text-muted-foreground">{t('priceSections.productDescription')}</p>
+          <h2 id="prices-product-heading" className="text-lg font-medium">{t('priceSections.productTitle')}</h2>
+          <p id="prices-product-scope" className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{t('priceSections.productDescription')}</p>
         </header>
         <ProductPicker value={productId} selectedName={data?.product?.name ?? catalog.data?.products.find(item => item.id === productId)?.name} onChange={onProductChange} />
         <AnalyticsState status={status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>

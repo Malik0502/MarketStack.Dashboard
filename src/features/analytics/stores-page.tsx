@@ -41,19 +41,6 @@ export function StoresPage() {
             { key: 'promotions', title: t('promotionShare'), render: row => `${format.percent(row.promotionShare)} (${format.number(row.promotionPurchases)})`, sortValue: row => row.promotionShare, numeric: true },
           ]} />
         </DashboardCard>
-        <ProductPicker value={productId} selectedName={data.product?.name ?? catalog.data?.products.find(item => item.id === productId)?.name} onChange={id => update({ productId: id })} />
-        <AnalyticsNote>{t('historicalNote')}</AnalyticsNote>
-        <DashboardCard title={`${t('productComparison')}${data.product ? ` · ${data.product.name}` : ''}`}>
-          <DataTable resetKey={JSON.stringify(query)} caption={t('productComparison')} rows={data.prices} emptyMessage={t('insufficient')} rowKey={row => row.merchant.id} columns={[
-            { key: 'store', title: t('merchant'), render: row => `${row.merchant.chain} · ${row.merchant.name}`, sortValue: row => row.merchant.name },
-            { key: 'last', title: t('last'), render: row => format.money(row.last), sortValue: row => row.last, numeric: true },
-            { key: 'date', title: t('lastDate'), render: row => format.date(row.lastAt), sortValue: row => row.lastAt },
-            { key: 'average', title: t('mean'), render: row => format.money(row.average), sortValue: row => row.average, numeric: true },
-            { key: 'min', title: t('lowestObserved'), render: row => format.money(row.min), sortValue: row => row.min, numeric: true },
-            { key: 'minAt', title: t('minimumDate'), render: row => format.date(row.minAt), sortValue: row => row.minAt },
-            { key: 'count', title: t('observations'), render: row => format.number(row.count), sortValue: row => row.count, numeric: true },
-          ]} />
-        </DashboardCard>
         <DashboardCard title={t('differences')}>
           <p className="mb-4 text-[11px] leading-relaxed text-muted-foreground">{t('historicalDifferencesNote')}</p>
           <DataTable resetKey={JSON.stringify(query)} caption={t('differences')} rows={data.differences} rowKey={row => row.productId} initialSort={{ key: 'difference', direction: 'desc' }} columns={[
@@ -66,6 +53,27 @@ export function StoresPage() {
             { key: 'percent', title: t('differencePercent'), render: row => row.percentage === null ? t('missing') : format.percent(row.percentage), sortValue: row => row.percentage, numeric: true },
           ]} />
         </DashboardCard>
+        <section aria-labelledby="stores-product-heading" aria-describedby="stores-product-scope" className="rounded-xl border bg-muted/20 p-4 sm:p-6">
+          <header className="mb-5">
+            <h2 id="stores-product-heading" className="text-lg font-medium">{t('storeProductSection.title')}</h2>
+            <p id="stores-product-scope" className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{t('storeProductSection.description')}</p>
+          </header>
+          <ProductPicker value={productId} selectedName={data.product?.name ?? catalog.data?.products.find(item => item.id === productId)?.name} onChange={id => update({ productId: id })} />
+          <div className="space-y-4">
+          <AnalyticsNote>{t('historicalNote')}</AnalyticsNote>
+          <DashboardCard title={`${t('productComparison')}${data.product ? ` · ${data.product.name}` : ''}`}>
+          <DataTable resetKey={JSON.stringify(query)} caption={t('productComparison')} rows={data.prices} emptyMessage={t('insufficient')} rowKey={row => row.merchant.id} columns={[
+            { key: 'store', title: t('merchant'), render: row => `${row.merchant.chain} · ${row.merchant.name}`, sortValue: row => row.merchant.name },
+            { key: 'last', title: t('last'), render: row => format.money(row.last), sortValue: row => row.last, numeric: true },
+            { key: 'date', title: t('lastDate'), render: row => format.date(row.lastAt), sortValue: row => row.lastAt },
+            { key: 'average', title: t('mean'), render: row => format.money(row.average), sortValue: row => row.average, numeric: true },
+            { key: 'min', title: t('lowestObserved'), render: row => format.money(row.min), sortValue: row => row.min, numeric: true },
+            { key: 'minAt', title: t('minimumDate'), render: row => format.date(row.minAt), sortValue: row => row.minAt },
+            { key: 'count', title: t('observations'), render: row => format.number(row.count), sortValue: row => row.count, numeric: true },
+          ]} />
+          </DashboardCard>
+          </div>
+        </section>
       </div>)}
     </AnalyticsState>
   </AnalyticsLayout>
