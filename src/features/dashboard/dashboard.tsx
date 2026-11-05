@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { CardHeadingContext } from './components/card-heading-context'
 import { Activity, CalendarDays, ReceiptText, ShoppingBag, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DashboardCard } from './components/dashboard-card'
@@ -9,7 +11,6 @@ import { MonthlyInsight, ShoppingInsights } from './components/insight-cards'
 import { HistoryTable } from './components/history-table'
 import { useDashboard } from './use-dashboard'
 import { useFormat } from './format'
-import type { HistoryRange } from './types'
 import { selectHistoryWindow } from './selectors'
 import { buildHistoryCsv } from './csv'
 
@@ -17,8 +18,11 @@ export function Dashboard() {
   const { t } = useTranslation(['dashboard', 'common'])
   const format = useFormat()
   const { data, demo, setDemo, loading, refresh } = useDashboard()
-  const [range, setRange] = useState<HistoryRange>('12')
-  const [series, setSeries] = useState<'expenses' | 'taxes'>('expenses')
+  const search = useSearch({ from: '__root__' })
+  const navigate = useNavigate()
+  const range = search.range ?? '12', series = search.series ?? 'expenses'
+  const setRange = (range: '6' | '12' | 'all') => void navigate({ to: '/', resetScroll: false, viewTransition: false, search: previous => ({ ...previous, range }) })
+  const setSeries = (series: 'expenses' | 'taxes') => void navigate({ to: '/', resetScroll: false, viewTransition: false, search: previous => ({ ...previous, series }) })
   const [help, setHelp] = useState(false)
   const { metrics } = data
   const { months, expenses, taxes } = selectHistoryWindow(data, range)
@@ -50,7 +54,7 @@ export function Dashboard() {
       {help && <DataHelp onClose={() => setHelp(false)} />}
       <DataNotice demo={demo} loading={loading} errors={data.errors.length} onDemo={setDemo} />
 
-      <section aria-label={t('kpi.label')}>
+      <CardHeadingContext value="h3"><section aria-label={t('kpi.label')}>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xs font-semibold">{t('kpi.section')}</h2>
           <span className="flex items-center gap-2 text-xs text-muted-foreground"><CalendarDays className="size-4" />{t('kpi.scope')}</span>
@@ -90,7 +94,7 @@ export function Dashboard() {
           <div className="min-w-0 lg:col-span-8">
             <DashboardCard title={t('table.title')} eyebrow={t('table.eyebrow')}
               action={<span className="text-xs text-muted-foreground">EUR</span>}
-              contentClassName="max-h-[330px] overflow-auto">
+              contentClassName="table-scroll max-h-[330px] overflow-auto">
               <HistoryTable expenses={expenses} taxes={taxes} loading={loading} />
             </DashboardCard>
           </div>
@@ -103,7 +107,7 @@ export function Dashboard() {
           </div>
         </div>
       </section>
-      <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs text-muted-foreground">
+      </CardHeadingContext><footer className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-xs text-muted-foreground">
         <span>MarketStack <span className="mx-1.5 text-border">/</span> {t('footer.description')}</span>
         <div className="flex items-center gap-3">
           <span>{demo ? t('demo.footer') : data.updatedAt ? t('footer.updated', { time: format.time(data.updatedAt) }) : t('footer.noData')}</span>

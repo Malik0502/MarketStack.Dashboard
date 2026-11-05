@@ -1,4 +1,6 @@
 {
+  "pageTitle": "{{page}} · MarketStack",
+  "languageLoadError": "La langue n’a pas pu être chargée. Vérifiez la connexion et rechargez la page.",
   "appTitle": "MarketStack · Analyse des achats",
   "description": "MarketStack – vos achats, dépenses et habitudes d’achat en un coup d’œil.",
   "skipContent": "Aller au contenu",

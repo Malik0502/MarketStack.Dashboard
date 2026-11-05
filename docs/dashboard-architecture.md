@@ -116,7 +116,8 @@ The backend uses .NET, EF Core, and PostgreSQL. Its receipt-import pipeline
 provides the data used by the analytics endpoints. Database entities are not
 frontend contracts unless an API explicitly exposes them.
 
-The API base URL is configured in `src/common/config/constants.ts`. Endpoint
+The API base URL is read from `VITE_API_URL` by `src/common/config/constants.ts`
+(HTTP(S) URL or root-relative `/api`; previous localhost default retained). Endpoint
 paths below are relative to that URL. Requests use the shared `apiFetch` helper.
 
 ### Response envelope
@@ -297,11 +298,17 @@ Translation resources live in `src/i18n/locales/{de,en,fr,tr}/`:
 
 Components use typed translation keys through react-i18next. The
 `marketstack.language` localStorage key stores `de`, `en`, `fr` or `tr`. The initial language
-comes from the saved preference or browser language; unsupported languages fall
-back to German. Regional variants such as `fr-FR`/`fr-CA` and `tr-TR` resolve to
+comes from the saved preference or the first supported entry in `navigator.languages`;
+unsupported lists fall back to German. Regional variants such as `fr-FR`/`fr-CA` and `tr-TR` resolve to
 French and Turkish respectively.
 Theme and language preferences are independent. All four namespaces, including
 analytics explanations and accessible labels, are translated in all four languages.
+Language entry modules are loaded on demand through an i18next backend. The initial
+language and German fallback are ready before mounting React. Switching languages
+loads one language chunk without resetting the page, and only the latest requested
+selection wins. Load failures retain the active language and display a localized
+connection/reload message. The complete resource map in `src/i18n/resources.ts` is
+used for types/tests, not eagerly imported by the running application.
 
 The language selector and its accessible label follow the active UI language:
 "Deutsch / Englisch / Französisch / Türkisch", "German / English / French / Turkish",
@@ -311,6 +318,7 @@ unchanged when the displayed option names are translated.
 
 `src/i18n/format.ts` centralizes native `Intl` formatting for de-DE, en-GB, fr-FR and tr-TR,
 including numbers, decimal values, EUR amounts, percentages, months, and times.
+Formatter objects are reused per locale and option set, including dates and weekdays.
 Language changes update the document language, title, and meta description
 without resetting data, filters, or demo state. Brand names, API identifiers,
 and ISO dates are not translated.
@@ -341,8 +349,10 @@ Home's components, data services, metrics and filters remain independent.
 features/analytics/
   types.ts                 DTOs and interchangeable data-source interface
   data-source.ts           API adapter, source selection, query validation
-  use-analytics.ts         Abortable keyed requests, retry, and UI states
-  use-filters.ts           Shared filter state and catalog loading
+  use-analytics.ts         Subscription to shared abortable keyed requests and UI states
+  resource-cache.ts        In-flight deduplication, freshness, cancellation and retry
+  validate-payload.ts      Runtime DTO checks using the documented JSON Schema
+  use-filters.ts           Router-backed filter state and shared catalog loading
   mock/fixtures.ts         Deterministic synthetic receipts and metadata
   mock/analytics.ts        Mock projections matching proposed API contracts
   components/              Filters, product picker, charts, tables, detail drawer
@@ -403,7 +413,56 @@ Mock-mode preview controls expose loading, empty, error and no-results states.
 Request keys and cancellation prevent stale data after filter changes. Tables
 sort complete table result sets locally before independent pagination; the product list requests complete-population
 sorting and pagination from its source. Chart, aggregate and DTO/schema consistency
-tests use the same deterministic fixtures and require no new test dependency.
+unit tests use the same deterministic fixtures. A separate Playwright suite verifies
+actual browser behavior, including API-mode responses and large synthetic datasets.
+
+### URL state, accessibility, and rendering budgets
+
+The root route validates URL state in `src/lib/url-state.ts`. Analytics period,
+grouping, product/store/tag/unit and product source pagination derive directly from
+validated router search, so reload/history changes cannot leave a second local
+filter state behind. Meaningful filter/page changes push history; local table sort
+and page-size changes replace the current entry. Each ranking/table has a stable
+namespaced key under `tables`. Changing analytics filters clears dependent local
+table state. Hover, chart point selection, native disclosure state and modal focus
+remain transient. Home's chart `range` and `series` are also URL-backed, with its
+existing metric requests and calendar calculations unchanged.
+
+`AnalyticsFilters` is a frame with a shared period control and composed
+`GroupingFilter`, `StoreFilter`, `TagFilter` and `UnitFilter` children. Resource
+statuses have an explicit union and exhaustive message mapping. Shared cards use
+contextual h2/h3/h4 levels, leaving the primitive CardTitle unchanged. Headers set
+localized page/product titles and announce navigation. Committed route headings
+receive focus; filters and language changes do not steal it. Dialogs preserve Base
+UI focus management and add scroll containment/safe-area padding.
+
+Charts have one keyboard entry, arrow/Home/End inspection, an SVG-wide nearest-point
+pointer surface, and a complete paginated data-table alternative. Line rendering
+retains local extrema within 600 marks per series (a shared 1,200-point target),
+without connecting missing-value segments. Pareto renders at most 600 adjacent
+product groups; underlying statistics and tables still use all products. Large
+table rows use `content-visibility` containment instead of removing rows from the
+DOM, preserving accessibility, find/copy and the All option. Printing disables
+containment and the table's scroll-height cap.
+
+### Motion integration
+
+React/React DOM 19.3.1 are stable dependencies. Native page view transitions are
+coordinated by TanStack Router, not by manual `document.startViewTransition` calls.
+Its external-store route updates did not activate an outer React ViewTransition
+reliably in browser tests, so the router's supported integration owns route snapshots.
+Header, navigation and sticky filters are isolated; lateral navigation fades,
+explicit list/detail actions carry forward/back types, and ordinary same-route
+filter updates disable route animation. Unsupported browsers navigate normally.
+
+For small table reorders, `useDeferredValue` activates keyed React ViewTransition
+row boundaries. At more than 50 displayed rows these boundaries are omitted to
+avoid thousands of snapshots. Shared product identity can pair the drawer label
+and ready detail heading; prefetch reuses the semantic price-resource cache key.
+If incoming identity is not ready, ordinary page navigation is the fallback.
+No Suspense data migration or decorative loading animation is required. Reduced
+motion disables all view-transition pseudo-element animations as well as ordinary
+CSS motion. See [implementation notes](frontend-audit-implementation.md).
 
 ## Development and configuration
 
@@ -414,9 +473,12 @@ npm test           # Run automated tests
 npm run lint       # Run ESLint
 npm run build      # Type-check and create the production bundle
 npm run preview    # Serve the production bundle locally
+npm run test:api-build # Verify API output excludes mock initialization
+npx playwright install chromium # One-time local browser installation
+npm run test:browser # Browser regressions with managed mock/API dev servers
 ```
 
-Configure API access in `src/common/config/constants.ts`. For local development,
+Configure API access using `VITE_API_URL` in `.env.local` (see `.env.example`). For local development,
 the backend CORS policy allows `http://localhost:5173`. Other origins require
 corresponding backend configuration. Local backend HTTPS certificates must be
 trusted by the browser. Starting the backend can trigger database migrations
@@ -448,8 +510,9 @@ When extending the application:
    and supported language resolution, add a selector option, and define locale
    formatting. Extend translation-parity tests.
 5. **Add a chart:** use the shared history contracts and theme tokens, preserve
-   missing-value semantics, and provide keyboard-accessible values. TanStack
-   Charts is also available as an installed dependency.
+   missing-value semantics, provide keyboard-accessible values and a complete data
+   alternative, and respect the rendering budget. The SVG components have no
+   dependency on TanStack Charts, d3-scale or Motion.
 
 Run tests, linting, and the production build before publishing changes. Check
 both themes and languages, small and large viewports, direct route access,

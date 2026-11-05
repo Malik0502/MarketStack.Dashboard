@@ -132,13 +132,14 @@ test('analytics period presets use inclusive UTC days, calendar boundaries and c
 
 test('compact filter bar starts collapsed with a localized summary and persistent controls', async () => {
   const { default: i18n } = await server.ssrLoadModule('/src/i18n/index.ts')
-  const { AnalyticsFilters } = await server.ssrLoadModule('/src/features/analytics/components/filters.tsx')
+  const { AnalyticsFilters, StoreFilter } = await server.ssrLoadModule('/src/features/analytics/components/filters.tsx')
   const previousLanguage = i18n.language
   try {
     for (const language of ['de', 'en', 'fr', 'tr']) {
       await i18n.changeLanguage(language)
       const html = renderToStaticMarkup(createElement(AnalyticsFilters, {
-        query: { ...query, storeId: 'north-centre' }, update: () => {}, catalog: model.getCatalog(), store: true,
+        query: { ...query, storeId: 'north-centre' }, update: () => {}, catalog: model.getCatalog(), activeExtras: 1,
+        children: createElement(StoreFilter, { query: { ...query, storeId: 'north-centre' }, update: () => {}, catalog: model.getCatalog() }),
       }))
       assert.match(html, /<details[^>]*analytics-sticky-filters/)
       assert.doesNotMatch(html, /<details[^>]*\sopen(?:[=>\s])/)

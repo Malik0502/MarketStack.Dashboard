@@ -1,30 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useSyncExternalStore } from 'react'
 import { analyticsSource } from './data-source'
-import type { Scenario } from './types'
+import { analyticsCache } from './resource-cache'
+import type { AnalyticsStatus, Scenario } from './types'
 
 export function useAnalytics<T>(load: (signal: AbortSignal) => Promise<T>, key: string, scenario: Scenario = 'ready', enabled = true) {
-  const [result, setResult] = useState<{ key: string; data: T | null; error: boolean } | null>(null)
-  const [revision, setRevision] = useState(0)
-  const requestKey = `${key}:${revision}`
   const preview = analyticsSource === 'mock' ? scenario : 'ready'
-
+  const subscribe = useCallback((listener: () => void) => enabled && preview === 'ready' ? analyticsCache.subscribe(key, listener) : () => {}, [key, enabled, preview])
+  const snapshot = useCallback(() => analyticsCache.snapshot<T>(key), [key])
+  const result = useSyncExternalStore(subscribe, snapshot, snapshot)
   useEffect(() => {
     if (!enabled || preview !== 'ready') return
-    const controller = new AbortController()
-    const timer = window.setTimeout(() => controller.abort(), 12000)
-    let active = true
-    load(controller.signal).then(data => {
-      if (active) setResult({ key: requestKey, data, error: false })
-    }).catch(() => {
-      if (active) setResult({ key: requestKey, data: null, error: true })
-    }).finally(() => window.clearTimeout(timer))
-    return () => { active = false; controller.abort(); window.clearTimeout(timer) }
-  }, [load, requestKey, preview, enabled])
-
-  const current = result?.key === requestKey ? result : null
-  const status = !enabled ? 'noResults' : preview !== 'ready' ? preview : !current ? 'loading' : current.error ? 'error' : 'ready'
+    return analyticsCache.acquire(key, load)
+  }, [load, key, preview, enabled])
+  const status: AnalyticsStatus = !enabled ? 'disabled' : preview !== 'ready' ? preview : result.status
   return {
-    data: status === 'ready' ? current?.data ?? null : null,
-    status, retry: () => setRevision(value => value + 1), source: analyticsSource,
+    data: status === 'ready' ? result.data : null,
+    status, retry: () => analyticsCache.refresh(key, load), source: analyticsSource,
   }
 }

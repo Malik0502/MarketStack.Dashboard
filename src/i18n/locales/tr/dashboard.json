@@ -1,5 +1,11 @@
 {
   "analytics": {
+    "chart": {
+      "instructions": "Noktaları incelemek için Sol/Sağ veya Yukarı/Aşağı tuşlarını kullanın; Home/End ilk/son noktayı seçer. En yakın noktayı seçmek için grafiğe dokunun.",
+      "data": "Tüm grafik verilerini tabloda göster", "series": "Veri serisi", "value": "Değer",
+      "sampled": "Görünüm için yerel uç değerler seçilir. Tablo tüm gözlemleri içerir; eksik veriler birbirine bağlanmaz.",
+      "grouped": "Görünüm için bitişik ürünler gruplandırılır. Tablo her ürünü ayrı ayrı içerir."
+    },
     "storeProductSection": {
       "title": "Tek ürün: fiyat karşılaştırması",
       "description": "Bu fiyat karşılaştırması için bir ürün seçin. Arama ürün seçimini daraltır; yukarıdaki geçmiş fiyat farkları değişmez."

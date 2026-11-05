@@ -1,4 +1,5 @@
 import { Languages, Moon, Sun } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/Components/ui/button'
 import { useTheme } from '@/theme/theme-context'
@@ -8,7 +9,8 @@ import { languages, resolveLanguage } from '@/lib/preferences'
 const languageNames = { de: 'german', en: 'english', fr: 'french', tr: 'turkish' } as const
 
 export function PreferenceControls() {
-  const { t, i18n } = useTranslation('navigation')
+  const { t, i18n } = useTranslation(['navigation', 'common'])
+  const [languageError, setLanguageError] = useState(false)
   const { theme, setTheme } = useTheme()
   const label = t(theme === 'dark' ? 'switchLight' : 'switchDark')
 
@@ -22,9 +24,13 @@ export function PreferenceControls() {
       <Languages className="size-4 shrink-0" aria-hidden="true" />
       <span className="sr-only">{t('language')}</span>
       <select aria-label={t('language')} value={resolveLanguage(i18n.resolvedLanguage)}
-        onChange={event => void changeLanguage(event.target.value)}>
+        onChange={event => {
+          setLanguageError(false)
+          void changeLanguage(event.target.value).catch(() => setLanguageError(true))
+        }}>
         {languages.map(language => <option key={language} value={language}>{t(languageNames[language])}</option>)}
       </select>
     </label>
+    {languageError && <p role="alert" className="basis-full max-w-56 text-xs text-destructive">{t('common:languageLoadError')}</p>}
   </div>
 }

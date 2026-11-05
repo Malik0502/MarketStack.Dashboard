@@ -1,5 +1,11 @@
 {
   "analytics": {
+    "chart": {
+      "instructions": "Utilisez Gauche/Droite ou Haut/Bas pour parcourir les points ; Début/Fin sélectionne le premier/dernier point. Touchez le graphique pour sélectionner le point le plus proche.",
+      "data": "Toutes les données du graphique en tableau", "series": "Série", "value": "Valeur",
+      "sampled": "Les extrema locaux sont sélectionnés pour l’affichage. Le tableau contient toutes les observations ; les données manquantes ne sont jamais reliées.",
+      "grouped": "Les produits voisins sont regroupés pour l’affichage. Le tableau contient chaque produit individuellement."
+    },
     "storeProductSection": {
       "title": "Produit individuel : comparaison des prix",
       "description": "Choisissez un produit pour cette comparaison. La recherche limite la sélection de produits ; les écarts de prix historiques ci-dessus restent inchangés."

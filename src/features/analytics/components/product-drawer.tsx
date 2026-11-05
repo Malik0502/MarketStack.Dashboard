@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { Dialog } from '@base-ui/react/dialog'
-import { Link } from '@tanstack/react-router'
+import { ProductPriceLink } from './product-price-link'
 import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useFormat } from '@/i18n/format'
@@ -11,6 +11,7 @@ import { AnalyticsState } from './analytics-layout'
 import { DataTable } from './data-table'
 import { PriceStatistics } from './price-statistics'
 import type { AnalyticsQuery } from '../types'
+import { CardHeadingContext } from '@/features/dashboard/components/card-heading-context'
 
 export function ProductDrawer({ productId, query, onClose }: { productId: number | null; query: AnalyticsQuery; onClose: () => void }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
@@ -21,14 +22,14 @@ export function ProductDrawer({ productId, query, onClose }: { productId: number
   return <Dialog.Root open={productId !== null} onOpenChange={open => { if (!open) onClose() }}>
     <Dialog.Portal>
       <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/60 data-[closed]:hidden" />
-      <Dialog.Popup className="fixed inset-y-0 right-0 z-50 w-full max-w-3xl overflow-y-auto border-l bg-background p-5 shadow-xl outline-none data-[closed]:hidden sm:p-7">
+      <Dialog.Popup className="product-drawer fixed inset-y-0 right-0 z-50 w-full max-w-3xl overflow-y-auto overscroll-contain border-l bg-background p-5 shadow-xl outline-none data-[closed]:hidden sm:p-7">
         <div className="mb-5 flex items-center justify-between gap-4">
           <Dialog.Title className="text-lg font-semibold">{t('productDetails')}</Dialog.Title>
           <Dialog.Close className="flex size-9 items-center justify-center rounded-lg hover:bg-muted" aria-label={t('closeDetails')}><X className="size-4" /></Dialog.Close>
         </div>
-        <Dialog.Description className="mb-5 text-sm text-muted-foreground">{item?.name ?? t('product')}</Dialog.Description>
+        <Dialog.Description style={{ viewTransitionName: item ? 'price-product-identity' : undefined }} className="mb-5 text-sm text-muted-foreground">{item?.name ?? t('product')}</Dialog.Description>
         <AnalyticsState status={result.status} retry={result.retry}>
-          {data && item ? <div className="space-y-4">
+          {data && item ? <CardHeadingContext value="h3"><div className="space-y-4 tabular-nums">
             <div className="flex flex-wrap gap-2">{item.tags.map(tag => <span key={tag.id} className="rounded-md border bg-card px-2 py-1 text-xs">{tag.name}</span>)}</div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <DashboardCard title={t('purchases')}><p className="text-xl font-semibold">{format.number(item.purchases)}</p></DashboardCard>
@@ -36,9 +37,9 @@ export function ProductDrawer({ productId, query, onClose }: { productId: number
               <DashboardCard title={t('itemExpenses')}><p className="text-xl font-semibold">{format.money(item.expenses)}</p></DashboardCard>
             </div>
             <h3 className="text-sm font-semibold">{t('priceStatistics')}</h3>
-            <PriceStatistics stats={data.priceStats} compact />
+            <CardHeadingContext value="h4"><PriceStatistics stats={data.priceStats} compact /></CardHeadingContext>
             <p className="text-[11px] text-muted-foreground">{t('historicalNote')}</p>
-            <Link to="/prices/$productId" params={{ productId: String(item.id) }} search={{ from: query.from, to: query.to }} className="inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">{t('openPrices')}</Link>
+            <ProductPriceLink productId={item.id} search={{ from: query.from, to: query.to }} className="inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">{t('openPrices')}</ProductPriceLink>
             <DashboardCard title={t('purchaseHistory')}>
               <p className="mb-3 text-[11px] text-muted-foreground">{t('purchaseHistoryNote')}</p>
               <DataTable resetKey={`${productId}:${JSON.stringify(query)}`} caption={t('purchaseHistory')} rows={data.recentPurchases} rowKey={row => row.lineId} columns={[
@@ -50,7 +51,7 @@ export function ProductDrawer({ productId, query, onClose }: { productId: number
                 { key: 'promotion', title: t('promotionPositions'), render: row => t(row.promotion ? 'yes' : 'no') },
               ]} />
             </DashboardCard>
-          </div> : data && <EmptyState message={t('noResults')} />}
+          </div></CardHeadingContext> : data && <EmptyState message={t('noResults')} />}
         </AnalyticsState>
       </Dialog.Popup>
     </Dialog.Portal>

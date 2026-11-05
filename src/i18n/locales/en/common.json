@@ -1,4 +1,6 @@
 {
+  "pageTitle": "{{page}} · MarketStack",
+  "languageLoadError": "The language could not be loaded. Check your connection and reload the page.",
   "appTitle": "MarketStack · Purchase analytics",
   "description": "MarketStack – personal purchase analytics, spending and shopping habits at a glance.",
   "skipContent": "Skip to content",

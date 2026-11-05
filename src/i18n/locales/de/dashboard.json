@@ -1,5 +1,11 @@
 {
   "analytics": {
+    "chart": {
+      "instructions": "Mit Links/Rechts oder Oben/Unten die Datenpunkte prüfen; Pos1/Ende springt zum ersten/letzten Punkt. Tippen wählt den nächstgelegenen Punkt.",
+      "data": "Alle Diagrammdaten als Tabelle", "series": "Datenreihe", "value": "Wert",
+      "sampled": "Für die Darstellung werden lokale Extremwerte ausgewählt. Die Tabelle enthält alle Beobachtungen; Datenlücken werden nicht verbunden.",
+      "grouped": "Für die Darstellung werden benachbarte Produkte zusammengefasst. Die Tabelle enthält jedes einzelne Produkt."
+    },
     "storeProductSection": {
       "title": "Einzelprodukt: Preisvergleich",
       "description": "Wähle ein Produkt für diesen Preisvergleich. Die Suche grenzt die Produktauswahl ein; die historischen Preisunterschiede oben bleiben unverändert."

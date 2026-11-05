@@ -41,7 +41,35 @@ The MarketStack UI is currently under development. The dashboard and its statist
 - **Vite**
 - **Tailwind CSS**
 - **shadcn/ui**
-- **TanStack Charts**
+- **TanStack Router**
+- **Accessible SVG charts**
+
+## Development and validation
+
+Requires Node.js 22. Copy `.env.example` to `.env.local` to configure the API URL
+and analytics source. Never put secrets in `VITE_*` variables: they are public.
+
+```sh
+npm ci
+npm run dev
+npm test
+npm run lint
+npm run build
+npm run test:api-build
+npx playwright install chromium
+npm run test:browser
+```
+
+`VITE_API_URL` accepts an HTTP(S) API base URL or a root-relative path such as
+`/api`. `VITE_ANALYTICS_SOURCE=mock` is the default for analytics pages; use `api`
+for integration. Home continues to use its existing API services independently.
+
+See [architecture](docs/dashboard-architecture.md),
+[API contracts](docs/analytics-api-requirements.md), and the
+[audit implementation notes](docs/frontend-audit-implementation.md).
+
+A [German hands-on change guide](docs/frontend-changes-guide.de.md) explains where
+to find each change in the UI and how to run visible browser tests.
 
 ## MarketStack
 

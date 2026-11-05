@@ -8,7 +8,7 @@ import { analytics, validRange } from './data-source'
 import { useAnalytics } from './use-analytics'
 import { useAnalyticsFilters } from './use-filters'
 import { AnalyticsLayout, AnalyticsNote, AnalyticsState } from './components/analytics-layout'
-import { AnalyticsFilters } from './components/filters'
+import { AnalyticsFilters, GroupingFilter } from './components/filters'
 import { BarList } from './components/bar-list'
 import { TimeSeriesChart } from './components/charts'
 import { CardInfo } from './components/card-info'
@@ -21,9 +21,10 @@ export function SpendingPage() {
   const load = useCallback((signal: AbortSignal) => analytics.spending(query, signal), [query])
   const result = useAnalytics(load, `spending:${JSON.stringify(query)}`, scenario, validRange(query))
   const data = result.data
+  const merchantTotal = data?.merchants.reduce((sum, item) => sum + item.expenses, 0) ?? 0
   return <AnalyticsLayout page="spending" scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
-    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} group />}>
-    <AnalyticsState status={catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>
+    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} activeExtras={Number(query.groupBy === 'chain')}><GroupingFilter query={query} update={update} /></AnalyticsFilters>}>
+    <AnalyticsState status={!validRange(query) ? 'invalid' : catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }}>
       {data && (data.comparison.current === 0 ? <EmptyState message={t('noResults')} /> : <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <KpiCard title={`${t('purchases')} · ${t('currentPeriod')}`} value={format.number(data.comparison.current)} detail={t('frequencyComparison')} icon={CalendarRange} change={null} loading={false} />
@@ -38,7 +39,7 @@ export function SpendingPage() {
           </DashboardCard>
           <DashboardCard title={t('merchants')} className="lg:col-span-6">
             <BarList rows={data.merchants.map(row => ({ id: row.id, label: merchantLabel(row), value: row.expenses,
-              detail: format.percent(data.merchants.reduce((sum, item) => sum + item.expenses, 0) > 0 ? row.expenses / data.merchants.reduce((sum, item) => sum + item.expenses, 0) * 100 : 0) }))} format={format.money} />
+              detail: format.percent(merchantTotal > 0 ? row.expenses / merchantTotal * 100 : 0) }))} format={format.money} />
           </DashboardCard>
           <DashboardCard title={t('weekdays')} className="lg:col-span-6">
             <BarList rows={data.weekdays.map(row => ({ id: row.weekday, label: format.weekday(row.weekday), value: row.purchases,

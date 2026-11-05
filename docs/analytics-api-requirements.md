@@ -60,6 +60,45 @@ errors until their own dependencies are implemented. There is no automatic
 mock fallback for missing or failed API endpoints. Home's API services remain
 independent and do not need changes for this implementation sequence.
 
+### Frontend integration behavior (2026-11-04)
+
+**The audit implementation does not change endpoint paths, query contracts,
+response DTOs, aggregation semantics, or the JSON schemas.** No backend changes
+are required by this frontend refactor. In particular, full result arrays remain
+required; visual rendering budgets are not server response limits.
+
+- Configure the public build-time base URL with `VITE_API_URL` (for example
+  `https://localhost:7065/api` or `/api`). The previous localhost URL remains the
+  development default. Restart/rebuild after changing environment configuration.
+- `validate-payload.ts` validates nested `data` values against the same definitions
+  in `analytics-api.schema.json`. Required fields, nullable fields, finite numeric
+  values, calendar dates/timestamps, enums, and additional-property rules are now
+  enforced at runtime. Send genuine ISO timestamps with an explicit UTC `Z` or
+  offset, valid calendar dates and hours 00–23. Rejected responses enter the
+  localized error/retry UI; they never fall back to mock data or fabricated zeroes.
+- Identical in-flight analytics requests share one frontend cache entry. Catalog
+  keys are fresh for five minutes; other analytics keys for one minute. Reuse on
+  navigation avoids redundant requests; expiry is checked on acquisition, not by
+  periodic polling. An explicit retry forces a fresh request. The cache is scoped
+  to the current browser runtime, not a backend/shared-user cache; a future
+  authentication/logout flow must invalidate it when identity changes.
+- Filter/product/source-page state and namespaced local table state are encoded
+  in the application URL. `tables`, Home `range`/`series`, and table view settings
+  are **frontend-only** and are never forwarded to API endpoints. Existing
+  `analyticsParams` continues to select only each endpoint's supported parameters.
+- Chart lines use a bounded visual sample retaining local extrema and missing-data
+  segment boundaries; Pareto bars group adjacent products above the rendering
+  budget. All source observations/products remain available through keyboard
+  inspection and the chart's paginated data table. Statistics and ABC classes are
+  calculated from the full response, not from the rendered sample.
+- “All rows” remains available. Browser rendering containment reduces off-screen
+  painting; it does not authorize API truncation or change pagination contracts.
+
+`npm run test:api-build` checks that API production assets contain no mock fixture
+generator. `npm run test:browser` also exercises intercepted API responses, malformed
+nested payloads, request deduplication, and 10,000-row/observation inputs without
+requiring an implemented backend.
+
 ## 1. Spending
 
 **Frontend route:** `/spending`.

@@ -5,13 +5,18 @@ import { AppHeader } from '@/Components/Navigation/app-header'
 import { Button } from '@/Components/ui/button'
 import { EmptyState } from '@/features/dashboard/components/dashboard-card'
 import { analyticsSource } from '../data-source'
-import type { Scenario } from '../types'
+import type { AnalyticsStatus, Scenario } from '../types'
 
-export function AnalyticsLayout({ page, scenario, onScenario, filters, children, title, description, loading = false }: {
+const stateMessages: Record<Exclude<AnalyticsStatus, 'ready' | 'error'>, 'invalidRange' | 'loading' | 'empty' | 'noResults'> = {
+  invalid: 'invalidRange', loading: 'loading', empty: 'empty', noResults: 'noResults', disabled: 'noResults',
+}
+
+export function AnalyticsLayout({ page, scenario, onScenario, filters, children, title, description, loading = false, sharedIdentity = false }: {
   page: 'spending' | 'prices' | 'products' | 'stores'
   scenario: Scenario; onScenario: (value: Scenario) => void; filters: ReactNode; children: ReactNode
   title?: string; description?: string
   loading?: boolean
+  sharedIdentity?: boolean
 }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
   const { t: nav } = useTranslation('navigation')
@@ -21,24 +26,23 @@ export function AnalyticsLayout({ page, scenario, onScenario, filters, children,
     if (!node || !header) return
     // The header wraps on narrow screens and can change height with language/zoom.
     // Keep this measurement local to analytics so Home's layout is unaffected.
-    const updateOffset = () => node.style.setProperty('--analytics-header-height', `${header.getBoundingClientRect().height}px`)
-    updateOffset()
-    const updateContentHeight = () => {
-      if (content && node.dataset.loading !== 'true') {
-        node.style.setProperty('--analytics-content-height', `${content.getBoundingClientRect().height}px`)
-      }
+    const measure = () => {
+      const headerHeight = header.getBoundingClientRect().height
+      const contentHeight = content && node.dataset.loading !== 'true' ? content.getBoundingClientRect().height : null
+      node.style.setProperty('--analytics-header-height', `${headerHeight}px`)
+      if (contentHeight !== null) node.style.setProperty('--analytics-content-height', `${contentHeight}px`)
     }
-    updateContentHeight()
-    const observer = new ResizeObserver(() => { updateOffset(); updateContentHeight() })
+    measure()
+    const observer = new ResizeObserver(measure)
     observer.observe(header)
     if (content) observer.observe(content)
     return () => observer.disconnect()
   }, [])
   return <div ref={layoutRef} className="analytics-layout" data-loading={loading || undefined}>
-    <AppHeader title={nav(page)} />
+    <AppHeader title={nav(page)} documentTitle={title ?? t(`${page}Title`)} />
     <div className="dashboard-page">
       <div className="mb-7"><p className="eyebrow mb-2.5">{t('eyebrow')}</p>
-        <h1 className="text-[28px] font-medium tracking-[-0.02em] sm:text-[32px]">{title ?? t(`${page}Title`)}</h1>
+        <h1 style={{ viewTransitionName: sharedIdentity ? 'price-product-identity' : undefined }} className="text-[28px] font-medium tracking-[-0.02em] sm:text-[32px]">{title ?? t(`${page}Title`)}</h1>
         <p className="mt-2 text-[13px] text-muted-foreground">{description ?? t(`${page}Description`)}</p>
       </div>
       {analyticsSource === 'mock' && <div className="data-notice notice-demo mb-5">
@@ -56,17 +60,16 @@ export function AnalyticsLayout({ page, scenario, onScenario, filters, children,
   </div>
 }
 
-export function AnalyticsState({ status, retry, invalid = false, children }: {
-  status: string; retry: () => void; invalid?: boolean; children: ReactNode
+export function AnalyticsState({ status, retry, children }: {
+  status: AnalyticsStatus; retry: () => void; children: ReactNode
 }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
-  if (invalid) return <EmptyState message={t('invalidRange')} />
   if (status === 'ready') return <>{children}</>
   if (status === 'error') return <div className="rounded-xl border bg-card p-8 text-center" role="alert">
     <p className="mb-4 text-sm text-muted-foreground">{t('error')}</p>
     <Button variant="outline" className="rounded-lg" onClick={retry}><RefreshCw />{t('retry')}</Button>
   </div>
-  return <EmptyState message={t(status === 'loading' ? 'loading' : status === 'empty' ? 'empty' : 'noResults')} />
+  return <EmptyState message={t(stateMessages[status])} />
 }
 
 export function AnalyticsNote({ children }: { children: ReactNode }) {

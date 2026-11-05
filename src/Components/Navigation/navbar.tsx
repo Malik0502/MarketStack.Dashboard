@@ -19,7 +19,7 @@ export default function NavBar() {
   }}>
     <Link to="/" className="brand" aria-label={t('brandHome')}>
       <span className="brand-mark"><Layers2 className="size-5" strokeWidth={2} /></span>
-      <span className="brand-name">MarketStack<span className="text-primary">.</span></span>
+      <span className="brand-name" translate="no">MarketStack<span className="text-primary">.</span></span>
     </Link>
     <button ref={toggleRef} type="button" className="sidebar-toggle" aria-expanded={expanded} aria-controls={navId}
       aria-label={toggleLabel} title={toggleLabel} onClick={() => setExpanded(value => !value)}>

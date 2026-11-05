@@ -9,6 +9,8 @@ export function HistoryTable({ expenses, taxes, loading }: {
   const { t } = useTranslation(['dashboard', 'common'])
   const { money, month } = useFormat()
   const dates = [...new Set([...(expenses ?? []), ...(taxes ?? [])].map(entry => entry.purchasedAt))].sort().reverse()
+  const expenseByDate = new Map(expenses?.map(point => [point.purchasedAt, point.expense]))
+  const taxByDate = new Map(taxes?.map(point => [point.purchasedAt, point.expense]))
   if (loading || !dates.length) {
     return <EmptyState loading={loading} message={expenses === null && taxes === null ? t('error.table') : undefined} />
   }
@@ -22,10 +24,10 @@ export function HistoryTable({ expenses, taxes, loading }: {
         <th scope="col" className="pb-3 text-right font-medium">{t('common:expenses')}</th>
         <th scope="col" className="pb-3 text-right font-medium">{t('common:taxes')}</th>
       </tr></thead>
-      <tbody>{dates.map(date => <tr key={date} className="border-b last:border-0 hover:bg-muted/40">
-        <th scope="row" className="py-3.5 font-medium">{month(date, true)}</th>
-        <td className="py-3.5 text-right font-medium tabular-nums">{format(expenses?.find(entry => entry.purchasedAt === date)?.expense)}</td>
-        <td className="py-3.5 text-right text-muted-foreground tabular-nums">{format(taxes?.find(entry => entry.purchasedAt === date)?.expense)}</td>
+      <tbody>{dates.map(date => <tr key={date} className="contained-table-row border-b last:border-0 hover:bg-muted/40">
+        <th scope="row" className="py-3 font-medium">{month(date, true)}</th>
+        <td className="py-3 text-right font-medium tabular-nums">{format(expenseByDate.get(date))}</td>
+        <td className="py-3 text-right text-muted-foreground tabular-nums">{format(taxByDate.get(date))}</td>
       </tr>)}</tbody>
     </table>
   </div>

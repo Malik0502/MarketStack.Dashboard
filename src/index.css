@@ -106,7 +106,10 @@
   * { @apply border-border outline-ring/50; }
   body { margin: 0; @apply bg-background text-foreground; }
   html { @apply font-sans; }
-  button, a, select { touch-action: manipulation; }
+  button, a, select, summary { touch-action: manipulation; }
+  html { -webkit-tap-highlight-color: color-mix(in srgb, var(--primary) 16%, transparent); scroll-padding-top: 160px; }
+  h1, h2, h3, h4 { text-wrap: balance; scroll-margin-top: 160px; }
+  :where(button, a, input, select, [tabindex]) { scroll-margin-block: 160px 88px; }
   button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
   select, input, textarea { color: var(--foreground); background: var(--card); }
 }
@@ -132,7 +135,7 @@
   .sidebar-bottom { margin-top: auto; padding-top: 32px; }
   .sidebar-info { background: transparent; border-color: var(--sidebar-border); }
   .app-main { min-width: 0; margin-left: 228px; }
-  .app-header { position: sticky; top: 0; z-index: 20; display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 32px; border-bottom: 1px solid var(--border); background: var(--card); }
+   .app-header { position: sticky; top: 0; z-index: 20; display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 32px; border-bottom: 1px solid var(--border); background: var(--card); view-transition-name: app-header; }
   .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-width: 0; }
   .header-user-link { display: inline-flex; width: 38px; height: 38px; flex-shrink: 0; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 50%; color: var(--foreground); }
   .header-user-link:hover, .header-user-link[data-status="active"] { background: var(--muted); color: var(--primary); border-color: var(--primary); }
@@ -144,20 +147,20 @@
   .range-control button[aria-pressed="true"] { background: var(--card); color: var(--foreground); box-shadow: var(--shadow); }
   .series-control { background: transparent; }
   .series-control button[aria-pressed="true"] { background: var(--info-surface); color: var(--primary); }
-  .data-notice { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); font-size: 12px; }
+  .data-notice { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); font-size: 12px; }
   .data-notice strong { font-weight: 550; }
   .expense-chart { min-height: 220px; }
   .skip-link { position: fixed; left: 16px; top: -100px; z-index: 100; padding: 12px; border-radius: 6px; background: var(--card); color: var(--foreground); }
   .skip-link:focus { top: 12px; }
-  .preference-controls { display: flex; align-items: center; gap: 8px; padding-left: 12px; border-left: 1px solid var(--border); color: var(--foreground); }
+  .preference-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-left: 12px; border-left: 1px solid var(--border); color: var(--foreground); }
   .language-control { display: flex; min-height: 38px; align-items: center; gap: 6px; }
   .language-control select { min-height: 36px; max-width: 108px; border: 1px solid var(--border); border-radius: 7px; padding: 4px; font-size: 12px; background: var(--card); color: var(--foreground); cursor: pointer; }
   .analytics-field { display: flex; min-width: 0; flex-direction: column; gap: 8px; color: var(--muted-foreground); font-size: 12px; }
   .analytics-field input, .analytics-field select { min-width: 0; min-height: 36px; max-width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; color: var(--foreground); background: var(--card); font: inherit; font-size: 12px; }
   .analytics-field input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
   .analytics-sticky-filters {
-    position: sticky; top: calc(var(--analytics-header-height, 66px) + 8px); z-index: 15;
-    max-height: min(50dvh, calc(100dvh - var(--analytics-header-height, 66px) - var(--mobile-nav-height, 0px) - var(--mobile-nav-safe-area, 0px) - 24px));
+    position: sticky; top: calc(var(--analytics-header-height, 64px) + 8px); z-index: 15;
+    max-height: min(50dvh, calc(100dvh - var(--analytics-header-height, 64px) - var(--mobile-nav-height, 0px) - var(--mobile-nav-safe-area, 0px) - 24px));
     overflow: auto; box-shadow: var(--shadow);
   }
   .analytics-layout[data-loading="true"] .analytics-content { min-height: var(--analytics-content-height, 0px); }
@@ -196,7 +199,7 @@
   .sidebar-toggle { display: flex; min-height: 40px; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; padding: 8px; border: 1px solid var(--sidebar-border); border-radius: 7px; color: var(--sidebar-foreground); font-size: 11px; }
   .sidebar-toggle:hover { background: var(--sidebar-active); }
   .sidebar-toggle-text { display: none; }
-  .app-sidebar[data-expanded="true"] { width: 228px; padding-inline: 18px; }
+  .app-sidebar[data-expanded="true"] { width: 228px; padding-inline: 16px; }
   .app-sidebar[data-expanded="true"] .brand { justify-content: flex-start; padding-inline: 8px; }
   .app-sidebar[data-expanded="true"] .brand-name { display: inline; }
   .app-sidebar[data-expanded="true"] .sidebar-label { display: block; margin-top: 24px; }
@@ -227,9 +230,11 @@
   .sidebar-link > span:not(.nav-active-dot) { display: block; max-width: 100%; overflow: hidden; font-size: 10px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
   .sidebar-link[data-status="active"] .nav-active-dot { display: none; }
   .app-main { margin-left: 0; }
-  .app-header { min-height: 48px; padding-inline: 18px; }
-  .dashboard-page { padding: 24px 18px 18px; }
+  .app-header { min-height: 48px; padding-inline: 16px; }
+  .dashboard-page { padding: 24px 16px 16px; }
   .data-notice { flex-wrap: wrap; }
+  .data-notice > .flex-1 { flex: 1 1 calc(100% - 28px); min-width: 0; }
+  .data-notice > .analytics-field { flex-basis: 100%; flex-direction: row; align-items: center; justify-content: space-between; }
   .analytics-filters { flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
   .analytics-filters::-webkit-scrollbar { display: none; }
   .analytics-filters > fieldset, .analytics-filters > label { flex-shrink: 0; }
@@ -246,3 +251,48 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+.app-sidebar { view-transition-name: app-navigation; }
+.route-view { view-transition-name: page-content; }
+.analytics-sticky-filters { view-transition-name: analytics-filters; }
+.table-scroll { overscroll-behavior: contain; scroll-padding-top: 56px; }
+.table-scroll :where(button, a, select) { scroll-margin-block: 56px 16px; }
+.contained-table-row { content-visibility: auto; contain-intrinsic-size: auto 44px; }
+.chart-interaction { outline: none; touch-action: pan-y; }
+.chart-interaction:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 4px; }
+.product-drawer { padding-top: max(20px, env(safe-area-inset-top)); padding-right: max(20px, env(safe-area-inset-right)); padding-bottom: max(20px, env(safe-area-inset-bottom)); padding-left: max(20px, env(safe-area-inset-left)); }
+@media (min-width: 640px) { .product-drawer { padding: max(28px, env(safe-area-inset-top)) max(28px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(28px, env(safe-area-inset-left)); } }
+
+::view-transition-group(*) { animation-duration: 180ms; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+/* Pages can differ by thousands of pixels in height. Never morph their bounds:
+   crossfade/translate natural-size snapshots instead of squashing a long page. */
+::view-transition-group(root), ::view-transition-group(page-content),
+::view-transition-group(app-header), ::view-transition-group(app-navigation),
+::view-transition-group(analytics-filters) { animation: none; }
+::view-transition-old(page-content), ::view-transition-new(page-content) {
+  height: auto; block-size: auto; object-fit: contain; object-position: left top;
+}
+::view-transition-old(root), ::view-transition-new(root),
+::view-transition-old(app-header), ::view-transition-new(app-header),
+::view-transition-old(app-navigation), ::view-transition-new(app-navigation),
+::view-transition-old(analytics-filters), ::view-transition-new(analytics-filters) { animation: none; }
+::view-transition-old(.page-fade) { animation: page-fade-out 120ms ease-out both; }
+::view-transition-new(.page-fade) { animation: page-fade-in 160ms ease-out both; }
+::view-transition-old(page-content) { animation: page-fade-out 120ms ease-out both; }
+::view-transition-new(page-content) { animation: page-fade-in 160ms ease-out both; }
+html:active-view-transition-type(nav-forward)::view-transition-old(page-content) { animation: page-left 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+html:active-view-transition-type(nav-forward)::view-transition-new(page-content) { animation: page-right 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+html:active-view-transition-type(nav-back)::view-transition-old(page-content) { animation: page-right 180ms cubic-bezier(0.22, 1, 0.36, 1) reverse both; }
+html:active-view-transition-type(nav-back)::view-transition-new(page-content) { animation: page-left 180ms cubic-bezier(0.22, 1, 0.36, 1) reverse both; }
+::view-transition-old(.page-forward), ::view-transition-new(.page-back) { animation: page-left 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+::view-transition-new(.page-forward), ::view-transition-old(.page-back) { animation: page-right 180ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+::view-transition-old(.page-back) { animation-direction: reverse; }
+::view-transition-new(.page-back) { animation-direction: reverse; }
+@keyframes page-fade-out { to { opacity: 0; } }
+@keyframes page-fade-in { from { opacity: 0; } }
+@keyframes page-left { to { opacity: 0; transform: translateX(-16px); } }
+@keyframes page-right { from { opacity: 0; transform: translateX(16px); } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+@media print { .contained-table-row { content-visibility: visible; contain-intrinsic-size: none; } .table-scroll { max-height: none; overflow: visible; } }

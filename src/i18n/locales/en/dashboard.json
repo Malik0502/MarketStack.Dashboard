@@ -1,5 +1,11 @@
 {
   "analytics": {
+    "chart": {
+      "instructions": "Use Left/Right or Up/Down to inspect points; Home/End selects the first/last point. Tap to select the nearest point.",
+      "data": "All chart data as a table", "series": "Series", "value": "Value",
+      "sampled": "Local extremes are selected for display. The table contains every observation; missing data is never connected.",
+      "grouped": "Adjacent products are grouped for display. The table contains every individual product."
+    },
     "storeProductSection": {
       "title": "Single product: price comparison",
       "description": "Choose a product for this price comparison. Search narrows the product selection; the historical price differences above stay unchanged."

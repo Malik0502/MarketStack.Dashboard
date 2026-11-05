@@ -201,10 +201,10 @@ test('unavailable series remain null while loaded but missing months remain expl
   assert.deepEqual(selectors.selectHistoryWindow({ expenses: [], taxes: null }, 'all').months, [])
 })
 
-test('all four languages cover the same translation keys and interpolation variables', () => {
+test('all four languages cover the same translation keys and interpolation variables', async () => {
   const paths = (value, prefix = '') => Object.entries(value).flatMap(([key, entry]) =>
     typeof entry === 'object' ? paths(entry, `${prefix}${key}.`) : [`${prefix}${key}`])
-  const { resources } = localization
+  const { resources } = await server.ssrLoadModule('/src/i18n/resources.ts')
   assert.ok(paths(resources.de).length > 100)
   const valueAt = (resource, path) => path.split('.').reduce((value, key) => value[key], resource)
   const variables = text => [...text.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map(match => match[1]).sort()

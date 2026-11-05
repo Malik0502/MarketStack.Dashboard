@@ -14,7 +14,7 @@ export function CardInfo({ topic }: { topic: CardInfoTopic }) {
     </Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60 data-[closed]:hidden" />
-      <Dialog.Popup className="fixed top-1/2 left-1/2 z-50 max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border bg-card p-5 text-card-foreground shadow-xl outline-none data-[closed]:hidden sm:p-6">
+      <Dialog.Popup className="fixed top-1/2 left-1/2 z-50 max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto overscroll-contain rounded-xl border bg-card p-5 text-card-foreground shadow-xl outline-none data-[closed]:hidden sm:p-6">
         <div className="mb-4 flex items-start justify-between gap-3">
           <Dialog.Title className="text-base font-semibold tracking-tight">{title}</Dialog.Title>
           <Dialog.Close type="button" aria-label={t('cardInfo.close')}

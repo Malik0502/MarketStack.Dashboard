@@ -1,6 +1,7 @@
 export type Unit = 'piece' | 'kg'
 export type GroupBy = 'store' | 'chain'
 export type Scenario = 'ready' | 'loading' | 'empty' | 'error' | 'noResults'
+export type AnalyticsStatus = Scenario | 'invalid' | 'disabled'
 export interface DateRange { from: string; to: string }
 export interface AnalyticsQuery extends DateRange {
   groupBy?: GroupBy; productId?: number; storeId?: string; tagId?: number

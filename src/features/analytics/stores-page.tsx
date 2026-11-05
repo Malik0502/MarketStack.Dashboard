@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Link } from '@tanstack/react-router'
+import { ProductPriceLink } from './components/product-price-link'
 import { useTranslation } from 'react-i18next'
 import { DashboardCard, EmptyState } from '@/features/dashboard/components/dashboard-card'
 import { useFormat } from '@/i18n/format'
@@ -7,7 +7,7 @@ import { analytics, validRange } from './data-source'
 import { useAnalytics } from './use-analytics'
 import { useAnalyticsFilters } from './use-filters'
 import { AnalyticsLayout, AnalyticsNote, AnalyticsState } from './components/analytics-layout'
-import { AnalyticsFilters, ProductPicker } from './components/filters'
+import { AnalyticsFilters, ProductPicker, GroupingFilter } from './components/filters'
 import { BarList } from './components/bar-list'
 import { DataTable } from './components/data-table'
 import { merchantLabel } from './format'
@@ -21,8 +21,8 @@ export function StoresPage() {
   const result = useAnalytics(load, `stores:${JSON.stringify(query)}:${productId}`, scenario, validRange(query))
   const data = result.data
   return <AnalyticsLayout page="stores" scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
-    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} group />}>
-    <AnalyticsState status={catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>
+    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} activeExtras={Number(query.groupBy === 'chain')}><GroupingFilter query={query} update={update} /></AnalyticsFilters>}>
+    <AnalyticsState status={!validRange(query) ? 'invalid' : catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }}>
       {data && (data.merchants.length === 0 ? <EmptyState message={t('noResults')} /> : <div className="space-y-4">
         <AnalyticsNote>{t('noMerchantRanking')}</AnalyticsNote>
         <div className="dashboard-grid">
@@ -30,7 +30,7 @@ export function StoresPage() {
           <DashboardCard title={t('storeAverage')} className="lg:col-span-6"><BarList rows={data.merchants.filter(row => row.averagePurchase !== null).map(row => ({ id: row.id, label: merchantLabel(row), value: row.averagePurchase! }))} format={format.money} /></DashboardCard>
         </div>
         <DashboardCard title={t('storeOverview')}>
-          <DataTable resetKey={JSON.stringify(query)} caption={t('storeOverview')} rows={data.merchants} rowKey={row => row.id} columns={[
+          <DataTable stateKey="store-overview" resetKey={JSON.stringify(query)} caption={t('storeOverview')} rows={data.merchants} rowKey={row => row.id} columns={[
             { key: 'name', title: t('merchant'), render: row => row.name, sortValue: row => row.name },
             { key: 'chain', title: t('chain'), render: row => row.chain, sortValue: row => row.chain },
             { key: 'purchases', title: t('purchases'), render: row => format.number(row.purchases), sortValue: row => row.purchases, numeric: true },
@@ -43,8 +43,8 @@ export function StoresPage() {
         </DashboardCard>
         <DashboardCard title={t('differences')}>
           <p className="mb-4 text-[11px] leading-relaxed text-muted-foreground">{t('historicalDifferencesNote')}</p>
-          <DataTable resetKey={JSON.stringify(query)} caption={t('differences')} rows={data.differences} rowKey={row => row.productId} initialSort={{ key: 'difference', direction: 'desc' }} columns={[
-            { key: 'product', title: t('product'), render: row => <Link to="/prices/$productId" params={{ productId: String(row.productId) }} search={{ from: query.from, to: query.to }} className="font-medium text-primary hover:underline">{row.productName}</Link>, sortValue: row => row.productName },
+          <DataTable stateKey="store-differences" resetKey={JSON.stringify(query)} caption={t('differences')} rows={data.differences} rowKey={row => row.productId} initialSort={{ key: 'difference', direction: 'desc' }} columns={[
+            { key: 'product', title: t('product'), render: row => <ProductPriceLink productId={row.productId} search={{ from: query.from, to: query.to }} className="font-medium text-primary hover:underline">{row.productName}</ProductPriceLink>, sortValue: row => row.productName },
             { key: 'baseline', title: t('baseline'), render: row => <span>{row.baseline.chain} · {row.baseline.name}<span className="mt-1 block text-[10px] text-muted-foreground">{format.date(row.baselineAt)}</span></span> },
             { key: 'alternative', title: t('alternative'), render: row => <span>{row.alternative.chain} · {row.alternative.name}<span className="mt-1 block text-[10px] text-muted-foreground">{format.date(row.alternativeAt)}</span></span> },
             { key: 'price', title: t('baselinePrice'), render: row => format.money(row.baselinePrice), sortValue: row => row.baselinePrice, numeric: true },
@@ -61,8 +61,8 @@ export function StoresPage() {
           <ProductPicker value={productId} selectedName={data.product?.name ?? catalog.data?.products.find(item => item.id === productId)?.name} onChange={id => update({ productId: id })} />
           <div className="space-y-4">
           <AnalyticsNote>{t('historicalNote')}</AnalyticsNote>
-          <DashboardCard title={`${t('productComparison')}${data.product ? ` · ${data.product.name}` : ''}`}>
-          <DataTable resetKey={JSON.stringify(query)} caption={t('productComparison')} rows={data.prices} emptyMessage={t('insufficient')} rowKey={row => row.merchant.id} columns={[
+          <DashboardCard headingLevel="h3" title={`${t('productComparison')}${data.product ? ` · ${data.product.name}` : ''}`}>
+          <DataTable stateKey="store-product-prices" resetKey={JSON.stringify(query)} caption={t('productComparison')} rows={data.prices} emptyMessage={t('insufficient')} rowKey={row => row.merchant.id} columns={[
             { key: 'store', title: t('merchant'), render: row => `${row.merchant.chain} · ${row.merchant.name}`, sortValue: row => row.merchant.name },
             { key: 'last', title: t('last'), render: row => format.money(row.last), sortValue: row => row.last, numeric: true },
             { key: 'date', title: t('lastDate'), render: row => format.date(row.lastAt), sortValue: row => row.lastAt },

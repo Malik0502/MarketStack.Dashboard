@@ -1,41 +1,41 @@
-import i18n from 'i18next'
+import i18n, { type BackendModule } from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { LANGUAGE_KEY, languages, readPreference, resolveLanguage, writePreference } from '@/lib/preferences'
-import deCommon from './locales/de/common.json'
-import deNavigation from './locales/de/navigation.json'
-import deDashboard from './locales/de/dashboard.json'
-import enCommon from './locales/en/common.json'
-import enNavigation from './locales/en/navigation.json'
-import enDashboard from './locales/en/dashboard.json'
-import deUser from './locales/de/user.json'
-import enUser from './locales/en/user.json'
-import frCommon from './locales/fr/common.json'
-import frNavigation from './locales/fr/navigation.json'
-import frDashboard from './locales/fr/dashboard.json'
-import frUser from './locales/fr/user.json'
-import trCommon from './locales/tr/common.json'
-import trNavigation from './locales/tr/navigation.json'
-import trDashboard from './locales/tr/dashboard.json'
-import trUser from './locales/tr/user.json'
-
-export const resources = {
-  de: { common: deCommon, navigation: deNavigation, dashboard: deDashboard, user: deUser },
-  en: { common: enCommon, navigation: enNavigation, dashboard: enDashboard, user: enUser },
-  fr: { common: frCommon, navigation: frNavigation, dashboard: frDashboard, user: frUser },
-  tr: { common: trCommon, navigation: trNavigation, dashboard: trDashboard, user: trUser },
-}
+import { LANGUAGE_KEY, languages, preferredLanguage, readPreference, resolveLanguage, writePreference, type Language } from '@/lib/preferences'
+import type { resources as TranslationResources } from './resources'
 
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: 'common'
-    resources: typeof resources.de
+    resources: typeof TranslationResources.de
   }
 }
 
-const initialLanguage = resolveLanguage(readPreference(LANGUAGE_KEY) ?? globalThis.navigator?.language)
-void i18n.use(initReactI18next).init({
-  resources, lng: initialLanguage, supportedLngs: [...languages], fallbackLng: 'de',
-  defaultNS: 'common', interpolation: { escapeValue: false }, initAsync: false,
+const loaders = {
+  de: () => import('./locales/de'), en: () => import('./locales/en'),
+  fr: () => import('./locales/fr'), tr: () => import('./locales/tr'),
+}
+const loaded = new Map<Language, Promise<unknown>>()
+function loadLanguage(language: Language) {
+  let pending = loaded.get(language)
+  if (!pending) {
+    pending = loaders[language]().then(module => module.default).catch(error => { loaded.delete(language); throw error })
+    loaded.set(language, pending)
+  }
+  return pending
+}
+const backend: BackendModule = {
+  type: 'backend', init() {},
+  read(language, namespace, callback) {
+    void loadLanguage(resolveLanguage(language)).then(data => {
+      callback(null, (data as Record<string, object>)[namespace])
+    }, error => callback(error, false))
+  },
+}
+const initialLanguage = resolveLanguage(readPreference(LANGUAGE_KEY) ?? preferredLanguage(globalThis.navigator?.languages ?? [globalThis.navigator?.language ?? 'de']))
+await i18n.use(backend).use(initReactI18next).init({
+  lng: initialLanguage, supportedLngs: [...languages], fallbackLng: 'de',
+  ns: ['common', 'navigation', 'dashboard', 'user'], defaultNS: 'common',
+  interpolation: { escapeValue: false }, initAsync: false,
 })
 
 function syncDocument() {
@@ -47,10 +47,14 @@ function syncDocument() {
 syncDocument()
 i18n.on('languageChanged', syncDocument)
 
-export function changeLanguage(language: string) {
-  const resolved = resolveLanguage(language)
+let revision = 0
+export async function changeLanguage(language: string) {
+  const current = ++revision, resolved = resolveLanguage(language)
+  await loadLanguage(resolved)
+  await i18n.loadLanguages(resolved)
+  if (current !== revision) return
+  await i18n.changeLanguage(resolved)
   writePreference(LANGUAGE_KEY, resolved)
-  return i18n.changeLanguage(resolved)
 }
 
 export default i18n

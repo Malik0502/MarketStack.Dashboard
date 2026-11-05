@@ -21,3 +21,11 @@ export function resolveLanguage(value: string | null | undefined): Language {
   const base = value?.toLowerCase().split(/[-_]/)[0]
   return languages.find(language => language === base) ?? 'de'
 }
+
+export function preferredLanguage(values: readonly string[]): Language {
+  for (const value of values) {
+    const base = value.toLowerCase().split(/[-_]/)[0]
+    if (languages.some(language => language === base)) return base as Language
+  }
+  return 'de'
+}

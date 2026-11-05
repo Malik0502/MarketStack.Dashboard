@@ -6,10 +6,12 @@ export function buildHistoryCsv(
 ) {
   const format = (value: number | null | undefined) => value == null ? '' : formatNumber(value)
   const escape = (value: string) => /[;"\r\n]/.test(value) ? `"${value.replaceAll('"', '""')}"` : value
+  const expenseByDate = new Map(expenses?.map(point => [point.purchasedAt, point.expense]))
+  const taxByDate = new Map(taxes?.map(point => [point.purchasedAt, point.expense]))
   const rows = [headers, ...months.map(date => [
     date,
-    format(expenses?.find(point => point.purchasedAt === date)?.expense),
-    format(taxes?.find(point => point.purchasedAt === date)?.expense),
+    format(expenseByDate.get(date)),
+    format(taxByDate.get(date)),
   ])]
   return '\uFEFF' + rows.map(row => row.map(escape).join(';')).join('\r\n')
 }

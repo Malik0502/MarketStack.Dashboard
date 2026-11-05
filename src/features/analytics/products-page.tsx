@@ -7,7 +7,7 @@ import { analytics, validRange } from './data-source'
 import { useAnalytics } from './use-analytics'
 import { useAnalyticsFilters } from './use-filters'
 import { AnalyticsLayout, AnalyticsNote, AnalyticsState } from './components/analytics-layout'
-import { AnalyticsFilters } from './components/filters'
+import { AnalyticsFilters, TagFilter, UnitFilter } from './components/filters'
 import { BarList } from './components/bar-list'
 import { DataTable } from './components/data-table'
 import { ParetoChart } from './components/charts'
@@ -23,13 +23,15 @@ export function ProductsPage() {
   const result = useAnalytics(load, `products:${JSON.stringify(query)}`, scenario, validRange(query))
   const data = result.data
   return <AnalyticsLayout page="products" scenario={scenario} onScenario={setScenario} loading={result.status === 'loading' || catalog.status === 'loading'}
-    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} tags quantities />}>
-    <AnalyticsState status={catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }} invalid={!validRange(query)}>
+    filters={<AnalyticsFilters query={query} update={update} catalog={catalog.data} activeExtras={Number(Boolean(query.tagId)) + Number(Boolean(query.unit))}>
+      <TagFilter query={query} update={update} catalog={catalog.data} /><UnitFilter query={query} update={update} catalog={catalog.data} />
+    </AnalyticsFilters>}>
+    <AnalyticsState status={!validRange(query) ? 'invalid' : catalog.status === 'error' ? 'error' : result.status} retry={() => { setScenario('ready'); result.retry(); catalog.retry() }}>
       {data && (data.totalProducts === 0 ? <EmptyState message={t('noResults')} /> : <div className="space-y-4">
         <AnalyticsNote>{t('allocationNote')}</AnalyticsNote>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <DashboardCard title={t('totalProducts')} action={<CardInfo topic="totalProducts" />}><p className="text-2xl font-semibold">{format.number(data.totalProducts)}</p></DashboardCard>
-          <DashboardCard title={t('itemExpenses')} action={<CardInfo topic="itemExpenses" />}><p className="text-2xl font-semibold">{format.money(data.totalExpenses)}</p></DashboardCard>
+          <DashboardCard title={t('totalProducts')} action={<CardInfo topic="totalProducts" />}><p className="text-2xl font-semibold tabular-nums">{format.number(data.totalProducts)}</p></DashboardCard>
+          <DashboardCard title={t('itemExpenses')} action={<CardInfo topic="itemExpenses" />}><p className="text-2xl font-semibold tabular-nums">{format.money(data.totalExpenses)}</p></DashboardCard>
           <DashboardCard title={t('abcOverview')} action={<CardInfo topic="abcOverview" />} className="sm:col-span-2">
             <p className="mb-4 text-xs leading-relaxed text-muted-foreground">{t('abcDisplay.purpose')}</p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">{data.classes.map(row => <div key={row.abc} className="rounded-lg border p-3">
@@ -55,7 +57,7 @@ export function ProductsPage() {
         </div>
         <DashboardCard title={t('tags')} action={<CardInfo topic="tags" />}>
           <p className="mb-4 text-[11px] text-muted-foreground">{t('tagNote')}</p>
-          <DataTable resetKey={JSON.stringify(query)} caption={t('tags')} rows={data.tags} rowKey={row => row.id} columns={[
+          <DataTable stateKey="product-tags" resetKey={JSON.stringify(query)} caption={t('tags')} rows={data.tags} rowKey={row => row.id} columns={[
             { key: 'name', title: t('tag'), render: row => <button className="text-primary hover:underline" onClick={() => update({ tagId: row.id })}>{row.name}</button>, sortValue: row => row.name },
             { key: 'products', title: t('tagProducts'), render: row => format.number(row.products), sortValue: row => row.products, numeric: true },
             { key: 'purchases', title: t('purchases'), render: row => format.number(row.purchases), sortValue: row => row.purchases, numeric: true },
