@@ -413,8 +413,8 @@ Mock-mode preview controls expose loading, empty, error and no-results states.
 Request keys and cancellation prevent stale data after filter changes. Tables
 sort complete table result sets locally before independent pagination; the product list requests complete-population
 sorting and pagination from its source. Chart, aggregate and DTO/schema consistency
-unit tests use the same deterministic fixtures. A separate Playwright suite verifies
-actual browser behavior, including API-mode responses and large synthetic datasets.
+unit tests use the same deterministic fixtures. Automated browser tests have been
+removed at the owner's request; browser behavior must be checked manually.
 
 ### URL state, accessibility, and rendering budgets
 
@@ -474,8 +474,6 @@ npm run lint       # Run ESLint
 npm run build      # Type-check and create the production bundle
 npm run preview    # Serve the production bundle locally
 npm run test:api-build # Verify API output excludes mock initialization
-npx playwright install chromium # One-time local browser installation
-npm run test:browser # Browser regressions with managed mock/API dev servers
 ```
 
 Configure API access using `VITE_API_URL` in `.env.local` (see `.env.example`). For local development,

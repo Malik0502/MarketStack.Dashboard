@@ -270,7 +270,10 @@
 ::view-transition-group(app-header), ::view-transition-group(app-navigation),
 ::view-transition-group(analytics-filters) { animation: none; }
 ::view-transition-old(page-content), ::view-transition-new(page-content) {
-  height: auto; block-size: auto; object-fit: contain; object-position: left top;
+  /* Firefox can retain the loading-state box while the live incoming snapshot
+     grows with async data. Contain would shrink the whole page into that box.
+     Keep pixels at natural scale; temporary overflow is preferable to scaling. */
+  height: auto; block-size: auto; object-fit: none; object-position: left top;
 }
 ::view-transition-old(root), ::view-transition-new(root),
 ::view-transition-old(app-header), ::view-transition-new(app-header),

@@ -3,6 +3,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { analytics, analyticsKey, defaultAnalyticsQuery } from '../data-source'
 import { analyticsCache } from '../resource-cache'
 import type { PriceFilterSearch } from '../price-route-search'
+import { routeViewTransition } from '@/common/config/route-motion'
 
 export function ProductPriceLink({ productId, search, children, className }: {
   productId: number; search: PriceFilterSearch; children: ReactNode; className?: string
@@ -19,7 +20,7 @@ export function ProductPriceLink({ productId, search, children, className }: {
       event.preventDefault()
       startTransition(() => {
         addTransitionType('nav-forward')
-        void navigate({ to: '/prices/$productId', params: { productId: String(productId) }, search, viewTransition: { types: ['nav-forward'] } })
+        void navigate({ to: '/prices/$productId', params: { productId: String(productId) }, search, viewTransition: routeViewTransition(['nav-forward']) })
       })
     }}>{children}</Link>
 }

@@ -56,8 +56,6 @@ npm test
 npm run lint
 npm run build
 npm run test:api-build
-npx playwright install chromium
-npm run test:browser
 ```
 
 `VITE_API_URL` accepts an HTTP(S) API base URL or a root-relative path such as
@@ -68,8 +66,8 @@ See [architecture](docs/dashboard-architecture.md),
 [API contracts](docs/analytics-api-requirements.md), and the
 [audit implementation notes](docs/frontend-audit-implementation.md).
 
-A [German hands-on change guide](docs/frontend-changes-guide.de.md) explains where
-to find each change in the UI and how to run visible browser tests.
+Automated browser tests are intentionally not included. CI runs data/unit tests,
+ESLint, the production build and the API-build isolation check.
 
 ## MarketStack
 

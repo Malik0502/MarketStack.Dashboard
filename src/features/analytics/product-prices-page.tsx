@@ -9,6 +9,7 @@ import { useAnalyticsFilters } from './use-filters'
 import { AnalyticsFilters, StoreFilter } from './components/filters'
 import { AnalyticsLayout, AnalyticsState } from './components/analytics-layout'
 import { ProductPriceAnalysis } from './components/product-price-analysis'
+import { routeViewTransition } from '@/common/config/route-motion'
 
 export function ProductPricesPage({ productId }: { productId: number }) {
   const { t } = useTranslation('dashboard', { keyPrefix: 'analytics' })
@@ -26,7 +27,7 @@ export function ProductPricesPage({ productId }: { productId: number }) {
       onClick={event => {
         if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
         event.preventDefault()
-        startTransition(() => { addTransitionType('nav-back'); void navigate({ to: '/prices', search: { productId, from: query.from, to: query.to, storeId: query.storeId }, viewTransition: { types: ['nav-back'] } }) })
+        startTransition(() => { addTransitionType('nav-back'); void navigate({ to: '/prices', search: { productId, from: query.from, to: query.to, storeId: query.storeId }, viewTransition: routeViewTransition(['nav-back']) }) })
       }}
       className="mb-5 inline-flex min-h-9 items-center gap-2 rounded-lg px-2 text-sm font-medium text-primary hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
       <ArrowLeft className="size-4" aria-hidden="true" />{t('priceProduct.back')}

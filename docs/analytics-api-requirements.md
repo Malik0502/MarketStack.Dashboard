@@ -95,9 +95,8 @@ required; visual rendering budgets are not server response limits.
   painting; it does not authorize API truncation or change pagination contracts.
 
 `npm run test:api-build` checks that API production assets contain no mock fixture
-generator. `npm run test:browser` also exercises intercepted API responses, malformed
-nested payloads, request deduplication, and 10,000-row/observation inputs without
-requiring an implemented backend.
+generator. `npm test` covers data calculations, response validation, request-cache
+behavior and documented schema consistency. Automated browser tests are not included.
 
 ## 1. Spending
 
