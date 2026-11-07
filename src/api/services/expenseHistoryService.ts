@@ -5,7 +5,7 @@ import type { MonthlyExpense } from "../objects/dto/monthlyExpense";
 
 export async function getMonthlyExpenses(): Promise<MonthlyExpense[]> {
     const response: DataResponse<Record<string, MonthlyExpense>> =
-        await apiFetch<Record<string, MonthlyExpense>>("/expense/history");
+        await apiFetch<Record<string, MonthlyExpense>>("/analytics/expense/history");
 
     if (!response.success || response.data == null) {
         return [];

@@ -1,4 +1,13 @@
 {
+  "admin": { "title": "Administration", "description": "Manage tags and assign them to products", "mockNotice": "Mock mode: changes apply only to this preview and are lost when you leave the page. Other analytics remain unchanged.", "unavailable": "Tag management is not yet available in API mode.", "loadError": "Mock data could not be loaded. Reload the page.", "section": "Tags and products", "sectionDescription": "Create tags and manage assignments to individual products", "createTitle": "Create tag", "name": "Tag name", "required": "Enter a tag name.", "duplicate": "A tag with this name already exists.", "create": "Create tag", "created": "Tag created for this preview", "availableTags": "Available tags", "assignTitle": "Assign tags", "assignDescription": "Choose a product, then select its tags", "search": "Search products", "product": "Product", "chooseProduct": "Select a product", "noProducts": "No matching products found", "tagsFor": "Tags for {{product}}", "selectTags": "Selected tags are assigned when you save", "save": "Save assignments", "saved": "Assignments saved for this preview", "unsaved": "Unsaved changes", "chooseHint": "Select a product to edit its tags", "discardConfirm": "Discard unsaved changes and select another product?" },
+  "tagSearch": "Search tags",
+  "tagDelete": "Delete",
+  "tagDeleteLabel": "Delete tag {{name}}",
+  "tagDeleteConfirm": "Delete tag “{{name}}”? It will be removed from {{count}} products in this preview. Unsaved changes to other tags will be kept.",
+  "tagDeleted": "Tag “{{name}}” deleted in this preview",
+  "tagNone": "No matching tags found",
+  "tagSelected": "Selected tags: {{count}}",
+  "leaveConfirm": "Discard unsaved changes and leave this page?",
   "eyebrow": "USER ACCOUNT",
   "title": "Your user account",
   "status": "In progress",

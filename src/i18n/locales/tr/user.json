@@ -1,4 +1,13 @@
 {
+  "admin": { "title": "Yönetim", "description": "Etiketleri yönetin ve ürünlere atayın", "mockNotice": "Mock modu: değişiklikler yalnızca bu önizleme için geçerlidir ve sayfadan ayrılınca kaybolur. Diğer analizler değişmez.", "unavailable": "Etiket yönetimi API modunda henüz kullanılamıyor.", "loadError": "Mock veriler yüklenemedi. Sayfayı yeniden yükleyin.", "section": "Etiketler ve ürünler", "sectionDescription": "Etiket oluşturun ve ürünlere atamalarını yönetin", "createTitle": "Etiket oluştur", "name": "Etiket adı", "required": "Bir etiket adı girin.", "duplicate": "Bu ada sahip bir etiket zaten var.", "create": "Etiket oluştur", "created": "Bu önizleme için etiket oluşturuldu", "availableTags": "Kullanılabilir etiketler", "assignTitle": "Etiket ata", "assignDescription": "Bir ürün seçin, ardından etiketlerini işaretleyin", "search": "Ürün ara", "product": "Ürün", "chooseProduct": "Ürün seçin", "noProducts": "Eşleşen ürün bulunamadı", "tagsFor": "{{product}} için etiketler", "selectTags": "Seçilen etiketler kaydedildiğinde atanır", "save": "Atamaları kaydet", "saved": "Atamalar bu önizleme için kaydedildi", "unsaved": "Kaydedilmemiş değişiklikler", "chooseHint": "Etiketleri düzenlemek için bir ürün seçin", "discardConfirm": "Kaydedilmemiş değişiklikler silinip başka bir ürün seçilsin mi?" },
+  "tagSearch": "Etiket ara",
+  "tagDelete": "Sil",
+  "tagDeleteLabel": "{{name}} etiketini sil",
+  "tagDeleteConfirm": "“{{name}}” etiketi silinsin mi? Bu önizlemede {{count}} üründen kaldırılacak. Diğer etiketlerdeki kaydedilmemiş değişiklikler korunacak.",
+  "tagDeleted": "“{{name}}” etiketi bu önizlemede silindi",
+  "tagNone": "Eşleşen etiket bulunamadı",
+  "tagSelected": "Seçili etiketler: {{count}}",
+  "leaveConfirm": "Kaydedilmemiş değişiklikler silinip sayfadan çıkılsın mı?",
   "eyebrow": "KULLANICI HESABI",
   "title": "Kullanıcı hesabınız",
   "status": "Geliştirme aşamasında",

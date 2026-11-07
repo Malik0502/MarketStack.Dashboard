@@ -374,6 +374,16 @@ test('API adapter sends only endpoint-specific filters and never falls back sile
   await assert.rejects(source.mockAnalytics.products(query, controller.signal))
 })
 
+test('tag search and deletion handle large catalogs without changing fixture data', async () => {
+  const { findTags, removeTag } = await server.ssrLoadModule('/src/features/admin/tags.ts')
+  const catalog = { tags: Array.from({ length: 100 }, (_, id) => ({ id, name: `Tag ${id}` })), products: [{ id: 1, name: 'Milk', tagIds: [1, 99] }, { id: 2, name: 'Tea', tagIds: [1] }] }
+  const before = structuredClone(catalog)
+  assert.deepEqual(findTags(catalog.tags, '  TAG 99 '), [{ id: 99, name: 'Tag 99' }])
+  assert.deepEqual(removeTag(catalog, 1).products.map(product => product.tagIds), [[99], []])
+  assert.equal(removeTag(catalog, 1).tags.length, 99)
+  assert.deepEqual(catalog, before)
+})
+
 const schema = JSON.parse(await readFile(new URL('../docs/analytics-api.schema.json', import.meta.url), 'utf8'))
 function validate(value, rule, path = '$') {
   if (rule.$ref) return validate(value, schema.$defs[rule.$ref.split('/').at(-1)], path)
@@ -450,7 +460,11 @@ test('analytics card explanations cover every wired topic in all four languages'
 test('API implementation guide orders pages, lists shared dependencies and resolves schema links', async () => {
   const text = await readFile(new URL('../docs/analytics-api-requirements.md', import.meta.url), 'utf8')
   const phases = [...text.matchAll(/^## (\d)\. (.+)$/gm)]
-  assert.deepEqual(phases.map(match => match[0]), ['## 1. Spending', '## 2. Prices', '## 3. Products', '## 4. Stores'])
+  assert.deepEqual(phases.map(match => match[0]), ['## 0. Administration: tags', '## 1. Spending', '## 2. Prices', '## 3. Products', '## 4. Stores'])
+  const admin = text.slice(phases[0].index, phases[1].index)
+  assert.ok(admin.includes('POST /api/admin/tags'))
+  assert.ok(admin.includes('PUT /api/admin/products/{id}/tags'))
+  phases.shift()
   const endpoints = ['spending', 'prices', 'products', 'stores']
   for (let index = 0; index < phases.length; index++) {
     const section = text.slice(phases[index].index, phases[index + 1]?.index ?? text.indexOf('## Shared transport'))

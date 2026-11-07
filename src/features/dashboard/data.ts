@@ -36,7 +36,7 @@ export async function loadDashboard(signal: AbortSignal): Promise<DashboardData>
     catch { errors.push(endpoint); return null }
   }
   const [expenses, taxes] = await Promise.all([
-    history('/expense/history'), history('/expense/tax-history'), Promise.all(jobs),
+    history('/analytics/expense/history'), history('/analytics/expense/tax-history'), Promise.all(jobs),
   ])
   return { metrics, expenses, taxes, errors, updatedAt: errors.length === 10 ? null : new Date() }
 }

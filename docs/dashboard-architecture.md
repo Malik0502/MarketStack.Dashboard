@@ -68,8 +68,11 @@ src/
         expense-chart.tsx         Interactive monthly chart
         insight-cards.tsx         Shopping profile and monthly comparison
         history-table.tsx         Monthly data table
+    admin/
+      admin-page.tsx              Isolated tag-management mock preview
+      tags.ts                    Tag search and immutable deletion helpers
     user/
-      user-page.tsx               User-feature availability notice
+      user-page.tsx               Previous user-feature availability notice
   theme/                          Theme provider and context
   i18n/
     index.ts                      Translation resources and initialization
@@ -95,7 +98,7 @@ transformations, formatting, and rendering have separate modules.
 | `/prices/$productId` | `ProductPricesPage` | Dedicated product price statistics/history with return navigation |
 | `/products` | `ProductsPage` | Product rankings, quantities, tags, Pareto and detail drawer |
 | `/stores` | `StoresPage` | Branch/chain analytics and historical product comparisons |
-| `/user` | `UserPage` | Availability notice for future user features |
+| `/user` | `AdminPage` | Tag administration mock preview |
 | Unmatched paths | `NotFound` | Localized message and return link |
 
 `AppLayout` renders the sidebar, skip link, and route outlet. `AppHeader`
@@ -117,8 +120,10 @@ provides the data used by the analytics endpoints. Database entities are not
 frontend contracts unless an API explicitly exposes them.
 
 The API base URL is read from `VITE_API_URL` by `src/common/config/constants.ts`
-(HTTP(S) URL or root-relative `/api`; previous localhost default retained). Endpoint
-paths below are relative to that URL. Requests use the shared `apiFetch` helper.
+(HTTP(S) URL or root-relative `/api`; default `https://localhost:7065/api`). Endpoint
+paths below are appended unchanged by the shared `apiFetch` helper. Configure the
+API root, not `/api/analytics`: analytics is part of the endpoint path. A future
+administration endpoint can therefore use `/admin/...` under the same root.
 
 ### Response envelope
 
@@ -131,16 +136,16 @@ bodies, failed envelopes, and invalid values become endpoint-level failures.
 
 | GET endpoint | Data type | Meaning |
 | --- | --- | --- |
-| `/expense/total` | `number` | Sum of `TaxBaseAmount` |
-| `/expense/total-tax` | `number` | Sum of `TaxAmount` |
-| `/expense/percentage-change` | `number` | Growth in cumulative expenses contributed by recent receipts |
-| `/expense/tax-percentage-change` | `number` | Growth in cumulative taxes contributed by recent receipts |
-| `/expense/history` | `Record<string, MonthlyExpense>` | Monthly expenses |
-| `/expense/tax-history` | `Record<string, MonthlyExpense>` | Monthly taxes |
-| `/receipt/total` | `number` | Imported receipt count |
-| `/receipt/average-purchase-value` | `number` | Average purchase value |
-| `/receipt/average-items` | `number` | Average items per purchase |
-| `/receipt/discount-share` | `number` | Promotional item share, expressed as a percentage |
+| `/analytics/expense/total` | `number` | Sum of `TaxBaseAmount` |
+| `/analytics/expense/total-tax` | `number` | Sum of `TaxAmount` |
+| `/analytics/expense/percentage-change` | `number` | Growth in cumulative expenses contributed by recent receipts |
+| `/analytics/expense/tax-percentage-change` | `number` | Growth in cumulative taxes contributed by recent receipts |
+| `/analytics/expense/history` | `Record<string, MonthlyExpense>` | Monthly expenses |
+| `/analytics/expense/tax-history` | `Record<string, MonthlyExpense>` | Monthly taxes |
+| `/analytics/receipt/total` | `number` | Imported receipt count |
+| `/analytics/receipt/average-purchase-value` | `number` | Average purchase value |
+| `/analytics/receipt/average-items` | `number` | Average items per purchase |
+| `/analytics/receipt/discount-share` | `number` | Promotional item share, expressed as a percentage |
 
 ```ts
 interface MonthlyExpense {
@@ -294,7 +299,7 @@ Translation resources live in `src/i18n/locales/{de,en,fr,tr}/`:
 | `common` | Shared actions, loading, missing values, and not-found text |
 | `navigation` | Navigation, preferences, and language names |
 | `dashboard` | Metrics, charts, filters, notices, insights, and exports |
-| `user` | User-page availability notice |
+| `user` | Administration and user-area text |
 
 Components use typed translation keys through react-i18next. The
 `marketstack.language` localStorage key stores `de`, `en`, `fr` or `tr`. The initial language
@@ -331,13 +336,15 @@ and Maks. French and Turkish CSV headers/decimal formatting are tested too.
 Turkish formatting uses its native percentage placement (e.g. `%27,8`); amounts
 remain denominated in EUR, not TRY, because language selection does not convert currency.
 
-## User area
+## Administration
 
-The user icon opens `/user`, which displays a localized availability notice:
-"In Arbeit" in German, "Coming soon" in English, "Bientôt disponible" in French
-and "Yakında" in Turkish. The page shares the sticky
-header and preference controls. Authentication, account settings, and user
-management are not implemented.
+The profile icon opens `/user`, which provides tag creation, deletion and product
+assignment in an isolated in-memory mock preview. Changes are lost when leaving
+the page and do not modify the analytics fixtures or other pages. In API mode the
+feature is unavailable; no tag write requests are currently made. Proposed tag
+endpoints and their implementation order are documented in
+[Administration: tags](analytics-api-requirements.md#0-administration-tags).
+Authentication, account settings, and user management are not implemented.
 
 ## Thematic analytics pages
 

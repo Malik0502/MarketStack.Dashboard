@@ -6,7 +6,7 @@ import { PreferenceControls } from './preference-controls'
 import { PageContext } from './page-context'
 
 export function AppHeader({ title, documentTitle = title, children }: { title: string; documentTitle?: string; children?: ReactNode }) {
-  const { t } = useTranslation('navigation')
+  const { t: user } = useTranslation('user')
   const { t: common } = useTranslation()
   const announce = useContext(PageContext)
   const fullTitle = common('pageTitle', { page: documentTitle })
@@ -17,7 +17,7 @@ export function AppHeader({ title, documentTitle = title, children }: { title: s
       {children}
       <PreferenceControls />
       <Link to="/user" activeOptions={{ exact: true }} className="header-user-link"
-        aria-label={t('user')} title={t('user')}>
+        aria-label={user('admin.title')} title={user('admin.title')}>
         <UserRound className="size-[18px]" strokeWidth={1.7} />
       </Link>
     </div>

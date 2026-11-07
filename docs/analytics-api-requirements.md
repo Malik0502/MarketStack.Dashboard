@@ -2,20 +2,24 @@
 
 ## Implementation order
 
-Implement and validate one complete page at a time:
+Implement and validate one complete page at a time. Tag management precedes
+Spending because later analyses depend on product-to-tag assignments:
 
+0. [Administration: tags](#0-administration-tags): list, create and delete tags, then assign them to products.
 1. [Spending](#1-spending): shared catalog, then spending aggregates.
 2. [Prices](#2-prices): reuse catalog/product search, then price analytics.
 3. [Products](#3-products): reuse tag/unit options, then product analytics and details.
 4. [Stores](#4-stores): reuse catalog/product search, then merchant analytics.
 
-There are **six distinct endpoints**. The catalog is shared by all four pages:
+The analytics read API has **six distinct endpoints**, in addition to the proposed
+administration endpoints below. The catalog is shared by all four analytics pages:
 implement it once, not as four different page-specific endpoints. Every page
 section lists all its dependencies, including selection/filter data, even when
 an endpoint was already implemented for an earlier page.
 
 | Step | Page | Purpose | Method and endpoint | Response `data` schema | Frontend source |
 | --- | --- | --- | --- | --- | --- |
+| 0 | Administration; shared by later pages | Manage tags and product assignments | See [tag contracts](#0-administration-tags) | Contracts below | Isolated mock preview |
 | 1.1 | Spending; shared by later pages | Filter metadata, coverage and searchable product catalog | `GET /api/analytics/catalog` | [Catalog](analytics-api.schema.json#/$defs/Catalog) | Mock |
 | 1.2 | Spending | Distributions, frequency, weekdays, notable purchases and promotions | `GET /api/analytics/spending` | [SpendingData](analytics-api.schema.json#/$defs/SpendingData) | Mock |
 | 2.1 | Prices | Product search and store selection | Reuse `GET /api/analytics/catalog` | [Catalog](analytics-api.schema.json#/$defs/Catalog) | Same shared contract |
@@ -67,9 +71,11 @@ response DTOs, aggregation semantics, or the JSON schemas.** No backend changes
 are required by this frontend refactor. In particular, full result arrays remain
 required; visual rendering budgets are not server response limits.
 
-- Configure the public build-time base URL with `VITE_API_URL` (for example
-  `https://localhost:7065/api` or `/api`). The previous localhost URL remains the
-  development default. Restart/rebuild after changing environment configuration.
+- Configure the public build-time API root with `VITE_API_URL` (for example
+  `https://localhost:7065/api` or `/api`). The client appends endpoint paths
+  unchanged: `/analytics/expense/total` becomes `/api/analytics/expense/total`,
+  while a future `/admin/tags` would become `/api/admin/tags`. Do not include
+  `/analytics` in the base URL. Restart/rebuild after changing configuration.
 - `validate-payload.ts` validates nested `data` values against the same definitions
   in `analytics-api.schema.json`. Required fields, nullable fields, finite numeric
   values, calendar dates/timestamps, enums, and additional-property rules are now
@@ -97,6 +103,43 @@ required; visual rendering budgets are not server response limits.
 `npm run test:api-build` checks that API production assets contain no mock fixture
 generator. `npm test` covers data calculations, response validation, request-cache
 behavior and documented schema consistency. Automated browser tests are not included.
+
+## 0. Administration: tags
+
+**Frontend route:** `/user` (profile icon). The current implementation is an
+isolated, in-memory mock preview. It makes no write requests, does not mutate
+analytics fixtures, resets on leaving the page and is unavailable in API mode.
+The endpoints below are proposals, not implemented backend capabilities.
+
+Implement these contracts before Spending and the shared analytics catalog. The
+frontend requests listed below are proposed integration contracts; the current
+Admin preview does not call them. The existing backend contains Tag and ProductTag
+entities but does not yet provide these administration endpoints.
+
+| Method and endpoint | Purpose | Request / response `data` |
+| --- | --- | --- |
+| `GET /api/admin/tags` | List all tags | `Tag[]` (`id`, `name`) |
+| `POST /api/admin/tags` | Create a tag | `{ "name": "Dairy" }` → `Tag` |
+| `DELETE /api/admin/tags/{id}` | Delete a tag and its product assignments | Return a successful `DataResponse` after atomic deletion |
+| `GET /api/admin/products?search=&limit=50` | Search products independently of receipt periods | `{ "products": [{ "id": 1, "name": "Milk 1 l", "tags": [{ "id": 1, "name": "Dairy" }] }], "hasMore": false }` |
+| `PUT /api/admin/products/{id}/tags` | Replace one product's complete tag assignment | `{ "tagIds": [1, 2] }` → `{ "productId": 1, "tags": [{ "id": 1, "name": "Dairy" }, { "id": 2, "name": "Pantry" }] }` |
+
+Use the existing `DataResponse<T>` envelope for success and failure. Trim names;
+reject empty names, names longer than 80 characters and case-insensitive duplicates
+with a clear validation error. Validate every product and tag ID before saving;
+replace assignments atomically, allowing an empty list to remove all assignments.
+Reject unknown IDs and duplicate IDs rather than silently creating partial results.
+Delete the tag and all its product assignments atomically; report unknown IDs and
+invalidate cached catalog and affected analytics data after deletion.
+The catalog returns at most 50 products and `hasMore` indicates further matches;
+search affects products only. All tag lists and assignment writes must observe the
+same persisted tags used by `/api/analytics/catalog` and Spending/Product analytics.
+On successful writes, clients must invalidate cached catalog and affected analytics
+responses. Authorization, CSRF protection where applicable, concurrency and the
+deployment's identity model must be resolved before exposing write endpoints.
+For cross-origin deployments, the existing backend CORS policy currently permits
+GET, POST and PUT but not DELETE; DELETE must be allowed by the backend or an
+appropriate same-origin proxy before the proposed deletion endpoint can be used.
 
 ## 1. Spending
 
@@ -840,8 +883,8 @@ Home's global metrics. Their mock badge never labels Home's live data.
 
 | Page | Statistics | Method | Endpoint | Status |
 | --- | --- | --- | --- | --- |
-| Home | Existing expense metrics and histories | GET | `/api/expense/{total,total-tax,percentage-change,tax-percentage-change,history,tax-history}` | Existing; unchanged |
-| Home | Existing purchase metrics | GET | `/api/receipt/{total,average-purchase-value,average-items,discount-share}` | Existing; unchanged |
+| Home | Existing expense metrics and histories | GET | `/api/analytics/expense/{total,total-tax,percentage-change,tax-percentage-change,history,tax-history}` | Existing backend routes |
+| Home | Existing purchase metrics | GET | `/api/analytics/receipt/{total,average-purchase-value,average-items,discount-share}` | Existing backend routes |
 
 No additional optional endpoint is required for the current UI. Canonical
 identity/unit enrichment, full catalog pagination, and receipt-detail navigation

@@ -1,4 +1,13 @@
 {
+  "admin": { "title": "Administration", "description": "Gérez les étiquettes et attribuez-les aux produits", "mockNotice": "Mode mock : les modifications ne concernent que cet aperçu et sont perdues lorsque vous quittez la page. Les autres analyses restent inchangées.", "unavailable": "La gestion des étiquettes n’est pas encore disponible en mode API.", "loadError": "Impossible de charger les données mock. Rechargez la page.", "section": "Étiquettes et produits", "sectionDescription": "Créez des étiquettes et gérez leur attribution aux produits", "createTitle": "Créer une étiquette", "name": "Nom de l’étiquette", "required": "Saisissez un nom d’étiquette.", "duplicate": "Une étiquette porte déjà ce nom.", "create": "Créer l’étiquette", "created": "Étiquette créée pour cet aperçu", "availableTags": "Étiquettes disponibles", "assignTitle": "Attribuer des étiquettes", "assignDescription": "Choisissez un produit, puis ses étiquettes", "search": "Rechercher un produit", "product": "Produit", "chooseProduct": "Choisir un produit", "noProducts": "Aucun produit correspondant", "tagsFor": "Étiquettes pour {{product}}", "selectTags": "Les étiquettes sélectionnées sont attribuées lors de l’enregistrement", "save": "Enregistrer l’attribution", "saved": "Attribution enregistrée pour cet aperçu", "unsaved": "Modifications non enregistrées", "chooseHint": "Choisissez un produit pour modifier ses étiquettes", "discardConfirm": "Abandonner les modifications non enregistrées et choisir un autre produit ?" },
+  "tagSearch": "Rechercher des étiquettes",
+  "tagDelete": "Supprimer",
+  "tagDeleteLabel": "Supprimer l’étiquette {{name}}",
+  "tagDeleteConfirm": "Supprimer l’étiquette « {{name}} » ? Elle sera retirée de {{count}} produits dans cet aperçu. Les autres modifications non enregistrées seront conservées.",
+  "tagDeleted": "Étiquette « {{name}} » supprimée dans cet aperçu",
+  "tagNone": "Aucune étiquette correspondante",
+  "tagSelected": "Étiquettes sélectionnées : {{count}}",
+  "leaveConfirm": "Abandonner les modifications non enregistrées et quitter cette page ?",
   "eyebrow": "COMPTE UTILISATEUR",
   "title": "Votre compte utilisateur",
   "status": "En cours",

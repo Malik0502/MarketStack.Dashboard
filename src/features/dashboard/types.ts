@@ -1,14 +1,14 @@
 import type { MonthlyExpense } from '@/api/objects/dto/monthlyExpense'
 
 export const metricEndpoints = {
-  totalExpense: '/expense/total',
-  totalTax: '/expense/total-tax',
-  expenseChange: '/expense/percentage-change',
-  taxChange: '/expense/tax-percentage-change',
-  purchases: '/receipt/total',
-  averagePurchase: '/receipt/average-purchase-value',
-  averageItems: '/receipt/average-items',
-  discountShare: '/receipt/discount-share',
+  totalExpense: '/analytics/expense/total',
+  totalTax: '/analytics/expense/total-tax',
+  expenseChange: '/analytics/expense/percentage-change',
+  taxChange: '/analytics/expense/tax-percentage-change',
+  purchases: '/analytics/receipt/total',
+  averagePurchase: '/analytics/receipt/average-purchase-value',
+  averageItems: '/analytics/receipt/average-items',
+  discountShare: '/analytics/receipt/discount-share',
 } as const
 
 export type MetricKey = keyof typeof metricEndpoints

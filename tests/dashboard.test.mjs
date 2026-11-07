@@ -66,7 +66,9 @@ test('all ten real API contracts are loaded without losing ISO dates', async () 
   }
   const result = await dashboard.loadDashboard(new AbortController().signal)
   assert.equal(calls.length, 10)
-  assert.ok(calls.some(url => url.endsWith('/expense/tax-history')))
+  assert.ok(calls.every(url => new URL(url).pathname.startsWith('/api/analytics/')))
+  assert.ok(calls.some(url => new URL(url).pathname === '/api/analytics/expense/tax-history'))
+  assert.ok(calls.some(url => new URL(url).pathname === '/api/analytics/receipt/total'))
   assert.equal(result.metrics.purchases, 42)
   assert.equal(result.expenses[0].purchasedAt, '2026-01-01')
   assert.deepEqual(result.errors, [])
@@ -81,7 +83,7 @@ test('partial HTTP failure does not replace missing data with zero', async () =>
   assert.equal(result.metrics.purchases, null)
   assert.equal(result.metrics.totalExpense, 0)
   assert.deepEqual(result.expenses, [])
-  assert.deepEqual(result.errors, ['/receipt/total'])
+  assert.deepEqual(result.errors, ['/analytics/receipt/total'])
 })
 
 test('API-level errors and wrong numeric types remain unavailable', async () => {

@@ -1,4 +1,13 @@
 {
+  "admin": { "title": "Administration", "description": "Verwalte Tags und ordne sie Produkten zu", "mockNotice": "Mock-Modus: Änderungen gelten nur für diese Vorschau und gehen beim Verlassen der Seite verloren. Andere Analysen bleiben unverändert.", "unavailable": "Die Tag-Verwaltung ist im API-Modus noch nicht verfügbar.", "loadError": "Mock-Daten konnten nicht geladen werden. Lade die Seite erneut.", "section": "Tags und Produkte", "sectionDescription": "Erstelle Tags und verwalte die Zuordnung zu einzelnen Produkten", "createTitle": "Tag erstellen", "name": "Tag-Name", "required": "Gib einen Tag-Namen ein.", "duplicate": "Ein Tag mit diesem Namen existiert bereits.", "create": "Tag erstellen", "created": "Tag für diese Vorschau erstellt", "availableTags": "Verfügbare Tags", "assignTitle": "Tags zuordnen", "assignDescription": "Wähle ein Produkt und anschließend seine Tags", "search": "Produkt suchen", "product": "Produkt", "chooseProduct": "Produkt auswählen", "noProducts": "Keine passenden Produkte gefunden", "tagsFor": "Tags für {{product}}", "selectTags": "Ausgewählte Tags werden nach dem Speichern zugeordnet", "save": "Zuordnung speichern", "saved": "Zuordnung für diese Vorschau gespeichert", "unsaved": "Nicht gespeicherte Änderungen", "chooseHint": "Wähle ein Produkt, um seine Tags zu bearbeiten", "discardConfirm": "Nicht gespeicherte Änderungen verwerfen und ein anderes Produkt auswählen?" },
+  "tagSearch": "Tags suchen",
+  "tagDelete": "Löschen",
+  "tagDeleteLabel": "Tag {{name}} löschen",
+  "tagDeleteConfirm": "Tag „{{name}}“ löschen? Er wird in dieser Vorschau von {{count}} Produkten entfernt. Nicht gespeicherte Änderungen an anderen Tags bleiben erhalten.",
+  "tagDeleted": "Tag „{{name}}“ in dieser Vorschau gelöscht",
+  "tagNone": "Keine passenden Tags gefunden",
+  "tagSelected": "Ausgewählte Tags: {{count}}",
+  "leaveConfirm": "Nicht gespeicherte Änderungen verwerfen und die Seite verlassen?",
   "eyebrow": "BENUTZERBEREICH",
   "title": "Dein Benutzerbereich",
   "status": "In Arbeit",

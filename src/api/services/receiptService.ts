@@ -2,7 +2,7 @@ import { apiFetch } from "../apiClient";
 import { DataResponse } from "../objects/base/dataResponse";
 
 export async function getTotalPurchases(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/total");
+    const result: DataResponse<number> = await apiFetch<number>("/analytics/receipt/total");
     
         if(!result.success && result.data == null){
             return 0;
@@ -12,7 +12,7 @@ export async function getTotalPurchases(): Promise<number>{
 }
 
 export async function getAveragePurchaseValue(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/average-purchase-value");
+    const result: DataResponse<number> = await apiFetch<number>("/analytics/receipt/average-purchase-value");
     
         if(!result.success && result.data == null){
             return 0;
@@ -22,7 +22,7 @@ export async function getAveragePurchaseValue(): Promise<number>{
 }
 
 export async function getAverageItems(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/average-items");
+    const result: DataResponse<number> = await apiFetch<number>("/analytics/receipt/average-items");
     
         if(!result.success && result.data == null){
             return 0;
@@ -32,7 +32,7 @@ export async function getAverageItems(): Promise<number>{
 }
 
 export async function getDiscountShare(): Promise<number>{
-    const result: DataResponse<number> = await apiFetch<number>("/receipt/discount-share");
+    const result: DataResponse<number> = await apiFetch<number>("/analytics/receipt/discount-share");
     
         if(!result.success && result.data == null){
             return 0;
